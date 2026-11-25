@@ -4360,7 +4360,25 @@
    "hellaswag": 107.75336886200012,
    "timing": 27.257768738999403
   },
-  "latency_memory": {
+  "previous_meta": [
+   {
+    "command": "python3 scripts/task1_eval.py --device cuda:0 --phases storage,outerr,ppl,hellaswag --timing-exclusive no --conditions p1_mag_s25 p1_mag_s50 p1_mag_s75 p2_wanda_s25 p2_wanda_s50 p2_wanda_s75 p2_wanda_2of4",
+    "timestamp_utc": "2026-11-25T19:31:32+00:00",
+    "git": {
+     "commit": "bac75d66ea44ab3a7bace46526b9597b76160554",
+     "dirty": false,
+     "submodule_path": "external/atml-pa4-datasets",
+     "submodule_commit": "6a0a9ec9da7ef3d313ee3036cfec493886723644"
+    },
+    "phases": [
+     "storage",
+     "outerr",
+     "ppl",
+     "hellaswag"
+    ]
+   }
+  ],
+  "latency_memory_superseded": {
    "unit": "ms",
    "reps": 5,
    "warmup": 2,
@@ -4431,25 +4449,56 @@
     "max_memory_reserved_bytes": 6398410752
    },
    "gpu_state_after": "0, Tesla T4, 44 %, 6249 MiB\n1, Tesla T4, 0 %, 3 MiB",
-   "execution": "dense FP16 kernels (pruned zeros / fake-quant weights)"
+   "execution": "dense FP16 kernels (pruned zeros / fake-quant weights)",
+   "superseded_by": "results/task1/retiming.json",
+   "reason": "order-dependent clock/thermal drift; see docs/deviations.md"
   },
-  "previous_meta": [
-   {
-    "command": "python3 scripts/task1_eval.py --device cuda:0 --phases storage,outerr,ppl,hellaswag --timing-exclusive no --conditions p1_mag_s25 p1_mag_s50 p1_mag_s75 p2_wanda_s25 p2_wanda_s50 p2_wanda_s75 p2_wanda_2of4",
-    "timestamp_utc": "2026-11-25T19:31:32+00:00",
-    "git": {
-     "commit": "bac75d66ea44ab3a7bace46526b9597b76160554",
-     "dirty": false,
-     "submodule_path": "external/atml-pa4-datasets",
-     "submodule_commit": "6a0a9ec9da7ef3d313ee3036cfec493886723644"
-    },
-    "phases": [
-     "storage",
-     "outerr",
-     "ppl",
-     "hellaswag"
-    ]
+  "latency_retimed": {
+   "prefill_512": {
+    "median_all_reps_ms": 120.82075119018555,
+    "n_reps": 10,
+    "occurrence_medians_ms": [
+     121.72067260742188,
+     119.92082977294922
+    ],
+    "drift_adjusted_ratio": 0.9872474074449493,
+    "occurrence_ratios": [
+     1.0004584601320599,
+     0.9742108066916837
+    ],
+    "peak_alloc_bytes": 3270028800,
+    "peak_reserved_bytes": 5257560064
+   },
+   "prefill_2048": {
+    "median_all_reps_ms": 795.874267578125,
+    "n_reps": 10,
+    "occurrence_medians_ms": [
+     796.5081787109375,
+     792.0640258789062
+    ],
+    "drift_adjusted_ratio": 0.9821745546530783,
+    "occurrence_ratios": [
+     0.9837876940805411,
+     0.980564060327631
+    ],
+    "peak_alloc_bytes": 3785797120,
+    "peak_reserved_bytes": 5257560064
+   },
+   "decode_64_after_512": {
+    "median_all_reps_ms": 2292.0218505859375,
+    "n_reps": 10,
+    "occurrence_medians_ms": [
+     2301.453125,
+     2282.590576171875
+    ],
+    "drift_adjusted_ratio": 1.0121355859833054,
+    "occurrence_ratios": [
+     1.0103877495810216,
+     1.0138864459100632
+    ],
+    "peak_alloc_bytes": 3286544384,
+    "peak_reserved_bytes": 5257560064
    }
-  ]
+  }
  }
 }

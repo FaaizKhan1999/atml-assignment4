@@ -2369,7 +2369,18 @@
     "acc_norm": 0.583984375
    }
   },
-  "latency_memory": {
+  "phase_seconds": {
+   "load": 55.664505021,
+   "pristine_snapshot": 10.814810835000003,
+   "restore_verify": 3.8996010780000177,
+   "compress": 9.110400000622576e-05,
+   "calib_stats": 14.078792898000017,
+   "ppl_wikitext2": 24.76444388500005,
+   "ppl_c4": 12.770114517000025,
+   "hellaswag": 426.391874796,
+   "timing": 27.893341029
+  },
+  "latency_memory_superseded": {
    "unit": "ms",
    "reps": 5,
    "warmup": 2,
@@ -2439,18 +2450,83 @@
     "max_memory_allocated_bytes": 3286544384,
     "max_memory_reserved_bytes": 5234491392
    },
-   "gpu_state_after": "0, Tesla T4, 42 %, 5139 MiB\n1, Tesla T4, 0 %, 3 MiB"
+   "gpu_state_after": "0, Tesla T4, 42 %, 5139 MiB\n1, Tesla T4, 0 %, 3 MiB",
+   "superseded_by": "results/task1/retiming.json",
+   "reason": "order-dependent clock/thermal drift; see docs/deviations.md"
   },
-  "phase_seconds": {
-   "load": 55.664505021,
-   "pristine_snapshot": 10.814810835000003,
-   "restore_verify": 3.8996010780000177,
-   "compress": 9.110400000622576e-05,
-   "calib_stats": 14.078792898000017,
-   "ppl_wikitext2": 24.76444388500005,
-   "ppl_c4": 12.770114517000025,
-   "hellaswag": 426.391874796,
-   "timing": 27.893341029
+  "latency_retimed": {
+   "prefill_512": {
+    "median_all_reps_ms": 124.0624008178711,
+    "n_reps": 70,
+    "occurrence_medians_ms": [
+     115.36124420166016,
+     121.95590209960938,
+     121.6648941040039,
+     125.86150360107422,
+     123.41455841064453,
+     124.46851348876953,
+     124.50688171386719,
+     123.9115219116211,
+     125.44019317626953,
+     121.87664031982422,
+     125.3539810180664,
+     123.0953598022461,
+     127.02870178222656,
+     123.00588989257812
+    ],
+    "drift_adjusted_ratio": 1.0,
+    "occurrence_ratios": [],
+    "peak_alloc_bytes": 3270028800,
+    "peak_reserved_bytes": 5257560064
+   },
+   "prefill_2048": {
+    "median_all_reps_ms": 810.1458129882812,
+    "n_reps": 70,
+    "occurrence_medians_ms": [
+     768.328125,
+     805.6770629882812,
+     809.6342163085938,
+     810.221923828125,
+     801.996826171875,
+     811.7794799804688,
+     811.6842651367188,
+     818.2953491210938,
+     815.4448852539062,
+     805.3868408203125,
+     808.7442016601562,
+     807.763671875,
+     812.762939453125,
+     808.0265502929688
+    ],
+    "drift_adjusted_ratio": 1.0,
+    "occurrence_ratios": [],
+    "peak_alloc_bytes": 3785797120,
+    "peak_reserved_bytes": 5257560064
+   },
+   "decode_64_after_512": {
+    "median_all_reps_ms": 2273.7159423828125,
+    "n_reps": 70,
+    "occurrence_medians_ms": [
+     2260.919189453125,
+     2257.421875,
+     2277.7919921875,
+     2267.140625,
+     2281.774658203125,
+     2266.293701171875,
+     2289.647216796875,
+     2294.2412109375,
+     2310.329833984375,
+     2281.910400390625,
+     2268.970947265625,
+     2251.32763671875,
+     2265.146484375,
+     2267.165771484375
+    ],
+    "drift_adjusted_ratio": 1.0,
+    "occurrence_ratios": [],
+    "peak_alloc_bytes": 3286544384,
+    "peak_reserved_bytes": 5257560064
+   }
   }
  }
 }

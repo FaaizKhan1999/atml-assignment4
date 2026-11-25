@@ -1,0 +1,454 @@
+{
+ "meta": {
+  "timestamp_utc": "2026-11-25T22:41:28+00:00",
+  "command": "python scripts/task1_diagnostics.py",
+  "cwd": "/home/faaiz/Desktop/atml/assignments/assignment-4",
+  "hostname": "focusedkognition",
+  "kaggle": {
+   "kernel_slug": null,
+   "run_type": null
+  },
+  "git": {
+   "commit": "d651facfb15e4b7271b15c091bea09037ee5829b",
+   "dirty": true,
+   "submodule_path": "external/atml-pa4-datasets",
+   "submodule_commit": "6a0a9ec9da7ef3d313ee3036cfec493886723644"
+  },
+  "versions": {
+   "python": "3.12.3",
+   "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+   "torch": "2.15.0+cpu",
+   "transformers": "4.57.1",
+   "huggingface_hub": "0.36.2",
+   "datasets": "5.0.1",
+   "numpy": "2.5.5",
+   "scipy": "1.18.1",
+   "peft": null,
+   "accelerate": "1.16.0"
+  },
+  "cuda": {
+   "available": false,
+   "torch_cuda_build": null
+  },
+  "sdpa": {
+   "flash_sdp_enabled": true,
+   "mem_efficient_sdp_enabled": true,
+   "math_sdp_enabled": true,
+   "cudnn_sdp_enabled": true,
+   "is_flash_attention_available": false
+  },
+  "dtype": null,
+  "seed": 6304,
+  "models": []
+ },
+ "payload": {
+  "rule": "first-512 IDs in manifest order: first 3 with baseline acc_norm correct and P2@50 wrong; first 2 with P2@50 wrong and P3@50 correct; first 1 with P2@50 correct and P3@50 wrong",
+  "configs": [
+   "baseline",
+   "p1_mag_s50",
+   "p2_wanda_s50",
+   "p3_owl_s50",
+   "q2_awq_int4",
+   "q3_mixed_b4",
+   "q2_awq_int3"
+  ],
+  "cases": [
+   {
+    "rule": "baseline_correct_P2_wrong",
+    "order": 0,
+    "id": "hellaswag-val-1",
+    "context": "Clean and jerk: A lady walks to a barbell. She bends down and grabs the pole. The lady",
+    "endings": [
+     "swings and lands in her arms.",
+     "pulls the barbell forward.",
+     "pulls a rope attached to the barbell.",
+     "stands and lifts the weight over her head."
+    ],
+    "gold": 3,
+    "per_char_scores": {
+     "baseline": [
+      -0.9857009628723408,
+      -0.5035502704290243,
+      -0.46919814336138804,
+      -0.3496147405267471
+     ],
+     "p1_mag_s50": [
+      -1.0724708294046337,
+      -0.9870421622808163,
+      -0.8060384026250323,
+      -0.7754756577667736
+     ],
+     "p2_wanda_s50": [
+      -0.8475160208241693,
+      -0.42744305070776206,
+      -0.40804341845717784,
+      -0.49231515762706596
+     ],
+     "p3_owl_s50": [
+      -0.8340862290612583,
+      -0.42665293640815294,
+      -0.4280593311162414,
+      -0.4908093036640258
+     ],
+     "q2_awq_int4": [
+      -0.9892248778507627,
+      -0.5895497111173776,
+      -0.4690207406576421,
+      -0.3437184292290892
+     ],
+     "q3_mixed_b4": [
+      -0.9892248778507627,
+      -0.5895497111173776,
+      -0.4690207406576421,
+      -0.3437184292290892
+     ],
+     "q2_awq_int3": [
+      -0.8859582625586411,
+      -0.45360882637592465,
+      -0.4010911916156073,
+      -0.4319393601091135
+     ]
+    },
+    "pred_acc_norm": {
+     "baseline": 3,
+     "p1_mag_s50": 3,
+     "p2_wanda_s50": 2,
+     "p3_owl_s50": 1,
+     "q2_awq_int4": 3,
+     "q3_mixed_b4": 3,
+     "q2_awq_int3": 2
+    }
+   },
+   {
+    "rule": "baseline_correct_P2_wrong",
+    "order": 16,
+    "id": "hellaswag-val-87",
+    "context": "Clean and jerk: A man in a blue shirt and shorts lifts a large weight over his head. Another man is filming it. The same man comes back and lifts the weight over his head again. He",
+    "endings": [
+     "drops it on the ground and walks away.",
+     "again lifts the weight over his head.",
+     "drops it and runs towards the camera.",
+     "drops it onto the floor where it gets stuck."
+    ],
+    "gold": 0,
+    "per_char_scores": {
+     "baseline": [
+      -0.3200449143585406,
+      -0.353060965476608,
+      -0.45084753270084793,
+      -0.610338996079835
+     ],
+     "p1_mag_s50": [
+      -0.8405418890087228,
+      -0.5140446406612927,
+      -0.9341517698925894,
+      -1.062895421277393
+     ],
+     "p2_wanda_s50": [
+      -0.41311050598558624,
+      -0.2675085689029279,
+      -0.5064073672165742,
+      -0.6950414346700365
+     ],
+     "p3_owl_s50": [
+      -0.4211176935779421,
+      -0.27450347345674764,
+      -0.513201798941638,
+      -0.6828785809603605
+     ],
+     "q2_awq_int4": [
+      -0.31487744811334106,
+      -0.37007152223707857,
+      -0.4316062927246094,
+      -0.6756595291874625
+     ],
+     "q3_mixed_b4": [
+      -0.31487744811334106,
+      -0.37007152223707857,
+      -0.4316062927246094,
+      -0.6756595291874625
+     ],
+     "q2_awq_int3": [
+      -0.39742635896331385,
+      -0.31853741226164073,
+      -0.4861788411398192,
+      -0.6992316273125735
+     ]
+    },
+    "pred_acc_norm": {
+     "baseline": 0,
+     "p1_mag_s50": 1,
+     "p2_wanda_s50": 1,
+     "p3_owl_s50": 1,
+     "q2_awq_int4": 0,
+     "q3_mixed_b4": 0,
+     "q2_awq_int3": 1
+    }
+   },
+   {
+    "rule": "baseline_correct_P2_wrong",
+    "order": 20,
+    "id": "hellaswag-val-103",
+    "context": "Clean and jerk: A man is in the gym in tight he bends over picks up a weight over his head and drops it back down. He walks back and loosens up before walking back up and doing it again adding more weight. He",
+    "endings": [
+     "finally lifts the weight over his head over his own head.",
+     "turns his back towards the camera and continues talking to the camera adding more weight along with more weight on the end.",
+     "does this multiple times adding more and more weight to the rack.",
+     "walks back up and drops the weights back down."
+    ],
+    "gold": 2,
+    "per_char_scores": {
+     "baseline": [
+      -0.4979118155478908,
+      -0.5602713579811701,
+      -0.33394901832708945,
+      -0.34627076951058017
+     ],
+     "p1_mag_s50": [
+      -0.7470961560152078,
+      -0.7290656039627587,
+      -0.6633841370160763,
+      -0.6916720659836478
+     ],
+     "p2_wanda_s50": [
+      -0.5396502652581323,
+      -0.569697783487599,
+      -0.35410001777972167,
+      -0.34171416124571924
+     ],
+     "p3_owl_s50": [
+      -0.534036308167535,
+      -0.5736839780962564,
+      -0.34794968942610116,
+      -0.33762053076339804
+     ],
+     "q2_awq_int4": [
+      -0.5165723876276037,
+      -0.5635675065885715,
+      -0.37281319584984046,
+      -0.3506172825784787
+     ],
+     "q3_mixed_b4": [
+      -0.5165723876276037,
+      -0.5635675065885715,
+      -0.37281319584984046,
+      -0.3506172825784787
+     ],
+     "q2_awq_int3": [
+      -0.5008107161704909,
+      -0.5275689571853576,
+      -0.3608081086896933,
+      -0.42146450410718506
+     ]
+    },
+    "pred_acc_norm": {
+     "baseline": 2,
+     "p1_mag_s50": 2,
+     "p2_wanda_s50": 3,
+     "p3_owl_s50": 3,
+     "q2_awq_int4": 3,
+     "q3_mixed_b4": 3,
+     "q2_awq_int3": 2
+    }
+   },
+   {
+    "rule": "P2_wrong_P3_correct",
+    "order": 49,
+    "id": "hellaswag-val-241",
+    "context": "Assembling bicycle: People are working in a bike shop fixing a bike. They",
+    "endings": [
+     "use the tools and paint the wheels.",
+     "put the wheels back onto the bike.",
+     "are going over the bike handlebars and looking at the paint.",
+     "clamp a strap on the bike and let it sit around a dusty bike rack."
+    ],
+    "gold": 1,
+    "per_char_scores": {
+     "baseline": [
+      -0.7934255804334368,
+      -0.6622699351214311,
+      -0.6314836273590724,
+      -1.1216232586990704
+     ],
+     "p1_mag_s50": [
+      -0.8352247135979789,
+      -0.6914056767435635,
+      -0.6749936571965615,
+      -1.2105844145019848
+     ],
+     "p2_wanda_s50": [
+      -0.7923667873655047,
+      -0.5962340394582819,
+      -0.5495322053631146,
+      -0.9718238697810606
+     ],
+     "p3_owl_s50": [
+      -0.7610214114189148,
+      -0.5491126334185109,
+      -0.5640593692660332,
+      -0.9754514965144071
+     ],
+     "q2_awq_int4": [
+      -0.7849325963429042,
+      -0.5977350778001196,
+      -0.6026009112596512,
+      -1.0544591157725363
+     ],
+     "q3_mixed_b4": [
+      -0.7849325963429042,
+      -0.5977350778001196,
+      -0.6026009112596512,
+      -1.0544591157725363
+     ],
+     "q2_awq_int3": [
+      -0.8102710962295532,
+      -0.5519691206076566,
+      -0.6711022148529688,
+      -1.0332759411046
+     ]
+    },
+    "pred_acc_norm": {
+     "baseline": 2,
+     "p1_mag_s50": 2,
+     "p2_wanda_s50": 2,
+     "p3_owl_s50": 1,
+     "q2_awq_int4": 1,
+     "q3_mixed_b4": 1,
+     "q2_awq_int3": 1
+    }
+   },
+   {
+    "rule": "P2_wrong_P3_correct",
+    "order": 76,
+    "id": "hellaswag-val-343",
+    "context": "Washing face: Man is standing in front of a mirror spreading cream on his face. Man is kneeling and wash her face. The man",
+    "endings": [
+     "puts cream on her face and applies it on a hair rod.",
+     "is on top of mountain looking down because is makes snow self uses soap too wash to get the cream off.",
+     "smells his face with his hand.",
+     "grabs a green towel and wipe his face."
+    ],
+    "gold": 3,
+    "per_char_scores": {
+     "baseline": [
+      -0.7859056612046865,
+      -1.088068029605875,
+      -0.6080783247947693,
+      -0.6505924992655453
+     ],
+     "p1_mag_s50": [
+      -1.1556430218311458,
+      -1.325463636139152,
+      -1.0295424699783324,
+      -1.0992763991418637
+     ],
+     "p2_wanda_s50": [
+      -0.7763253057088989,
+      -1.1647842684578078,
+      -0.6249796996514002,
+      -0.6698147431015968
+     ],
+     "p3_owl_s50": [
+      -0.765474583953619,
+      -1.153788426215304,
+      -0.6466412683327992,
+      -0.6379945680106941
+     ],
+     "q2_awq_int4": [
+      -0.8236886454889407,
+      -1.070545565117808,
+      -0.6243863046169281,
+      -0.6905954844857517
+     ],
+     "q3_mixed_b4": [
+      -0.8236886454889407,
+      -1.070545565117808,
+      -0.6243863046169281,
+      -0.6905954844857517
+     ],
+     "q2_awq_int3": [
+      -0.766034371434496,
+      -1.1037089140976177,
+      -0.6395457943280538,
+      -0.7854587045547209
+     ]
+    },
+    "pred_acc_norm": {
+     "baseline": 2,
+     "p1_mag_s50": 2,
+     "p2_wanda_s50": 2,
+     "p3_owl_s50": 3,
+     "q2_awq_int4": 2,
+     "q3_mixed_b4": 2,
+     "q2_awq_int3": 2
+    }
+   },
+   {
+    "rule": "P2_correct_P3_wrong",
+    "order": 18,
+    "id": "hellaswag-val-93",
+    "context": "Sharpening knives: A woman wearing a tan apron is holding a knife and talking. She then shows an appliance on the table and tilts it upwards. She",
+    "endings": [
+     "turns a dial on the appliance and sets it back down.",
+     "continues sliding the blade over the appliance.",
+     "takes a quarter of an inch of the device and holds it against a piece of cake.",
+     "removes a lemon from a jar and places it into a pot."
+    ],
+    "gold": 0,
+    "per_char_scores": {
+     "baseline": [
+      -0.4791006944500483,
+      -0.5322907002682381,
+      -0.6796353156439577,
+      -0.5950756915486776
+     ],
+     "p1_mag_s50": [
+      -0.8888759120152547,
+      -0.7982881471831748,
+      -0.8141427276990353,
+      -0.8788418024778366
+     ],
+     "p2_wanda_s50": [
+      -0.535055702408919,
+      -0.5404105097689527,
+      -0.6840467338975614,
+      -0.5856345237161105
+     ],
+     "p3_owl_s50": [
+      -0.5694674505637243,
+      -0.5443754557599413,
+      -0.6756266242681215,
+      -0.5817376303558166
+     ],
+     "q2_awq_int4": [
+      -0.5257600740744517,
+      -0.5536177120310195,
+      -0.7241530453260893,
+      -0.6126137122225302
+     ],
+     "q3_mixed_b4": [
+      -0.5257600740744517,
+      -0.5536177120310195,
+      -0.7241530453260893,
+      -0.6126137122225302
+     ],
+     "q2_awq_int3": [
+      -0.5808335035466231,
+      -0.6810951867002122,
+      -0.7001126148164846,
+      -0.6002846487726157
+     ]
+    },
+    "pred_acc_norm": {
+     "baseline": 0,
+     "p1_mag_s50": 1,
+     "p2_wanda_s50": 0,
+     "p3_owl_s50": 1,
+     "q2_awq_int4": 0,
+     "q3_mixed_b4": 0,
+     "q2_awq_int3": 0
+    }
+   }
+  ]
+ }
+}

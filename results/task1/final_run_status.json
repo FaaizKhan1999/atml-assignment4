@@ -1,0 +1,20 @@
+{
+ "commit": "e5193e7b86cfb4cf682bdb2f83bf61846d6aa837",
+ "start": 1795642463.9177878,
+ "steps": [
+  {
+   "name": "parallel",
+   "rc_A": 0,
+   "rc_B": 0,
+   "seconds": 2549.9900760650635,
+   "cmd_A": "/usr/bin/python3 scripts/task1_p3.py --device cuda:0 && /usr/bin/python3 scripts/task1_eval.py --device cuda:0 --phases storage,outerr,ppl,hellaswag --timing-exclusive no --conditions p3_owl_s50 p3_owl_s75 && /usr/bin/python3 scripts/task1_eval.py --device cuda:0 --phases outerr --timing-exclusive no --conditions q2_awq_int8 q2_awq_int4 q2_awq_int3 && /usr/bin/python3 -c \"import time,pathlib;p=pathlib.Path('results/task1/q3_allocation.json');[time.sleep(20) for _ in iter(lambda: p.exists(), True)]\" && /usr/bin/python3 scripts/task1_eval.py --device cuda:0 --phases storage,outerr,ppl,hellaswag --timing-exclusive no --conditions q3_mixed_b3",
+   "cmd_B": "/usr/bin/python3 scripts/task1_q3.py --device cuda:1 && /usr/bin/python3 scripts/task1_eval.py --device cuda:1 --phases storage,outerr,ppl,hellaswag --timing-exclusive no --conditions q3_mixed_b4"
+  },
+  {
+   "name": "retime_exclusive_cuda0",
+   "rc": 0,
+   "seconds": 1232.790676355362
+  }
+ ],
+ "total_seconds": 3782.7814135551453
+}
