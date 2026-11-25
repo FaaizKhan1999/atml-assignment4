@@ -107,7 +107,7 @@ register("p2_wanda_2of4", 512, "prune")(lambda m, c: _prune(m, c, "wanda", None,
 
 
 # ---------------------------------------------------------------- quantization
-def _pack_checker(ctx, bits):
+def _pack_checker(ctx, bits=None):
     from .quant import pack, packed_nbytes, unpack
 
     acc = {"matrices": 0, "packed_bytes": 0, "formula_bytes": 0, "roundtrip_exact": True, "degenerate_groups": 0,
@@ -115,7 +115,7 @@ def _pack_checker(ctx, bits):
 
     def on_matrix(q, qr):
         d_out = qr.codes.shape[0]
-        f = packed_nbytes(d_out, qr.d_in, bits)
+        f = packed_nbytes(d_out, qr.d_in, qr.bits)
         acc["formula_bytes"] += f
         acc["degenerate_groups"] += qr.degenerate_groups
         acc["pad_used"] |= qr.pad > 0
@@ -124,12 +124,12 @@ def _pack_checker(ctx, bits):
         if ctx.get("verify_pack", True):
             blob = pack(qr)
             nbytes = len(blob)
-            c, z, s, w = unpack(blob, d_out, qr.d_in, bits, device=qr.codes.device)
+            c, z, s, w = unpack(blob, d_out, qr.d_in, qr.bits, device=qr.codes.device)
             ok = torch.equal(w, qr.w_hat) and torch.equal(c, qr.codes) and torch.equal(z, qr.zero) and \
                 torch.equal(s.view(torch.int16), qr.scale.view(torch.int16))
             acc["roundtrip_exact"] &= bool(ok)
         acc["packed_bytes"] += nbytes
-        acc["per_matrix"].append({"qualname": q, "shape": [d_out, qr.d_in], "packed_bytes": nbytes})
+        acc["per_matrix"].append({"qualname": q, "shape": [d_out, qr.d_in], "bits": qr.bits, "packed_bytes": nbytes})
     return acc, on_matrix
 
 
@@ -217,3 +217,72 @@ for _b in (8, 4, 3):
 
 FIXED_CONDITIONS = ["p1_mag_s25", "p1_mag_s50", "p1_mag_s75", "p2_wanda_s25", "p2_wanda_s50", "p2_wanda_s75",
                     "p2_wanda_2of4", "q1_int8", "q1_int4", "q1_int3", "q2_awq_int8", "q2_awq_int4", "q2_awq_int3"]
+
+
+# ---------------------------------------------------------------- P3 (OWL block allocation, pre-registered)
+@torch.no_grad()
+def _p3(model, ctx, S: float) -> dict:
+    import json
+
+    from . import p3
+
+    t0 = time.perf_counter()
+    sel = json.loads((ctx["root"] / "results/task1/p3_selection.json").read_text())["payload"]["selected"][str(S)]
+    xn, stat_s, _ = _xnorms(ctx)
+    D = p3.block_outlier_ratios(model, xn, Ms=(sel["M"],))[sel["M"]]
+    t_score = time.perf_counter() - t0
+    t1 = time.perf_counter()
+    info = p3.apply_p3(model, xn, D, S, sel["lambda"])
+    _sync()
+    assert info["s_blocks"] == sel["s_blocks"], "allocation differs from the dev-selected one"
+    return {"family": "prune", "score": "wanda", "method": "P3 OWL block allocation", "target_sparsity": S,
+            "selected_M": sel["M"], "selected_lambda": sel["lambda"], **info,
+            "compress_seconds": {"stat_load_s": stat_s, "sensitivity_s": t_score - stat_s, "search_s": 0.0,
+                                 "apply_s": time.perf_counter() - t1,
+                                 "selection_grid_s": "see results/task1/p3_selection.json gpu_seconds"}}
+
+
+register("p3_owl_s50", 2000, "prune")(lambda m, c: _p3(m, c, 0.50))
+register("p3_owl_s75", 512, "prune")(lambda m, c: _p3(m, c, 0.75))
+
+
+# ---------------------------------------------------------------- Q3 (probe + exact knapsack, pre-registered)
+_Q3RES = None
+
+
+@torch.no_grad()
+def _q3(model, ctx, budget: str) -> dict:
+    import json
+
+    from . import awq, storage
+
+    global _Q3RES
+    alloc = json.loads((ctx["root"] / "results/task1/q3_allocation.json").read_text())["payload"]
+    a = alloc["allocations"][budget]
+    if _Q3RES is None:
+        q2 = awq.load_search(ctx["root"] / "results/task1/q2_awq_search.npz")
+        new = awq.load_search(ctx["root"] / "results/task1/q3_awq_search.npz")
+        _Q3RES = {8: q2, 4: q2, 3: q2, 2: new}
+    acc, on_matrix = _pack_checker(ctx)
+    t0 = time.perf_counter()
+    info = awq.apply_quantized(model, None, a["bits"], on_matrix=on_matrix, res_by_bits=_Q3RES)
+    _sync()
+    t_apply = time.perf_counter() - t0
+    ctx["outerr_equivalent"] = awq.unfolded_equivalent(None, a["bits"], res_by_bits=_Q3RES)
+    st, _ = storage.model_storage_from_torch(model)
+    total = acc["packed_bytes"] + info["serialized_scale_bytes"] + st.other_bytes
+    assert total <= a["budget_bytes"], f"realised {total} > budget {a['budget_bytes']}"
+    nominal = sum(b for b in a["bits"]) / len(a["bits"])
+    return {"family": "quant", "method": f"Q3 mixed precision (probe + exact knapsack) @ {budget}",
+            "bits": "mixed", "bits_per_block": a["bits"], "nominal_bits": nominal, "group_size": 128,
+            "budget_bytes": a["budget_bytes"], "realised_total_bytes": total,
+            "execution": "fake-quantized FP16 (dequantized, inverse scales merged into FP16 weights)",
+            "packing": acc, **info, "predicted_dev_dnll": a["predicted_dev_dnll"],
+            "realised_dev_dnll": a["realised_dev_dnll"],
+            "compress_seconds": {"apply_and_pack_verify_s": t_apply,
+                                 "probe_and_search_s": "see results/task1/q3_allocation.json gpu_seconds"}}
+
+
+register("q3_mixed_b4", 2000, "quant")(lambda m, c: _q3(m, c, "B4"))
+register("q3_mixed_b3", 2000, "quant")(lambda m, c: _q3(m, c, "B3"))
+NEW_CONDITIONS = ["p3_owl_s50", "p3_owl_s75", "q3_mixed_b4", "q3_mixed_b3"]

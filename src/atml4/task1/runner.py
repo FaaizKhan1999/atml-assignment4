@@ -168,12 +168,14 @@ def main(argv=None):
                     pk = cinfo["packing"]
                     elig = pk["packed_bytes"]
                     ser = cinfo.get("serialized_scale_bytes", 0)
+                    numel = lambda m: m["shape"][0] * m["shape"][1]  # noqa: E731
                     s_out["quantized"] = {
-                        "bits": cinfo["bits"], "nominal_bits_per_eligible_weight": cinfo["bits"],
+                        "bits": cinfo["bits"],
+                        "nominal_bits_per_eligible_weight": cinfo.get("nominal_bits", cinfo["bits"]),
                         "eligible_packed_bytes": elig, "eligible_formula_bytes": pk["formula_bytes"],
-                        "codes_bytes_logical": st.eligible_params * cinfo["bits"] / 8,
-                        "zero_point_bytes_logical": st.eligible_params / 128 * cinfo["bits"] / 8,
-                        "scale_bytes_logical": st.eligible_params / 128 * 2,
+                        "codes_bytes_logical": sum(numel(m) * m["bits"] / 8 for m in pk["per_matrix"]),
+                        "zero_point_bytes_logical": sum(numel(m) / 128 * m["bits"] / 8 for m in pk["per_matrix"]),
+                        "scale_bytes_logical": sum(numel(m) / 128 * 2 for m in pk["per_matrix"]),
                         "serialized_awq_scale_bytes": ser, "other_params_bytes": st.other_bytes,
                         "total_bytes": elig + ser + st.other_bytes,
                         "effective_bits_per_eligible_weight": 8 * (elig + ser) / st.eligible_params,

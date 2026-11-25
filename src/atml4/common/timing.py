@@ -42,7 +42,7 @@ def _check(reps: int, min_reps: int):
 
 
 def time_cuda(fn: Callable, *, reps: int = 5, warmup: int = 2, min_reps: int = 5,
-              device=None, setup: Callable | None = None) -> TimingResult:
+              device=None, setup: Callable | None = None, after_rep: Callable | None = None) -> TimingResult:
     """Time fn() on CUDA with per-rep CUDA events; synchronizes before and after each timed region.
 
     If `setup` is given, state = setup() runs before every warmup/rep OUTSIDE the timed region and the timed call
@@ -66,6 +66,8 @@ def time_cuda(fn: Callable, *, reps: int = 5, warmup: int = 2, min_reps: int = 5
         end.record()
         torch.cuda.synchronize(device)
         samples.append(float(start.elapsed_time(end)))
+        if after_rep:
+            after_rep()
     return TimingResult(samples=samples, unit="ms", reps=reps, warmup=warmup,
                         device=torch.cuda.get_device_name(device))
 

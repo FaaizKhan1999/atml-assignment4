@@ -89,3 +89,16 @@ def score_diagnostics(W: torch.Tensor, xnorm: torch.Tensor, sparsities=(0.25, 0.
 
 def xnorms_from_stats(stats: dict) -> dict[str, torch.Tensor]:
     return {q: torch.from_numpy(np.sqrt(v["sumsq"].astype(np.float64))).float() for q, v in stats.items()}
+
+
+def row_mask_k(score: torch.Tensor, k_rows: torch.Tensor) -> torch.Tensor:
+    """Prune-mask with a per-row count k_rows[r] (lowest scores; ties -> lower column index pruned first)."""
+    d_out, d_in = score.shape
+    k_rows = k_rows.to(score.device).long()
+    if k_rows.shape != (d_out,) or int(k_rows.min()) < 0 or int(k_rows.max()) > d_in:
+        raise ValueError("bad k_rows")
+    idx = torch.sort(score, dim=1, stable=True).indices
+    sel = torch.arange(d_in, device=score.device)[None, :] < k_rows[:, None]
+    m = torch.zeros_like(score, dtype=torch.bool)
+    m.scatter_(1, idx, sel)
+    return m

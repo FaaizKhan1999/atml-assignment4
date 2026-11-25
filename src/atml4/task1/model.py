@@ -98,3 +98,11 @@ class Pristine:
         for p in eligible_projections(self.model):
             if not torch.equal(p.module.weight.detach().cpu(), self.weights[p.qualname]):
                 raise RuntimeError(f"restoration mismatch at {p.qualname}")
+
+    def restore_layers(self, layers) -> None:
+        """Restore only the eligible weights of the given blocks (fast path for per-block probes)."""
+        ls = set(layers)
+        with torch.no_grad():
+            for p in eligible_projections(self.model):
+                if p.layer in ls:
+                    p.module.weight.copy_(self.weights[p.qualname].to(p.module.weight.device))

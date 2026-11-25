@@ -32,7 +32,10 @@ def gpu_state() -> str:
 
 
 @torch.no_grad()
-def measure(model, token_ids: list[int], device, reps: int = 5, warmup: int = 2, decode_steps: int = 64) -> dict:
+def measure(model, token_ids: list[int], device, reps: int = 5, warmup: int = 2, decode_steps: int = 64,
+            sampler=None) -> dict:
+    """sampler(): optional callable returning a dict (clocks/temperature/power), called right after every timed
+    rep (outside the timed region); samples are stored per measurement."""
     dev = torch.device(device)
     torch.cuda.set_device(dev)
     ids = torch.tensor(token_ids, dtype=torch.long, device=dev)[None]
@@ -40,8 +43,10 @@ def measure(model, token_ids: list[int], device, reps: int = 5, warmup: int = 2,
     for L in (512, 2048):
         x = ids[:, :L]
         reset_peak_memory(dev)
-        r = time_cuda(lambda: model(x, use_cache=True), reps=reps, warmup=warmup, device=dev)
-        out[f"prefill_{L}"] = {**r.to_dict(), **read_peak_memory(dev)}
+        log = []
+        r = time_cuda(lambda: model(x, use_cache=True), reps=reps, warmup=warmup, device=dev,
+                      after_rep=(lambda: log.append(sampler())) if sampler else None)
+        out[f"prefill_{L}"] = {**r.to_dict(), **read_peak_memory(dev), "per_rep_gpu": log}
 
     x = ids[:, :512]
 
@@ -57,8 +62,11 @@ def measure(model, token_ids: list[int], device, reps: int = 5, warmup: int = 2,
         return nxt
 
     reset_peak_memory(dev)
-    r = time_cuda(decode, setup=setup, reps=reps, warmup=warmup, device=dev)
+    log = []
+    r = time_cuda(decode, setup=setup, reps=reps, warmup=warmup, device=dev,
+                  after_rep=(lambda: log.append(sampler())) if sampler else None)
     d = r.to_dict()
+    d["per_rep_gpu"] = log
     d.update({"prefill_tokens_untimed": 512, "decode_steps": decode_steps,
               "ms_per_token_mean": r.mean / decode_steps, "ms_per_token_median": r.median / decode_steps,
               **read_peak_memory(dev)})

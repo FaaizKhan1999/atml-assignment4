@@ -204,3 +204,38 @@ def test_q2_outerr_unfolded_equivalent_is_exact(tiny):
     raw = calib.relative_output_error(tiny, batches, lambda q: folded.get(q))
     assert any(v["rel"] > 1e-3 for v in raw.values())  # the bug this guards against
     pr.verify()
+
+
+def test_apply_mixed_bits_and_layers(tiny):
+    pr = Pristine(tiny)
+    g = torch.Generator().manual_seed(9)
+    res = {}
+    for b in (4, 2):
+        res[b] = {"scales": {}}
+        for li in range(2):
+            for grp, d in (("qkv", 128), ("o", 128), ("gateup", 128), ("down", 256)):
+                res[b]["scales"][f"L{li}.{grp}.b{b}"] = (torch.rand(d, generator=g) + 0.5).half().numpy()
+    seen = []
+    awq.apply_quantized(tiny, None, [4, 2], on_matrix=lambda q, qr: seen.append((q, qr.bits)), res_by_bits=res)
+    assert {b for q, b in seen if ".layers.0." in q} == {4} and {b for q, b in seen if ".layers.1." in q} == {2}
+    pr.restore()
+    before = {p.qualname: p.module.weight.clone() for p in eligible_projections(tiny)}
+    awq.apply_quantized(tiny, None, [4, 2], layers=[1], res_by_bits=res)
+    for p in eligible_projections(tiny):
+        assert torch.equal(p.module.weight, before[p.qualname]) == (p.layer == 0)
+    pr.restore_layers([1])
+    pr.verify()
+
+
+def test_retime_sequence():
+    import importlib.util
+    from pathlib import Path
+
+    spec = importlib.util.spec_from_file_location("rt", Path(__file__).resolve().parents[1] / "scripts/task1_retime.py")
+    rt = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(rt)
+    conds = ["baseline"] + [f"c{i}" for i in range(17)]
+    seq = rt.sequence(conds)
+    fwd = seq[: len(seq) // 2]
+    assert seq == fwd + fwd[::-1] and len(fwd) == 24
+    assert [i for i, c in enumerate(fwd) if c == "baseline"] == [0, 4, 8, 12, 16, 20, 23]
