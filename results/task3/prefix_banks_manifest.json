@@ -1,0 +1,169 @@
+{
+ "meta": {
+  "timestamp_utc": "2026-11-25T17:59:36+00:00",
+  "command": "python3 scripts/build_prefix_banks.py --smoke-prompts 2 --max-hours 2.5",
+  "cwd": "/tmp/atml4_repo",
+  "hostname": "398283e07f20",
+  "kaggle": {
+   "kernel_slug": "focusedkognition/atml4-prefix-banks",
+   "run_type": "Batch"
+  },
+  "git": {
+   "commit": "214c0ac5a337ba052f8a1e5abd203be478bdbeb6",
+   "dirty": false,
+   "submodule_path": "external/atml-pa4-datasets",
+   "submodule_commit": "6a0a9ec9da7ef3d313ee3036cfec493886723644"
+  },
+  "versions": {
+   "python": "3.13.16",
+   "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+   "torch": "2.11.0+cu130",
+   "transformers": "4.57.1",
+   "huggingface_hub": "0.36.2",
+   "datasets": "4.8.5",
+   "numpy": "2.1.3",
+   "scipy": "1.16.3",
+   "peft": "0.21.2",
+   "accelerate": "1.15.0"
+  },
+  "cuda": {
+   "available": true,
+   "devices": [
+    {
+     "index": 0,
+     "name": "Tesla T4",
+     "capability": "7.5",
+     "total_memory_bytes": 15636037632
+    },
+    {
+     "index": 1,
+     "name": "Tesla T4",
+     "capability": "7.5",
+     "total_memory_bytes": 15636037632
+    }
+   ],
+   "torch_cuda_build": "13.0",
+   "cudnn": 92700,
+   "driver": "580.178.04"
+  },
+  "sdpa": {
+   "flash_sdp_enabled": true,
+   "mem_efficient_sdp_enabled": true,
+   "math_sdp_enabled": true,
+   "cudnn_sdp_enabled": true,
+   "is_flash_attention_available": true
+  },
+  "dtype": null,
+  "seed": 6304,
+  "models": [
+   {
+    "id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+   },
+   {
+    "id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+   }
+  ],
+  "extra": {
+   "course_setup_data_sha256": "c45a98382c426782de1c8c7d339dc142ddd62d0ef60868943b33ba6a05df618b",
+   "patch_diff": "--- a/scripts/setup_data.py\n+++ b/scripts/setup_data.py\n@@ -132,9 +132,10 @@\n         for j,(pid,prompt,domain) in enumerate(prompts):\n             ids=tok.apply_chat_template([{'role':'user','content':prompt}],tokenize=True,add_generation_prompt=True,return_tensors='pt').to('cuda')\n             gen=torch.Generator(device='cuda').manual_seed(6304+10007*j+(0 if which=='teacher' else 123))\n+            torch.manual_seed(gen.initial_seed()); torch.cuda.manual_seed_all(gen.initial_seed())\n             with torch.inference_mode():\n                 seq=model.generate(ids,max_new_tokens=192,do_sample=True,temperature=1.0,top_p=1.0,top_k=0,\n-                     generator=gen,pad_token_id=tok.eos_token_id)[0,ids.shape[1]:].tolist()\n+                     pad_token_id=tok.eos_token_id)[0,ids.shape[1]:].tolist()\n             rng=random.Random(f'PA4-banks-v1:6304:{pid}:{which}')\n             positions=[]\n             for lo,hi,n in [(1,16,8),(17,32,8),(33,64,16),(65,192,16)]:\n",
+   "data_lock": {
+    "c4": "1588ec454efa1a09f29cd18ddd04fe05fc8653a2",
+    "wikitext": "b08601e04326c79dfdd32d625aee71d232d685c3",
+    "hellaswag": "218ec52e09a7e7462a5400043bb9a69a41d06b76",
+    "gsm8k": "740312add88f781978c0658806c59bc2815b9866",
+    "model_base": "8faed761d45a263340a0528343f099c05c9a4323",
+    "model_target": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+    "model_draft": "7ae557604adf67be50417f59c2c2f167def9a775"
+   }
+  }
+ },
+ "payload": {
+  "smoke": {
+   "smoke_prompts": 2,
+   "loads": [
+    {
+     "model": "Qwen/Qwen2.5-1.5B-Instruct",
+     "s": 1.8794600310000078
+    },
+    {
+     "model": "Qwen/Qwen2.5-0.5B-Instruct",
+     "s": 1.1997516430000132
+    }
+   ],
+   "per_model": {
+    "Qwen/Qwen2.5-1.5B-Instruct": {
+     "gen_s": [
+      7.913154332999994,
+      6.669280216999994
+     ],
+     "tokens": [
+      192,
+      192
+     ]
+    },
+    "Qwen/Qwen2.5-0.5B-Instruct": {
+     "gen_s": [
+      9.08446644899999,
+      5.716573729000004
+     ],
+     "tokens": [
+      192,
+      192
+     ]
+    }
+   },
+   "mean_generate_s": {
+    "Qwen/Qwen2.5-1.5B-Instruct": 7.291217274999994,
+    "Qwen/Qwen2.5-0.5B-Instruct": 7.400520088999997
+   },
+   "load_s_total": 43.87608579800002,
+   "full_estimate_s": 1806.8845694779989,
+   "full_estimate_h": 0.5019123804105552,
+   "basis": "load time + 120 x mean generate() time per model from the smoke prompts (GSM8K math, the longest responses); short-form prompts likely end earlier, so closer to an upper bound",
+   "smoke_wall_s": 79.8773078918457,
+   "smoke_records": 192
+  },
+  "max_hours": 2.5,
+  "full_build": {
+   "wall_s": 843.9411218166351,
+   "records": 7649,
+   "prompts": 120,
+   "counts_bank_domain": {
+    "original_draft/math": 2880,
+    "original_draft/short": 1041,
+    "teacher/math": 2849,
+    "teacher/short": 879
+   },
+   "counts_bank_posbin": {
+    "original_draft/1-16": 786,
+    "original_draft/17-32": 641,
+    "original_draft/33-64": 1264,
+    "original_draft/65-192": 1230,
+    "teacher/1-16": 809,
+    "teacher/17-32": 645,
+    "teacher/33-64": 1228,
+    "teacher/65-192": 1046
+   },
+   "generate_calls": 240,
+   "generate_s_total": 837.4359231709991,
+   "loads": [
+    {
+     "model": "Qwen/Qwen2.5-1.5B-Instruct",
+     "s": 1.8794600310000078
+    },
+    {
+     "model": "Qwen/Qwen2.5-0.5B-Instruct",
+     "s": 1.1997516430000132
+    }
+   ],
+   "files": {
+    "data/prefix_banks/prefix_banks_locked.jsonl.gz": {
+     "sha256": "ece837a24d6afb7edcb7146080b73ee1ffc96f601380c3dbf26768019c4831cd",
+     "bytes": 144872
+    }
+   }
+  }
+ }
+}
