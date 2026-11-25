@@ -52,6 +52,12 @@ def find_prepared_data():
     return hits
 
 
+def find_prefix_banks():
+    """Locate prefix-bank output dirs from kernel_sources (dirs containing prefix_banks_locked.jsonl.gz)."""
+    root = Path("/kaggle/input")
+    return sorted({p.parent for p in root.rglob("prefix_banks_locked.jsonl.gz")}) if root.exists() else []
+
+
 run_meta = {"config": CONFIG, "start_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "nvidia_smi": capture("nvidia-smi"),
             "nvidia_smi_query": capture("nvidia-smi --query-gpu=index,name,memory.total,driver_version,"
@@ -72,6 +78,11 @@ try:
     for src in mounted:
         print(f"Merging prepared data from {src} into {data_dst}", flush=True)
         shutil.copytree(src, data_dst, dirs_exist_ok=True)
+    banks = find_prefix_banks()
+    run_meta["mounted_prefix_bank_dirs"] = [str(p) for p in banks]
+    for src in banks:
+        print(f"Merging prefix banks from {src} into {data_dst / 'prefix_banks'}", flush=True)
+        shutil.copytree(src, data_dst / "prefix_banks", dirs_exist_ok=True)
     env = dict(os.environ)
     env["PYTHONPATH"] = str(REPO / "src") + os.pathsep + env.get("PYTHONPATH", "")
     env["ATML4_KERNEL_SLUG"] = CONFIG["kernel_slug"]

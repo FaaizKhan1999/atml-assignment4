@@ -30,6 +30,9 @@ Role: implementation engineer. A separate reviewer writes instructions; the user
   - logical or packed bytes  vs  GPU-allocated bytes
   - theoretical arithmetic reduction  vs  measured speedup
   - fake-quantized FP16  vs  real low-bit execution
+- Shared-machine timing rule: when a kernel uses T4 x2 to run two jobs concurrently (cuda:0 / cuda:1), NO
+  latency/throughput measurement may run while the other GPU is busy. Timing runs get the machine to themselves,
+  and their result meta records this (`timing_exclusive: true` plus the other-GPU state).
 - GPU work runs only on Kaggle via `scripts/kaggle_run.py`. Log every run in `docs/gpu_ledger.md`
   (kernel, accelerator, wall time, purpose). Budget ~30 GPU-hours total: flag any job expected to take > 2 h
   before launching it.

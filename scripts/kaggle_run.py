@@ -29,7 +29,7 @@ RUNS = ROOT / "kaggle_runs"
 LEDGER = ROOT / "docs" / "gpu_ledger.md"
 TEMPLATE = ROOT / "kaggle" / "bootstrap_template.py"
 REPO_URL = "https://github.com/FaaizKhan1999/atml-assignment4.git"
-SYNC_EXT = {".json", ".jsonl", ".csv", ".gz"}
+SYNC_EXT = {".json", ".jsonl", ".csv", ".gz", ".npz"}
 SYNC_MAX_BYTES = 5 * 1024 * 1024
 TERMINAL = ("complete", "error", "cancel")
 
