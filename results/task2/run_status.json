@@ -1,0 +1,38 @@
+{
+ "commit": "d651facfb15e4b7271b15c091bea09037ee5829b",
+ "start": 1795643086.9191468,
+ "steps": [
+  {
+   "name": "partA_exclusive",
+   "rc": 0,
+   "seconds": 1227.7921104431152,
+   "note": "stream generation ran concurrently on CPU cores 1..n-1"
+  },
+  {
+   "name": "streams",
+   "rc": 0,
+   "seconds": 1227.7928853034973
+  },
+  {
+   "name": "pack_probe",
+   "rc": 0,
+   "procs_per_gpu": 1
+  },
+  {
+   "name": "training",
+   "rcs": [
+    0,
+    0
+   ],
+   "seconds": 1928.9110181331635,
+   "runs_done": 39,
+   "runs_failed": []
+  },
+  {
+   "name": "sweep_exclusive",
+   "rc": 0,
+   "seconds": 56.347700119018555
+  }
+ ],
+ "total_seconds": 3350.943626642227
+}
