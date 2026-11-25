@@ -222,3 +222,18 @@ def verify_rescaling(model, pristine, res: dict, bits: int, batch: torch.Tensor)
                         "max_abs_ref_logit": float(ref.abs().max()), "finite": bool(torch.isfinite(got).all())}
     pristine.verify()
     return out
+
+
+def unfolded_equivalent(res: dict, bits: int):
+    """For output-error measurement: map a FOLDED Q2 weight back to the operator it replaces.
+    down_proj stores Q(W_d diag(s_d)) and up_proj stores diag(1/s_d)*W_up_eff, so their isolated equivalents are
+    Q(W_d diag(s_d)) diag(1/s_d) and diag(s_d) W_up_eff. Other projections are returned unchanged."""
+    def eq(qualname: str, W: torch.Tensor) -> torch.Tensor:
+        li = int(qualname.split(".")[2])
+        if qualname.endswith("down_proj") or qualname.endswith("up_proj"):
+            sd = torch.from_numpy(res["scales"][f"L{li}.down.b{bits}"]).to(W.device).float()
+            if qualname.endswith("down_proj"):
+                return W.float() / sd[None, :]
+            return W.float() * sd[:, None]
+        return W
+    return eq

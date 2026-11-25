@@ -179,3 +179,28 @@ def test_search_and_conditions_end_to_end(tiny, tmp_path):
     pr.restore()
     conditions._XNORM = None
     np.testing.assert_equal(len(conditions.FIXED_CONDITIONS), 13)
+
+
+def test_q2_outerr_unfolded_equivalent_is_exact(tiny):
+    """With unquantized-equivalent scales, folded down/up weights map back to the original operators."""
+    from atml4.task1 import calib
+
+    pr = Pristine(tiny)
+    g = torch.Generator().manual_seed(7)
+    res = {"scales": {}}
+    for li in range(2):
+        for grp, d in (("qkv", 128), ("o", 128), ("gateup", 128), ("down", 256)):
+            res["scales"][f"L{li}.{grp}.b4"] = (torch.rand(d, generator=g) + 0.5).half().numpy()
+    W = {p.qualname: p.module.weight.detach().clone() for p in eligible_projections(tiny)}
+    folded = {}
+    for li in range(2):
+        sd = torch.from_numpy(res["scales"][f"L{li}.down.b4"]).float()
+        folded[f"model.layers.{li}.mlp.down_proj"] = W[f"model.layers.{li}.mlp.down_proj"] * sd[None, :]
+        folded[f"model.layers.{li}.mlp.up_proj"] = W[f"model.layers.{li}.mlp.up_proj"] / sd[:, None]
+    eq = awq.unfolded_equivalent(res, 4)
+    batches = [torch.randint(0, 97, (2, 16), generator=g)]
+    err = calib.relative_output_error(tiny, batches, lambda q: eq(q, folded[q]) if q in folded else None)
+    assert len(err) == 4 and all(v["rel"] < 1e-10 for v in err.values())
+    raw = calib.relative_output_error(tiny, batches, lambda q: folded.get(q))
+    assert any(v["rel"] > 1e-3 for v in raw.values())  # the bug this guards against
+    pr.verify()

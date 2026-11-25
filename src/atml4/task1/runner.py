@@ -56,13 +56,16 @@ def _merge_summary(path, new: dict, meta: dict) -> None:
     save_result(path, new, meta)
 
 
-def _output_error(model, pristine, recs, batch, dev) -> dict:
-    """Isolated relative output error of every compressed projection (dense inputs from pristine model)."""
+def _output_error(model, pristine, recs, batch, dev, equivalent=None) -> dict:
+    """Isolated relative output error of every compressed projection (dense inputs from pristine model).
+    equivalent(qualname, W') maps folded weights (Q2 down/up) to the operator they replace."""
     projs = eligible_projections(model)
     Wc = {p.qualname: p.module.weight.detach().clone() for p in projs}
+    eq = equivalent or (lambda q, w: w)
     pristine.restore(verify=False)
     try:
-        err = calib.relative_output_error(model, calib.calibration_batches(recs, batch, dev), lambda q: Wc[q])
+        err = calib.relative_output_error(model, calib.calibration_batches(recs, batch, dev),
+                                          lambda q: eq(q, Wc[q]))
     finally:
         with torch.no_grad():
             for p in projs:
@@ -197,7 +200,10 @@ def main(argv=None):
 
             if "outerr" in phases and cond != "baseline":
                 t = time.perf_counter()
-                summary["output_error"] = _output_error(model, pristine, calib_recs, a.calib_batch, dev)
+                summary["output_error"] = _output_error(model, pristine, calib_recs, a.calib_batch, dev,
+                                                        ctx.get("outerr_equivalent"))
+                if ctx.get("outerr_equivalent"):
+                    summary["output_error"]["folded_pairs"] = "down/up measured via unfolded equivalents"
                 torch.cuda.synchronize(dev)
                 cphase["output_error"] = time.perf_counter() - t
 

@@ -1,0 +1,84 @@
+{
+ "steps": [
+  {
+   "name": "pip_lm_eval",
+   "rc": 0,
+   "seconds": 15.613645792007446,
+   "cmd": [
+    "/usr/bin/python3",
+    "-m",
+    "pip",
+    "install",
+    "-q",
+    "lm-eval==0.4.13"
+   ]
+  },
+  {
+   "name": "lmeval_sidecheck",
+   "rc": 0,
+   "seconds": 205.7079451084137,
+   "cmd": [
+    "/usr/bin/python3",
+    "scripts/task1_lmeval_sidecheck.py",
+    "--device",
+    "cuda:0",
+    "--limit",
+    "100"
+   ]
+  },
+  {
+   "name": "parallel_quality",
+   "rc_A": 0,
+   "rc_B": 0,
+   "seconds": 4250.473062038422,
+   "cmd_A": "/usr/bin/python3 scripts/task1_pruning_stats.py --device cuda:0 && /usr/bin/python3 scripts/task1_eval.py --device cuda:0 --phases storage,outerr,ppl,hellaswag --timing-exclusive no --conditions p1_mag_s25 p1_mag_s50 p1_mag_s75 p2_wanda_s25 p2_wanda_s50 p2_wanda_s75 p2_wanda_2of4",
+   "cmd_B": "/usr/bin/python3 scripts/task1_eval.py --device cuda:1 --phases storage,outerr,ppl,hellaswag --timing-exclusive no --conditions q1_int8 q1_int4 q1_int3 q2_awq_int8 q2_awq_int4 q2_awq_int3"
+  },
+  {
+   "name": "timing_exclusive_cuda0",
+   "rc": 0,
+   "seconds": 452.97088146209717,
+   "cmd": [
+    "/usr/bin/python3",
+    "scripts/task1_eval.py",
+    "--device",
+    "cuda:0",
+    "--phases",
+    "timing",
+    "--timing-exclusive",
+    "yes",
+    "--conditions",
+    "p1_mag_s25",
+    "p1_mag_s50",
+    "p1_mag_s75",
+    "p2_wanda_s25",
+    "p2_wanda_s50",
+    "p2_wanda_s75",
+    "p2_wanda_2of4",
+    "q1_int8",
+    "q1_int4",
+    "q1_int3",
+    "q2_awq_int8",
+    "q2_awq_int4",
+    "q2_awq_int3"
+   ]
+  }
+ ],
+ "start": 1795632472.5724282,
+ "pip_changes_by_lm_eval": [
+  "DataProperty==1.1.1",
+  "evaluate==0.4.6",
+  "lm_eval==0.4.13",
+  "mbstrdecoder==1.1.5",
+  "pathvalidate==3.3.1",
+  "portalocker==4.4.2",
+  "pytablewriter==1.2.1",
+  "sacrebleu==2.6.0",
+  "sqlitedict==2.1.0",
+  "tabledata==1.3.5",
+  "tcolorpy==0.1.7",
+  "typepy==1.3.5",
+  "word2number==1.1"
+ ],
+ "total_seconds": 4926.780168056488
+}

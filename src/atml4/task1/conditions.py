@@ -190,6 +190,7 @@ def _q2(model, ctx, bits: int) -> dict:
     acc, on_matrix = _pack_checker(ctx, bits)
     t0 = time.perf_counter()
     info = awq.apply_quantized(model, res, bits, on_matrix=on_matrix)
+    ctx["outerr_equivalent"] = awq.unfolded_equivalent(res, bits)
     _sync()
     t_apply = time.perf_counter() - t0
     assert acc["matrices"] == len(eligible_projections(model))
