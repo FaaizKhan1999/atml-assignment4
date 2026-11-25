@@ -1,0 +1,31 @@
+# private material (assignment PDF, scratch)
+private/
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+# model weights / checkpoints (LoRA adapters must be force-added explicitly if small)
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.gguf
+checkpoints/
+# HF / dataset caches
+.cache/
+hf_cache/
+huggingface/
+# raw / prepared datasets (never commit)
+data/
+*.arrow
+*.parquet
+# Kaggle run outputs (only small results are synced into results/)
+kaggle_runs/
+kaggle/kernels/
+# misc
+.DS_Store
+*.log
+.claude/settings.local.json

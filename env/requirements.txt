@@ -1,0 +1,12 @@
+# Direct pins. torch is intentionally NOT pinned: the Kaggle image's torch is used and recorded
+# in env/ENVIRONMENT.md and every result's meta block.
+transformers==4.57.1
+huggingface_hub==0.36.2
+# from external/atml-pa4-datasets/requirements-public.txt
+datasets>=3,<5
+# project utilities
+numpy
+scipy
+matplotlib
+pyyaml
+pytest
