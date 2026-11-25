@@ -1,0 +1,434 @@
+{
+ "meta": {
+  "timestamp_utc": "2026-11-25T17:00:47+00:00",
+  "command": "python3 scripts/gpu_smoke.py",
+  "cwd": "/tmp/atml4_repo",
+  "hostname": "ea752f13ad51",
+  "kaggle": {
+   "kernel_slug": "focusedkognition/atml4-gpu-smoke",
+   "run_type": "Batch"
+  },
+  "git": {
+   "commit": "40daf270017e658e702b3b48b019ccb5e6d33e04",
+   "dirty": false,
+   "submodule_path": "external/atml-pa4-datasets",
+   "submodule_commit": "6a0a9ec9da7ef3d313ee3036cfec493886723644"
+  },
+  "versions": {
+   "python": "3.13.16",
+   "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+   "torch": "2.11.0+cu130",
+   "transformers": "4.57.1",
+   "huggingface_hub": "0.36.2",
+   "datasets": "4.8.5",
+   "numpy": "2.1.3",
+   "scipy": "1.16.3",
+   "peft": "0.21.2",
+   "accelerate": "1.15.0"
+  },
+  "cuda": {
+   "available": true,
+   "devices": [
+    {
+     "index": 0,
+     "name": "Tesla T4",
+     "capability": "7.5",
+     "total_memory_bytes": 15636037632
+    },
+    {
+     "index": 1,
+     "name": "Tesla T4",
+     "capability": "7.5",
+     "total_memory_bytes": 15636037632
+    }
+   ],
+   "torch_cuda_build": "13.0",
+   "cudnn": 92700,
+   "driver": "580.178.04"
+  },
+  "sdpa": {
+   "flash_sdp_enabled": true,
+   "mem_efficient_sdp_enabled": true,
+   "math_sdp_enabled": true,
+   "cudnn_sdp_enabled": true,
+   "is_flash_attention_available": true
+  },
+  "dtype": "torch.float16",
+  "seed": 6304,
+  "models": [
+   {
+    "id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+   }
+  ]
+ },
+ "payload": {
+  "nvidia_smi": "Wed Nov 25 17:00:45 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n| N/A   48C    P8             10W /   70W |       3MiB /  15360MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n| N/A   47C    P8             11W /   70W |       3MiB /  15360MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+\n",
+  "forward": {
+   "model": "Qwen/Qwen2.5-0.5B-Instruct",
+   "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+   "load_ms": 9475.619441,
+   "input_len": 36,
+   "logits_shape": [
+    1,
+    36,
+    151936
+   ],
+   "logits_dtype": "torch.float16",
+   "logits_finite": true,
+   "argmax_next_token": "2",
+   "attn_implementation": "sdpa",
+   "chat_template_text": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWhat is 2+3?<|im_end|>\n<|im_start|>assistant\n",
+   "max_memory_allocated_bytes": 1044178432,
+   "max_memory_reserved_bytes": 1096810496
+  },
+  "sdpa": {
+   "shape": [
+    2,
+    4,
+    1024,
+    64
+   ],
+   "dtype": "float16",
+   "is_causal": true,
+   "forced": {
+    "FLASH_ATTENTION": {
+     "ok": false,
+     "error": "RuntimeError: No available kernel. Aborting execution."
+    },
+    "EFFICIENT_ATTENTION": {
+     "ok": true,
+     "max_abs_err_vs_fp32": 0.0009026527404785156,
+     "fwd_ms": {
+      "samples": [
+       0.3123520016670227,
+       0.28300800919532776,
+       0.28672000765800476,
+       0.27852800488471985,
+       0.2735680043697357,
+       0.2805759906768799,
+       0.27673599123954773,
+       0.2863680124282837,
+       0.30163198709487915,
+       0.2738560140132904
+      ],
+      "unit": "ms",
+      "reps": 10,
+      "warmup": 3,
+      "device": "Tesla T4",
+      "mean": 0.2853344023227692,
+      "median": 0.2817919999361038,
+      "std": 0.012547979121552226,
+      "min": 0.2735680043697357,
+      "max": 0.3123520016670227
+     }
+    },
+    "CUDNN_ATTENTION": {
+     "ok": false,
+     "error": "RuntimeError: No available kernel. Aborting execution."
+    },
+    "MATH": {
+     "ok": true,
+     "max_abs_err_vs_fp32": 0.0009026527404785156,
+     "fwd_ms": {
+      "samples": [
+       2.7504959106445312,
+       2.7206718921661377,
+       2.728640079498291,
+       2.729408025741577,
+       2.7257280349731445,
+       2.7736639976501465,
+       2.7250239849090576,
+       2.722208023071289,
+       2.7130560874938965,
+       2.7261440753936768
+      ],
+      "unit": "ms",
+      "reps": 10,
+      "warmup": 3,
+      "device": "Tesla T4",
+      "mean": 2.7315040111541746,
+      "median": 2.7259360551834106,
+      "std": 0.0176349073112683,
+      "min": 2.7130560874938965,
+      "max": 2.7736639976501465
+     }
+    }
+   },
+   "default_fused_sdp_choice": "EFFICIENT_ATTENTION",
+   "default_profiled_kernels": [
+    "Activity Buffer Request",
+    "cudaDeviceSynchronize",
+    "cudaLaunchKernel",
+    "cudaStreamIsCapturing",
+    "fmha_cutlassF_f16_aligned_64x64_rf_sm75(PyTorchMemEffAttention::AttentionKernel<cutlass::half_t, cutlass::arch::Sm75, true, 64, 64, 64, true, true>::Params)"
+   ],
+   "default_backend_from_profile": "efficient"
+  },
+  "revision_consistency": {
+   "model_base": {
+    "configs": "8faed761d45a263340a0528343f099c05c9a4323",
+    "data_lock": "8faed761d45a263340a0528343f099c05c9a4323"
+   },
+   "model_target": {
+    "configs": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+    "data_lock": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+   },
+   "model_draft": {
+    "configs": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "data_lock": "7ae557604adf67be50417f59c2c2f167def9a775"
+   }
+  },
+  "prefix_bank_smoke": {
+   "runs": [
+    {
+     "limit": 2,
+     "rc": 1,
+     "seconds": 39.52,
+     "timestamped_log": [
+      [
+       8.51,
+       ""
+      ],
+      [
+       8.6,
+       "Generating train split:   0%|          | 0/7473 [00:00<?, ? examples/s]"
+      ],
+      [
+       8.6,
+       "Generating train split: 100%|██████████| 7473/7473 [00:00<00:00, 81863.86 examples/s]"
+      ],
+      [
+       8.6,
+       ""
+      ],
+      [
+       8.61,
+       "Generating test split:   0%|          | 0/1319 [00:00<?, ? examples/s]"
+      ],
+      [
+       8.61,
+       "Generating test split: 100%|██████████| 1319/1319 [00:00<00:00, 291479.82 examples/s]"
+      ],
+      [
+       8.62,
+       "Loading teacher"
+      ],
+      [
+       8.77,
+       "`torch_dtype` is deprecated! Use `dtype` instead!"
+      ],
+      [
+       11.94,
+       "WARNING: All log messages before absl::InitializeLog() is called are written to STDERR"
+      ],
+      [
+       11.94,
+       "I0000 00:00:1795626107.428424     156 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used."
+      ],
+      [
+       34.96,
+       "Traceback (most recent call last):"
+      ],
+      [
+       34.96,
+       "  File \"/tmp/atml4_repo/external/atml-pa4-datasets/scripts/setup_data.py\", line 163, in <module>"
+      ],
+      [
+       34.96,
+       "    if __name__=='__main__':main()"
+      ],
+      [
+       34.96,
+       "                            ~~~~^^"
+      ],
+      [
+       34.96,
+       "  File \"/tmp/atml4_repo/external/atml-pa4-datasets/scripts/setup_data.py\", line 162, in main"
+      ],
+      [
+       34.96,
+       "    if args.prefix_banks or args.all:prefix_banks(rev,args.force,args.limit_prefix_prompts)"
+      ],
+      [
+       34.96,
+       "                                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+      ],
+      [
+       34.96,
+       "  File \"/tmp/atml4_repo/external/atml-pa4-datasets/scripts/setup_data.py\", line 136, in prefix_banks"
+      ],
+      [
+       34.96,
+       "    seq=model.generate(ids,max_new_tokens=192,do_sample=True,temperature=1.0,top_p=1.0,top_k=0,"
+      ],
+      [
+       34.96,
+       "        ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+      ],
+      [
+       34.96,
+       "         generator=gen,pad_token_id=tok.eos_token_id)[0,ids.shape[1]:].tolist()"
+      ],
+      [
+       34.96,
+       "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+      ],
+      [
+       34.96,
+       "  File \"/usr/local/lib/python3.13/dist-packages/torch/utils/_contextlib.py\", line 124, in decorate_context"
+      ],
+      [
+       34.96,
+       "    return func(*args, **kwargs)"
+      ],
+      [
+       34.96,
+       "  File \"/usr/local/lib/python3.13/dist-packages/transformers/generation/utils.py\", line 2388, in generate"
+      ],
+      [
+       34.96,
+       "    self._validate_model_kwargs(model_kwargs.copy())"
+      ],
+      [
+       34.96,
+       "    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^"
+      ],
+      [
+       34.96,
+       "  File \"/usr/local/lib/python3.13/dist-packages/transformers/generation/utils.py\", line 1599, in _validate_model_kwargs"
+      ],
+      [
+       34.96,
+       "    raise ValueError("
+      ],
+      [
+       34.96,
+       "    ...<2 lines>..."
+      ],
+      [
+       34.96,
+       "    )"
+      ],
+      [
+       34.96,
+       "ValueError: The following `model_kwargs` are not used by the model: ['generator'] (note: typos in the generate arguments will also show up in this list)"
+      ]
+     ]
+    },
+    {
+     "limit": 4,
+     "rc": 1,
+     "seconds": 16.76,
+     "timestamped_log": [
+      [
+       6.82,
+       "Loading teacher"
+      ],
+      [
+       6.82,
+       "`torch_dtype` is deprecated! Use `dtype` instead!"
+      ],
+      [
+       9.86,
+       "WARNING: All log messages before absl::InitializeLog() is called are written to STDERR"
+      ],
+      [
+       9.86,
+       "I0000 00:00:1795626144.871082     234 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used."
+      ],
+      [
+       14.52,
+       "Traceback (most recent call last):"
+      ],
+      [
+       14.52,
+       "  File \"/tmp/atml4_repo/external/atml-pa4-datasets/scripts/setup_data.py\", line 163, in <module>"
+      ],
+      [
+       14.52,
+       "    if __name__=='__main__':main()"
+      ],
+      [
+       14.52,
+       "                            ~~~~^^"
+      ],
+      [
+       14.52,
+       "  File \"/tmp/atml4_repo/external/atml-pa4-datasets/scripts/setup_data.py\", line 162, in main"
+      ],
+      [
+       14.52,
+       "    if args.prefix_banks or args.all:prefix_banks(rev,args.force,args.limit_prefix_prompts)"
+      ],
+      [
+       14.52,
+       "                                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+      ],
+      [
+       14.52,
+       "  File \"/tmp/atml4_repo/external/atml-pa4-datasets/scripts/setup_data.py\", line 136, in prefix_banks"
+      ],
+      [
+       14.52,
+       "    seq=model.generate(ids,max_new_tokens=192,do_sample=True,temperature=1.0,top_p=1.0,top_k=0,"
+      ],
+      [
+       14.52,
+       "        ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+      ],
+      [
+       14.52,
+       "         generator=gen,pad_token_id=tok.eos_token_id)[0,ids.shape[1]:].tolist()"
+      ],
+      [
+       14.52,
+       "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+      ],
+      [
+       14.52,
+       "  File \"/usr/local/lib/python3.13/dist-packages/torch/utils/_contextlib.py\", line 124, in decorate_context"
+      ],
+      [
+       14.52,
+       "    return func(*args, **kwargs)"
+      ],
+      [
+       14.52,
+       "  File \"/usr/local/lib/python3.13/dist-packages/transformers/generation/utils.py\", line 2388, in generate"
+      ],
+      [
+       14.52,
+       "    self._validate_model_kwargs(model_kwargs.copy())"
+      ],
+      [
+       14.52,
+       "    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^"
+      ],
+      [
+       14.52,
+       "  File \"/usr/local/lib/python3.13/dist-packages/transformers/generation/utils.py\", line 1599, in _validate_model_kwargs"
+      ],
+      [
+       14.52,
+       "    raise ValueError("
+      ],
+      [
+       14.52,
+       "    ...<2 lines>..."
+      ],
+      [
+       14.52,
+       "    )"
+      ],
+      [
+       14.52,
+       "ValueError: The following `model_kwargs` are not used by the model: ['generator'] (note: typos in the generate arguments will also show up in this list)"
+      ]
+     ]
+    }
+   ],
+   "estimate": {}
+  }
+ }
+}
