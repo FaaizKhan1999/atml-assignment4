@@ -4,7 +4,9 @@
 Per condition: N / mean NLL / PPL per suite, HellaSwag acc & acc_norm (2000 where available, always first 512),
 paired deltas vs baseline, sparsity, packed bytes, output error. CIs: 2,000 resamples, seed 6304; PPL resamples
 whole windows and recomputes pooled NLL before exp; HellaSwag resamples examples. Extra contrasts: P2-P1 @50%,
-Q2-Q1 @INT4 and @INT3. Writes results/task1/summary_fixed.{csv,json}.
+Q2-Q1 @INT4 and @INT3, P3-P2 @50/75, Q3-Q2 at the INT4/INT3 budgets. Retimed latency (median of all reps and
+drift-adjusted ratio to the nearest baseline reference) from results/task1/retiming.json when present.
+Writes results/task1/summary_all.{csv,json}.
 """
 from __future__ import annotations
 
@@ -20,11 +22,14 @@ import numpy as np  # noqa: E402
 from atml4.common.io import load_jsonl_result, load_result, save_result  # noqa: E402
 from atml4.common.meta import collect_meta  # noqa: E402
 from atml4.common.stats import paired_bootstrap_diff, pooled_nll_bootstrap  # noqa: E402
-from atml4.task1.conditions import FIXED_CONDITIONS  # noqa: E402
+from atml4.task1.conditions import FIXED_CONDITIONS, NEW_CONDITIONS  # noqa: E402
 
 R = ROOT / "results/task1"
 SUITES = ("wikitext2", "c4")
-CONTRASTS = [("p2_wanda_s50", "p1_mag_s50"), ("q2_awq_int4", "q1_int4"), ("q2_awq_int3", "q1_int3")]
+CONTRASTS = [("p2_wanda_s50", "p1_mag_s50"), ("q2_awq_int4", "q1_int4"), ("q2_awq_int3", "q1_int3"),
+             ("p3_owl_s50", "p2_wanda_s50"), ("p3_owl_s75", "p2_wanda_s75"),
+             ("q3_mixed_b4", "q2_awq_int4"), ("q3_mixed_b3", "q2_awq_int3")]
+OUT = "summary_all"
 
 
 def windows(cond, suite):
@@ -70,7 +75,8 @@ def ci_str(c, scale=1.0, fmt="{:+.4f}"):
 
 
 def main():
-    conds = ["baseline"] + [c for c in FIXED_CONDITIONS if (R / c / "summary.json").exists()]
+    conds = ["baseline"] + [c for c in FIXED_CONDITIONS + NEW_CONDITIONS if (R / c / "summary.json").exists()]
+    rt = load_result(R / "retiming.json")[1]["per_condition"] if (R / "retiming.json").exists() else {}
     base_w = {s: windows("baseline", s) for s in SUITES}
     base_h = hs("baseline")
     out, csv_rows = {}, []
@@ -104,11 +110,18 @@ def main():
         }
         oe = s.get("output_error")
         rec["output_error_param_weighted"] = oe.get("param_weighted_mean_rel") if oe else None
-        lm = s.get("latency_memory", {})
-        rec["latency_ms_median"] = {k: lm[k]["median"] for k in ("prefill_512", "prefill_2048",
-                                                                  "decode_64_after_512") if k in lm}
-        rec["peak_alloc_bytes"] = {k: lm[k]["max_memory_allocated_bytes"] for k in
-                                   ("prefill_512", "prefill_2048", "decode_64_after_512") if k in lm}
+        keys = ("prefill_512", "prefill_2048", "decode_64_after_512")
+        if c in rt:
+            rec["latency_ms_median"] = {k: rt[c][k]["median_all_reps_ms"] for k in keys}
+            rec["latency_drift_adjusted_ratio"] = {k: rt[c][k]["drift_adjusted_ratio"] for k in keys}
+            rec["peak_alloc_bytes"] = {k: rt[c][k]["peak_alloc_bytes"] for k in keys}
+            rec["latency_source"] = "results/task1/retiming.json"
+        else:
+            lm = s.get("latency_memory", {})
+            rec["latency_ms_median"] = {k: lm[k]["median"] for k in keys if k in lm}
+            rec["latency_drift_adjusted_ratio"] = {}
+            rec["peak_alloc_bytes"] = {k: lm[k]["max_memory_allocated_bytes"] for k in keys if k in lm}
+            rec["latency_source"] = "superseded single-pass timing" if lm else None
         out[c] = rec
         hall = rec["hellaswag"]["all"] or {}
         h512 = rec["hellaswag"]["first_512"] or {}
@@ -134,6 +147,10 @@ def main():
             "prefill512_ms": rec["latency_ms_median"].get("prefill_512"),
             "prefill2048_ms": rec["latency_ms_median"].get("prefill_2048"),
             "decode64_ms": rec["latency_ms_median"].get("decode_64_after_512"),
+            "prefill512_ratio": rec["latency_drift_adjusted_ratio"].get("prefill_512"),
+            "prefill2048_ratio": rec["latency_drift_adjusted_ratio"].get("prefill_2048"),
+            "decode64_ratio": rec["latency_drift_adjusted_ratio"].get("decode_64_after_512"),
+            "peak_alloc_prefill2048": rec["peak_alloc_bytes"].get("prefill_2048"),
         })
     contrasts = {}
     for a, b in CONTRASTS:
@@ -146,14 +163,14 @@ def main():
                "bootstrap": {"resamples": 2000, "seed": 6304, "ppl_unit": "window (pooled NLL then exp)",
                              "hellaswag_unit": "example"}}
     meta = collect_meta(seed=6304)
-    save_result(R / "summary_fixed.json", payload, meta)
-    tmp = R / "summary_fixed.csv"
+    save_result(R / f"{OUT}.json", payload, meta)
+    tmp = R / f"{OUT}.csv"
     with open(tmp, "w", newline="") as f:
         f.write(f"# command: {meta['command']} | commit {meta['git']['commit']}\n")
         wr = csv.DictWriter(f, fieldnames=list(csv_rows[0]))
         wr.writeheader()
         wr.writerows(csv_rows)
-    print(f"{len(conds)} conditions -> {R / 'summary_fixed.csv'}")
+    print(f"{len(conds)} conditions -> {R / (OUT + '.csv')}")
     for r in csv_rows:
         print(r["condition"], f"wt2 {r['wt2_ppl']:.3f} {r['wt2_dppl_ci']}", f"c4 {r['c4_ppl']:.3f} {r['c4_dppl_ci']}",
               f"hs512n {r['hs512_acc_norm']}", r["hs2000_dacc_norm_pp_ci"])
