@@ -10,7 +10,7 @@ spec.loader.exec_module(kr)
 
 def test_ledger_running_total(tmp_path, monkeypatch):
     led = tmp_path / "gpu_ledger.md"
-    led.write_text((ROOT / "docs/gpu_ledger.md").read_text())
+    # fresh ledger: runner creates header + running total itself
     monkeypatch.setattr(kr, "LEDGER", led)
     row = dict(date="d", kernel="u/k", acc="2x Tesla T4", wall_h=0.5, gpu_h=0.5, status="ok", commit="a" * 40,
                purpose="p")
