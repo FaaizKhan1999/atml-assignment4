@@ -41,25 +41,28 @@ def _check(reps: int, min_reps: int):
         raise ValueError(f"reps={reps} < required minimum {min_reps}")
 
 
-def time_cuda(fn: Callable[[], object], *, reps: int = 5, warmup: int = 2, min_reps: int = 5,
-              device=None) -> TimingResult:
+def time_cuda(fn: Callable, *, reps: int = 5, warmup: int = 2, min_reps: int = 5,
+              device=None, setup: Callable | None = None) -> TimingResult:
     """Time fn() on CUDA with per-rep CUDA events; synchronizes before and after each timed region.
 
-    Returns raw per-rep milliseconds.
+    If `setup` is given, state = setup() runs before every warmup/rep OUTSIDE the timed region and the timed call
+    is fn(state). Returns raw per-rep milliseconds.
     """
     import torch
 
     _check(reps, min_reps)
+    call = (lambda s: fn(s)) if setup else (lambda s: fn())
     for _ in range(warmup):
-        fn()
+        call(setup() if setup else None)
     torch.cuda.synchronize(device)
     samples = []
     for _ in range(reps):
+        state = setup() if setup else None
         start = torch.cuda.Event(enable_timing=True)
         end = torch.cuda.Event(enable_timing=True)
         torch.cuda.synchronize(device)
         start.record()
-        fn()
+        call(state)
         end.record()
         torch.cuda.synchronize(device)
         samples.append(float(start.elapsed_time(end)))
@@ -67,15 +70,18 @@ def time_cuda(fn: Callable[[], object], *, reps: int = 5, warmup: int = 2, min_r
                         device=torch.cuda.get_device_name(device))
 
 
-def time_cpu(fn: Callable[[], object], *, reps: int = 5, warmup: int = 2, min_reps: int = 5) -> TimingResult:
-    """CPU fallback using time.perf_counter_ns. Returns raw per-rep milliseconds."""
+def time_cpu(fn: Callable, *, reps: int = 5, warmup: int = 2, min_reps: int = 5,
+             setup: Callable | None = None) -> TimingResult:
+    """CPU fallback using time.perf_counter_ns (same `setup` semantics as time_cuda). Raw per-rep ms."""
     _check(reps, min_reps)
+    call = (lambda s: fn(s)) if setup else (lambda s: fn())
     for _ in range(warmup):
-        fn()
+        call(setup() if setup else None)
     samples = []
     for _ in range(reps):
+        state = setup() if setup else None
         t0 = time.perf_counter_ns()
-        fn()
+        call(state)
         samples.append((time.perf_counter_ns() - t0) / 1e6)
     return TimingResult(samples=samples, unit="ms", reps=reps, warmup=warmup, device="cpu")
 

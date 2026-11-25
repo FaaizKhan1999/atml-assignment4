@@ -27,3 +27,10 @@ def test_time_fn_and_walltimer():
     with WallTimer() as t:
         time.sleep(0.003)
     assert t.ms >= 2.9
+
+
+def test_setup_not_timed():
+    calls = []
+    r = time_cpu(lambda s: calls.append(s), reps=5, warmup=1, setup=lambda: (time.sleep(0.01), "st")[1])
+    assert calls == ["st"] * 6
+    assert max(r.samples) < 5  # the 10 ms setup sleep is outside the timed region
