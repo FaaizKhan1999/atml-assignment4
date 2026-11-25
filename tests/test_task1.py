@@ -145,14 +145,17 @@ def test_storage_formulas():
     assert m["dense_fp16_eligible_bytes"] == 52 and m["nonzero_fraction"] == pytest.approx(20 / 26)
     # 4 x 300, 4-bit, g=128 -> 3 groups/row, padded to 384 cols; fp16 scale + 8-bit zero
     q = storage.quantized_matrix_bytes(4, 300, bits=4, group_size=128, scale_bits=16, zero_bits=8,
-                                       pad_columns_to_group=True, payload_align_bits=8, metadata_align_bits=8)
+                                       pad_columns_to_group=True, joint_bitstream=False, payload_align_bits=8,
+                                       metadata_align_bits=8)
     assert q["payload_bytes"] == 4 * 384 * 4 // 8 == 768
     assert q["metadata_bytes"] == 12 * 3 == 36 and q["n_groups"] == 12
     q2 = storage.quantized_matrix_bytes(3, 5, bits=3, group_size=128, scale_bits=16, zero_bits=3,
-                                        pad_columns_to_group=False, payload_align_bits=32, metadata_align_bits=8)
+                                        pad_columns_to_group=False, joint_bitstream=False, payload_align_bits=32,
+                                        metadata_align_bits=8)
     assert q2["payload_bytes"] == 8  # 45 bits -> 64
     assert q2["metadata_bytes"] == 8  # 3 groups x 19 bits = 57 -> 64
-    with pytest.raises(TypeError):
-        storage.quantized_matrix_bytes(4, 128, bits=4, group_size=128)  # no silent defaults
+    d = storage.quantized_matrix_bytes(4, 256, bits=3)  # convention defaults: 8 groups x (128*3+3+16) bits
+    assert d["total_bytes"] == -(-8 * 403 // 8) == 403 and d["n_groups"] == 8
+    assert storage.two_four_matrix_bytes(16)["total_bytes"] == 18
     st = storage.model_storage([10, 16], [(5, 2), (7, 4)])
     assert st.eligible_fp16_bytes == 52 and st.other_bytes == 38 and st.total_dense_fp16_bytes == 90

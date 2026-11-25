@@ -9,8 +9,8 @@ Conventions
   per weight plus 16 bits per nonzero value. Padding: the bitmask of EACH matrix is rounded up to whole bytes,
   i.e. mask_bytes = ceil(numel / 8); values are 2 bytes each so need no padding. No index/offset arrays.
 * Group-wise asymmetric b-bit quantized format (group size along input columns): see quantized_matrix_bytes.
-  Metadata dtypes/bit-widths, column padding and packing alignment are explicit arguments.
-  TODO(reviewer): defaults to be fixed in the Q1 prompt; until then every argument must be passed explicitly.
+  Defaults follow the fixed convention in docs/decisions.md (group 128, FP16 scale, b-bit zero-point, one
+  little-endian bitstream per matrix padded to a whole byte) and equal the real packer's output length.
 """
 from __future__ import annotations
 
@@ -34,17 +34,19 @@ def sparse16_matrix_bytes(numel: int, nnz: int) -> dict:
             "total_bytes": mask + values}
 
 
-def quantized_matrix_bytes(d_out: int, d_in: int, *, bits: int, group_size: int, scale_bits: int,
-                           zero_bits: int, pad_columns_to_group: bool, payload_align_bits: int,
-                           metadata_align_bits: int) -> dict:
+def quantized_matrix_bytes(d_out: int, d_in: int, *, bits: int, group_size: int = 128, scale_bits: int = 16,
+                           zero_bits: int | None = None, pad_columns_to_group: bool = True,
+                           joint_bitstream: bool = True, payload_align_bits: int = 8,
+                           metadata_align_bits: int = 8) -> dict:
     """Packed bytes of one d_out x d_in matrix quantized group-wise along input columns.
 
-    groups per row = ceil(d_in / group_size). If pad_columns_to_group, payload counts ceil(d_in/g)*g columns per
-    row (padded columns stored), else exactly d_in. The payload of the whole matrix is bit-packed contiguously
-    (row-major) and the total payload bit count is rounded up to a multiple of payload_align_bits. Each group
-    stores one scale (scale_bits) and one zero-point (zero_bits); the matrix metadata bit count is rounded up to a
-    multiple of metadata_align_bits. All arguments explicit (TODO(reviewer): defaults).
+    Defaults = fixed Task 1 convention (docs/decisions.md): group 128, FP16 scale (16 bits), b-bit zero-point
+    (zero_bits=None -> bits), padded columns stored, ONE bitstream per matrix (codes + zero-points + scales)
+    padded to a whole byte (joint_bitstream=True, payload_align_bits=8). With joint_bitstream=False payload and
+    metadata are aligned separately to payload_align_bits / metadata_align_bits.
+    groups per row = ceil(d_in / group_size).
     """
+    zero_bits = bits if zero_bits is None else zero_bits
     for name, v in [("bits", bits), ("group_size", group_size), ("payload_align_bits", payload_align_bits),
                     ("metadata_align_bits", metadata_align_bits)]:
         if v <= 0:
@@ -54,18 +56,36 @@ def quantized_matrix_bytes(d_out: int, d_in: int, *, bits: int, group_size: int,
     groups_per_row = math.ceil(d_in / group_size)
     cols = groups_per_row * group_size if pad_columns_to_group else d_in
     payload_bits = d_out * cols * bits
-    payload_bits_aligned = math.ceil(payload_bits / payload_align_bits) * payload_align_bits
     n_groups = d_out * groups_per_row
     meta_bits = n_groups * (scale_bits + zero_bits)
-    meta_bits_aligned = math.ceil(meta_bits / metadata_align_bits) * metadata_align_bits if meta_bits else 0
-    if payload_bits_aligned % 8 or meta_bits_aligned % 8:
-        raise ValueError("alignment must yield whole bytes (use multiples of 8 bits)")
-    payload = payload_bits_aligned // 8
-    meta = meta_bits_aligned // 8
-    return {"payload_bytes": payload, "metadata_bytes": meta, "total_bytes": payload + meta,
-            "n_groups": n_groups, "padding_bits": (payload_bits_aligned - d_out * d_in * bits)
-            + (meta_bits_aligned - meta_bits), "nominal_bits": bits,
-            "effective_bits_per_weight": 8 * (payload + meta) / (d_out * d_in)}
+    if joint_bitstream:
+        total_bits = math.ceil((payload_bits + meta_bits) / payload_align_bits) * payload_align_bits
+        if total_bits % 8:
+            raise ValueError("alignment must yield whole bytes")
+        total = total_bits // 8
+        payload, meta = payload_bits / 8, meta_bits / 8  # logical split (not separately byte-aligned)
+        pad_bits = total_bits - payload_bits - meta_bits
+    else:
+        pa = math.ceil(payload_bits / payload_align_bits) * payload_align_bits
+        ma = math.ceil(meta_bits / metadata_align_bits) * metadata_align_bits if meta_bits else 0
+        if pa % 8 or ma % 8:
+            raise ValueError("alignment must yield whole bytes (use multiples of 8 bits)")
+        payload, meta, total = pa // 8, ma // 8, (pa + ma) // 8
+        pad_bits = (pa - payload_bits) + (ma - meta_bits)
+    return {"payload_bytes": payload, "metadata_bytes": meta, "total_bytes": total, "n_groups": n_groups,
+            "padding_bits": pad_bits + (cols - d_in) * d_out * bits, "nominal_bits": bits,
+            "effective_bits_per_weight": 8 * total / (d_out * d_in)}
+
+
+def two_four_matrix_bytes(numel: int) -> dict:
+    """2:4 representation ESTIMATE: FP16 kept values (numel/2) + 2-bit position index per kept value,
+    padded per matrix to whole bytes. No sparse-tensor-core execution implied."""
+    if numel % 4:
+        raise ValueError("numel must be divisible by 4")
+    kept = numel // 2
+    bits = kept * (16 + 2)
+    return {"kept": kept, "value_bytes": 2 * kept, "index_bytes": math.ceil(kept * 2 / 8),
+            "total_bytes": math.ceil(bits / 8)}
 
 
 @dataclass
