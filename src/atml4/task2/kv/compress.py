@@ -26,7 +26,17 @@ from . import kvbytes as KB
 from . import kvquant as KQ
 
 METHODS = ("fp16", "sink_recent", "qaware", "int4_tok", "int4_chan", "hybrid")
-K_LAYOUT = {"int4_tok": "token", "int4_chan": "channel", "hybrid": "channel"}
+# SUPPLEMENTARY (zero-point sensitivity; NOT one of the five required compressed caches): the INT4 layouts with the
+# unclamped integer zero-point form (kvquant.quantize_groups_zp), same bytes, same trailing / running-group rules.
+SUPPLEMENTARY = ("int4_tok_zp", "int4_chan_zp")
+ALL_METHODS = METHODS + SUPPLEMENTARY
+INT4 = ("int4_tok", "int4_chan", "int4_tok_zp", "int4_chan_zp")
+K_LAYOUT = {"int4_tok": "token", "int4_chan": "channel", "hybrid": "channel", "int4_tok_zp": "token",
+            "int4_chan_zp": "channel"}
+
+
+def qform(method: str) -> str:
+    return "zp" if method.endswith("_zp") else "min_offset"
 
 
 @dataclass
@@ -94,13 +104,16 @@ def compress(method: str, Ks: list, Vs: list, cfg, scores: torch.Tensor | None =
         return Compressed(method, keys, vals, pos, _cat(parts), fb,
                           {"fp16_bytes": fb - KB.IDX * n, "index_bytes": KB.IDX * n, "n_kept": n, "budget": budget},
                           fp16_selected=pos)
-    if method in ("int4_tok", "int4_chan"):
+    if method in INT4:
         nq = (L // KB.G) * KB.G
         kl = K_LAYOUT[method]
+        form = qform(method)
         keys, vals, parts = [], [], []
+        nfb = 0
         for k, v in zip(Ks, Vs):
-            qk = KQ.quantize_tensor(k[0, :, :nq, :], kl, 4)
-            qv = KQ.quantize_tensor(v[0, :, :nq, :], "token", 4)
+            qk = KQ.quantize_tensor(k[0, :, :nq, :], kl, 4, form)
+            qv = KQ.quantize_tensor(v[0, :, :nq, :], "token", 4, form)
+            nfb += qk["zp_fallback_groups"] + qv["zp_fallback_groups"]
             keys.append(torch.cat([qk["x_hat"], k[0, :, nq:, :]], 1)[None])
             vals.append(torch.cat([qv["x_hat"], v[0, :, nq:, :]], 1)[None])
             parts += KQ.serialize_quant(qk) + KQ.serialize_quant(qv) + [KQ._u8(k[0, :, nq:, :]), KQ._u8(v[0, :, nq:, :])]
@@ -108,8 +121,9 @@ def compress(method: str, Ks: list, Vs: list, cfg, scores: torch.Tensor | None =
         fb = KB.m_b(L, C, 4) if kl == "channel" else KB.tokenwise_bytes(L, C, d, 4)
         assert fb == budget, "token-wise and channel-wise INT4 bytes must coincide (64 | d_h)"
         return Compressed(method, keys, vals, allpos, _cat(parts), fb,
-                          {"quantized_tokens": nq, "residual_fp16_tokens": L - nq, "budget": budget},
-                          running={"k_layout": kl, "bits": 4, "n_quantized": nq})
+                          {"quantized_tokens": nq, "residual_fp16_tokens": L - nq, "budget": budget,
+                           "quant_form": form, "zp_fallback_groups": nfb},
+                          running={"k_layout": kl, "bits": 4, "n_quantized": nq, "form": form})
     if method == "hybrid":
         f = KB.hybrid_f_max(budget, L, C, 2)
         sel = select_qaware(scores, f)
@@ -167,11 +181,11 @@ def deserialize(c: Compressed, cfg, L: int) -> tuple[list, list]:
         pos = buf[off:off + 2 * n].view(torch.int16).to(torch.int64) & 0xFFFF
         off += 2 * n
         assert torch.equal(pos, c.positions.to(pos.device))
-    elif c.method in ("int4_tok", "int4_chan"):
+    elif c.method in INT4:
         nq = (L // KB.G) * KB.G
         for _ in range(nl):
-            k, off = KQ.deserialize_quant(buf, off, (H, nq, d), K_LAYOUT[c.method], 4)
-            v, off = KQ.deserialize_quant(buf, off, (H, nq, d), "token", 4)
+            k, off = KQ.deserialize_quant(buf, off, (H, nq, d), K_LAYOUT[c.method], 4, qform(c.method))
+            v, off = KQ.deserialize_quant(buf, off, (H, nq, d), "token", 4, qform(c.method))
             keys.append(torch.cat([k, take_fp16(L - nq)], 1)[None])
             vals.append(torch.cat([v, take_fp16(L - nq)], 1)[None])
     elif c.method == "hybrid":
@@ -208,7 +222,7 @@ def deserialize(c: Compressed, cfg, L: int) -> tuple[list, list]:
 
 def reconstruction_error(c: Compressed, Ks: list, Vs: list) -> dict | None:
     """Relative Frobenius error of K and V separately over all L context positions (quantized layouts, hybrid)."""
-    if c.method not in ("int4_tok", "int4_chan", "hybrid"):
+    if c.method not in INT4 + ("hybrid",):
         return None
     out = {}
     for name, ref, rec in (("K", Ks, c.keys), ("V", Vs, c.values)):

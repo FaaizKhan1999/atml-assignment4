@@ -82,11 +82,50 @@ def dequant_groups(codes: torch.Tensor, scale: torch.Tensor, offset: torch.Tenso
     return offset.float()[..., None] + codes.float() * scale.float()[..., None]
 
 
-def quantize_tensor(X: torch.Tensor, layout: str, bits: int) -> dict:
-    """X [H, N, d] -> {codes, scale, offset, x_hat (fp16, X shape)}."""
-    c, s, o, xh = quantize_groups(_groups(X, layout), bits)
+ZP_MAX = 2048  # integers with |z| <= 2048 are exact in FP16
+
+
+def quantize_groups_zp(Gx: torch.Tensor, bits: int):
+    """SUPPLEMENTARY (zero-point sensitivity): unclamped integer zero-point form (0 exactly representable).
+    s = FP16(max((x_max - x_min)/(2^b-1), 2^-24)); z = round(-x_min/s) NOT clamped, stored as an FP16 integer in the
+    offset field; q = clamp(round(x/s) + z, 0, 2^b-1); x_hat = s (q - z). Fallback: a group with |z| > 2048 uses the
+    min/offset form (quantize_groups) and is flagged by storing its scale with the sign bit set (scales are otherwise
+    positive), so the metadata stay exactly FP16 scale + FP16 offset field (4 bytes). Returns codes, signed scale,
+    field, x_hat, number of fallback groups."""
+    x = Gx.float()
+    qmax = 2 ** bits - 1
+    xmin, xmax = x.amin(-1), x.amax(-1)
+    s = ((xmax - xmin) / qmax).clamp(min=S_MIN).half()
+    sf = s.float()
+    z = torch.round(-xmin / sf)
+    q = torch.clamp(torch.round(x / sf[..., None]) + z[..., None], 0, qmax)
+    xh = (q - z[..., None]) * sf[..., None]
+    fb = z.abs() > ZP_MAX
+    c2, s2, o2, xh2 = quantize_groups(Gx, bits)
+    codes = torch.where(fb[..., None], c2, q.to(torch.uint8))
+    scale = torch.where(fb, -s2, s)
+    field = torch.where(fb, o2, z.half())
+    xh = torch.where(fb[..., None], xh2, xh)
+    return codes, scale, field, xh, int(fb.sum())
+
+
+def dequant_groups_zp(codes, scale, field):
+    sf = scale.float()
+    fb = sf < 0
+    zp = (codes.float() - field.float()[..., None]) * sf[..., None]
+    mo = field.float()[..., None] + codes.float() * (-sf)[..., None]
+    return torch.where(fb[..., None], mo, zp)
+
+
+def quantize_tensor(X: torch.Tensor, layout: str, bits: int, form: str = "min_offset") -> dict:
+    """X [H, N, d] -> {codes, scale, offset, x_hat (fp16, X shape)}; form 'min_offset' (primary) or 'zp'
+    (supplementary zero-point sensitivity)."""
+    if form == "zp":
+        c, s, o, xh, nfb = quantize_groups_zp(_groups(X, layout), bits)
+    else:
+        (c, s, o, xh), nfb = quantize_groups(_groups(X, layout), bits), 0
     return {"codes": c, "scale": s, "offset": o, "x_hat": _ungroup(xh, layout, X.shape).half(), "layout": layout,
-            "bits": bits, "shape": tuple(X.shape)}
+            "bits": bits, "shape": tuple(X.shape), "form": form, "zp_fallback_groups": nfb}
 
 
 def pack(codes: torch.Tensor, bits: int) -> torch.Tensor:
@@ -116,7 +155,8 @@ def serialize_quant(q: dict) -> list[torch.Tensor]:
     return [pack(q["codes"], q["bits"]), _u8(q["scale"]), _u8(q["offset"])]
 
 
-def deserialize_quant(buf: torch.Tensor, off: int, shape, layout: str, bits: int) -> tuple[torch.Tensor, int]:
+def deserialize_quant(buf: torch.Tensor, off: int, shape, layout: str, bits: int,
+                      form: str = "min_offset") -> tuple[torch.Tensor, int]:
     H, N, d = shape
     ng = (H * (N // G) * d) if layout == "channel" else (H * N * (d // G))
     nb = ng * G * bits // 8
@@ -127,5 +167,6 @@ def deserialize_quant(buf: torch.Tensor, off: int, shape, layout: str, bits: int
     offset = buf[off:off + 2 * ng].view(torch.float16)
     off += 2 * ng
     gshape = (H, N // G, d, G) if layout == "channel" else (H, N, d // G, G)
-    xh = dequant_groups(codes.view(gshape), scale.view(gshape[:-1]), offset.view(gshape[:-1]))
+    deq = dequant_groups_zp if form == "zp" else dequant_groups
+    xh = deq(codes.view(gshape), scale.view(gshape[:-1]), offset.view(gshape[:-1]))
     return _ungroup(xh, layout, shape).half(), off

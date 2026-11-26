@@ -31,11 +31,12 @@ def kl(p_logits: torch.Tensor, q_logits: torch.Tensor) -> float:
 
 
 def _after(c: CP.Compressed):
-    return RunningQuant(c.running["k_layout"], c.running["bits"], c.running["n_quantized"]) if c.running else None
+    return RunningQuant(c.running["k_layout"], c.running["bits"], c.running["n_quantized"],
+                        c.running.get("form", "min_offset")) if c.running else None
 
 
 @torch.no_grad()
-def evaluate_prompt(model, tok, p: Prompt, device, methods=CP.METHODS, verify_serialization: bool = True) -> dict:
+def evaluate_prompt(model, tok, p: Prompt, device, methods=CP.ALL_METHODS, verify_serialization: bool = True) -> dict:
     cfg = model.config
     C = KB.channels(cfg)
     eos = eos_ids(model, tok)
@@ -93,6 +94,10 @@ def evaluate_prompt(model, tok, p: Prompt, device, methods=CP.METHODS, verify_se
              "recon_error": CP.reconstruction_error(c, Ks, Vs), "untimed_compress_s": t_comp}
         if c.running:
             r["groups_quantized_during_decode"] = run.groups_quantized_during_decode
+            r["zp_fallback_groups_context"] = c.breakdown.get("zp_fallback_groups", 0)
+            r["zp_fallback_groups_decode"] = run.zp_fallback_groups
+        if m in CP.SUPPLEMENTARY:
+            r["label"] = "supplementary: zero-point sensitivity"
         if m in ("sink_recent", "qaware", "hybrid"):
             r["fp16_selection_rle"] = rle(sel, L)
         rec["methods"][m] = r

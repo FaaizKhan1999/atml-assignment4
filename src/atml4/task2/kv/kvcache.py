@@ -56,9 +56,10 @@ class RunningQuant:
     """New tokens stay FP16 until a complete 64-token group forms (physical positions [n_q, n_q + 64)), then that
     group is quantized in place with the layout's K/V grouping (V token-wise). Used by the INT4 layouts only."""
 
-    def __init__(self, k_layout: str, bits: int, n_quantized: int):
-        self.k_layout, self.bits, self.n_q = k_layout, bits, n_quantized
+    def __init__(self, k_layout: str, bits: int, n_quantized: int, form: str = "min_offset"):
+        self.k_layout, self.bits, self.n_q, self.form = k_layout, bits, n_quantized, form
         self.groups_quantized_during_decode = 0
+        self.zp_fallback_groups = 0
 
     @torch.no_grad()
     def __call__(self, cache: DynamicCache):
@@ -67,8 +68,10 @@ class RunningQuant:
             a, b = self.n_q, self.n_q + KQ.G
             for layer in cache.layers:
                 k, v = layer.keys, layer.values
-                k[0, :, a:b, :] = KQ.quantize_tensor(k[0, :, a:b, :], self.k_layout, self.bits)["x_hat"]
-                v[0, :, a:b, :] = KQ.quantize_tensor(v[0, :, a:b, :], "token", self.bits)["x_hat"]
+                qk = KQ.quantize_tensor(k[0, :, a:b, :], self.k_layout, self.bits, self.form)
+                qv = KQ.quantize_tensor(v[0, :, a:b, :], "token", self.bits, self.form)
+                k[0, :, a:b, :], v[0, :, a:b, :] = qk["x_hat"], qv["x_hat"]
+                self.zp_fallback_groups += qk["zp_fallback_groups"] + qv["zp_fallback_groups"]
             self.n_q = b
             self.groups_quantized_during_decode += 1
 

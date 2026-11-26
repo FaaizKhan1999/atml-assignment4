@@ -203,7 +203,7 @@ def _kv(L, seed=0):
 
 
 @pytest.mark.parametrize("L", [700, 901, 1100])
-@pytest.mark.parametrize("method", CP.METHODS)
+@pytest.mark.parametrize("method", CP.ALL_METHODS)
 def test_serialized_length_and_roundtrip(L, method):
     Ks, Vs = _kv(L)
     scores = torch.rand(L)
@@ -212,7 +212,7 @@ def test_serialized_length_and_roundtrip(L, method):
     assert c.nbytes == c.formula_bytes
     if method != "fp16":
         assert c.nbytes <= KB.m_b(L, C, 4)
-    if method in ("int4_tok", "int4_chan"):
+    if method in CP.INT4:
         assert c.nbytes == KB.m_b(L, C, 4)
     kk, vv = CP.deserialize(c, _TinyCfg, L)
     assert all(torch.equal(a, b) for a, b in zip(kk, c.keys))
@@ -365,3 +365,28 @@ def test_bench_encode_decode_roundtrip():
             kl = "token" if kind == "int4_tok" else "channel"
             assert torch.equal(k, KQ.quantize_tensor(src_k, kl, bits)["x_hat"])
             assert torch.equal(v, KQ.quantize_tensor(src_v, "token", bits)["x_hat"])
+
+
+def test_zp_form_supplementary():
+    # group containing 0: identical to the original (clamped) Task 1 form; groups not containing 0: no collapse
+    x = torch.tensor([[-3.0, -1.0, 0.0, 2.0, 5.0] + [1.0] * 59, list(torch.linspace(100, 110, 64))])
+    c, s, f, xh, nfb = KQ.quantize_groups_zp(x, 4)
+    assert nfb == 0 and float(s.min()) > 0
+    assert float((xh[1] - x[1]).abs().max()) <= float(s[1]) / 2 + 1e-4  # no collapse
+    assert torch.equal(KQ.dequant_groups_zp(c, s, f), xh)
+    # |z| > 2048 -> min/offset fallback flagged by a negative stored scale
+    y = (torch.linspace(0, 0.01, 64) + 1000.0)[None]
+    c, s, f, xh, nfb = KQ.quantize_groups_zp(y, 4)
+    assert nfb == 1 and float(s[0]) < 0
+    assert torch.equal(KQ.dequant_groups_zp(c, s, f), xh) and float((xh - y).abs().max()) < 0.01
+
+
+def test_zp_serialization_roundtrip_with_fallback():
+    g = torch.Generator().manual_seed(1)
+    X = torch.randn(2, 128, 64, generator=g).half()
+    X[0, :64, 3] = 1000.0 + torch.rand(64, generator=g).half() * 0.01  # forces a fallback channel group
+    q = KQ.quantize_tensor(X, "channel", 4, "zp")
+    assert q["zp_fallback_groups"] >= 1
+    buf = torch.cat(KQ.serialize_quant(q))
+    xh, off = KQ.deserialize_quant(buf, 0, (2, 128, 64), "channel", 4, "zp")
+    assert off == buf.numel() and torch.equal(xh, q["x_hat"])

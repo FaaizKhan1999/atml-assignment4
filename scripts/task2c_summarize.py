@@ -16,9 +16,13 @@ from atml4.common.stats import paired_bootstrap_diff  # noqa: E402
 from atml4.task2.kv import prompts as PR  # noqa: E402
 
 R = ROOT / "results/task2/partC"
-METHODS = ("fp16", "sink_recent", "qaware", "int4_tok", "int4_chan", "hybrid")
-CONTRASTS = [(m, "fp16") for m in METHODS[1:]] + [("qaware", "sink_recent"), ("int4_chan", "int4_tok"),
-                                                   ("hybrid", "qaware"), ("hybrid", "int4_chan")]
+REQUIRED = ("fp16", "sink_recent", "qaware", "int4_tok", "int4_chan", "hybrid")
+SUPPLEMENTARY = ("int4_tok_zp", "int4_chan_zp")  # "supplementary: zero-point sensitivity" (not a required cache)
+METHODS = REQUIRED + SUPPLEMENTARY
+CONTRASTS = [(m, "fp16") for m in REQUIRED[1:]] + [("qaware", "sink_recent"), ("int4_chan", "int4_tok"),
+                                                     ("hybrid", "qaware"), ("hybrid", "int4_chan")]
+SUPP_CONTRASTS = [("int4_tok_zp", "int4_tok"), ("int4_chan_zp", "int4_chan"), ("int4_tok_zp", "fp16"),
+                  ("int4_chan_zp", "fp16")]
 ALIGNED = [(2048, "middle", 8), (4096, "start", 8), (4096, "middle", 2)]
 
 
@@ -56,12 +60,16 @@ def main():
                "shared_decode_fp16_bytes_mean": mean([xi["shared_decode_fp16_bytes"] for xi in x]),
                "total_live_bytes_end_mean": mean([xi["total_live_bytes_end"] for xi in x]),
                "no_answer": sum(xi["answer"] is None for xi in x),
+               "label": "supplementary: zero-point sensitivity" if m in SUPPLEMENTARY else "required",
                "all_finite": all(xi["all_finite"] for xi in x)}
         if x[0]["recon_error"]:
             rec["recon_rel_fro"] = {k: mean([xi["recon_error"][k]["mean"] for xi in x]) for k in ("K", "V")}
             rec["recon_rel_fro_per_layer"] = {k: [mean([xi["recon_error"][k]["per_layer"][l] for xi in x])
                                                   for l in range(len(x[0]["recon_error"][k]["per_layer"]))]
                                               for k in ("K", "V")}
+        if m in SUPPLEMENTARY:
+            rec["zp_fallback_groups_total"] = {"context": sum(xi.get("zp_fallback_groups_context", 0) for xi in x),
+                                               "decode": sum(xi.get("zp_fallback_groups_decode", 0) for xi in x)}
         if m in ("sink_recent", "qaware"):
             rec["n_kept_range"] = [min(xi["breakdown"]["n_kept"] for xi in x), max(xi["breakdown"]["n_kept"] for xi in x)]
         if m == "hybrid":
@@ -70,7 +78,7 @@ def main():
             rec["residual_fp16_range"] = [min(xi["breakdown"]["residual_fp16"] for xi in x),
                                           max(xi["breakdown"]["residual_fp16"] for xi in x)]
         table[m] = rec
-        csv_rows.append({"method": m, "accuracy": rec["accuracy"], "cond_accuracy": rec["conditional_accuracy_on_fp16_correct"],
+        csv_rows.append({"method": m if m in REQUIRED else f"{m} (supplementary: zero-point sensitivity)", "accuracy": rec["accuracy"], "cond_accuracy": rec["conditional_accuracy_on_fp16_correct"],
                          "ref_nll": rec["ref_answer_nll_mean"], "kl_mean": rec["kl_first_token_mean"],
                          "evidence_retained": rec["evidence_retained_fp16_mean"], "packed_bytes": rec["packed_bytes_mean"],
                          "frac_M16": rec["fraction_of_M16"]["mean"]})
@@ -88,8 +96,8 @@ def main():
     breakdown["cells_descriptive"] = {k: {m: mean([r["methods"][m]["correct"] for r in v]) for m in METHODS}
                                       for k, v in cells.items()}
     contrasts = {}
-    for a, b in CONTRASTS:
-        contrasts[f"{a}-{b}"] = {
+    for a, b in CONTRASTS + SUPP_CONTRASTS:
+        contrasts[f"{a}-{b}" + (" [supplementary: zero-point sensitivity]" if (a, b) in SUPP_CONTRASTS else "")] = {
             "accuracy": paired_bootstrap_diff([r["methods"][a]["correct"] for r in rows],
                                               [r["methods"][b]["correct"] for r in rows], unit="prompt"),
             "ref_answer_nll": paired_bootstrap_diff([r["methods"][a]["ref_nll_sum"] for r in rows],
