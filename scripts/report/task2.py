@@ -145,6 +145,46 @@ def trained_cell(g):
     return f"{parts[1]}_{'mixed' if parts[2] == 'curriculum' else parts[2]}"
 
 
+SEL16 = [("dense_K16_mixed", "dense mixed", MECH["dense"], "-"), ("dense_K16_near", "dense near", MECH["dense"], ":"),
+         ("window_K16_near", "window near", MECH["window"], ":"), ("window_K16_mixed", "window mixed", MECH["window"], "-"),
+         ("window_K16_curriculum", "curriculum", MECH["curriculum"], "-"), ("linear_K16_mixed", "linear", MECH["linear"], "-"),
+         ("dilated_K16_mixed", "dilated", MECH["dilated"], "-")]
+
+
+def _curve(ax, v, col, ls, lab):
+    """mean dev accuracy on the trained cell over seeds, shaded min-max seed range."""
+    v = v["dev_curve_trained_cell"]
+    xs = [int(u) for u in v]
+    ax.plot(xs, [v[str(u)]["mean"] for u in xs], color=col, ls=ls, lw=0.8, label=lab)
+    ax.fill_between(xs, [min(v[str(u)]["values"]) for u in xs], [max(v[str(u)]["values"]) for u in xs], color=col,
+                    alpha=0.12, lw=0)
+
+
+def figA_curves():
+    """all trained groups' dev curves, one panel per training K (moved out of fig4(b))."""
+    w, h = 5.5, 1.6
+    G = R.load(f"{PB}/summary.json")["groups"]
+    f = R.fig(w, h)
+    axs = f.subplots(1, 3, sharey=True)
+    for ax, K, l in zip(axs, (4, 8, 16), "abc"):
+        for g in sorted(G):
+            arch, k_, dist = g.split("_")
+            if int(k_[1:]) != K:
+                continue
+            mech = "curriculum" if dist == "curriculum" else arch
+            lab = "curriculum" if dist == "curriculum" else f"{arch} {dist}"
+            _curve(ax, G[g], MECH[mech], ":" if dist == "near" else "-", lab)
+        ax.set_title(f"trained K={K}", fontsize=R.SMALL, pad=2)
+        ax.set_xlabel("update")
+        ax.set_ylim(-0.05, 1.55)
+        ax.set_yticks([0, 0.5, 1.0])
+        ax.legend(ncol=2 if K != 16 else 3, fontsize=4.8, loc="upper center", handlelength=1.2, columnspacing=0.4,
+                  borderaxespad=0.1)
+        R.panel(ax, l)
+    axs[0].set_ylabel("dev acc. (trained cell)")
+    R.record(R.save(f, 2, "figA_t2_curves.pdf", w, h), S, [f"{PB}/summary.json"])
+
+
 def fig4():
     w, h = 5.5, 2.45
     G = R.load(f"{PB}/summary.json")["groups"]
@@ -165,31 +205,16 @@ def fig4():
     a.set_xticks(range(9), [c_.replace("_", " ") for c_ in CELLS], rotation=60, ha="right", fontsize=5.5)
     a.set_yticks(range(len(GROUP_ROWS)), [l for _, l in GROUP_ROWS], fontsize=5.5)
     a.tick_params(length=0)
-    lsK = {4: ":", 8: "--", 16: "-"}
-    for g, v in G.items():
-        arch, K = g.split("_")[0], int(g.split("_")[1][1:])
-        mech = "curriculum" if "curriculum" in g else arch
-        xs = [int(u) for u in v["dev_curve_trained_cell"]]
-        mean = [v["dev_curve_trained_cell"][str(u)]["mean"] for u in xs]
-        lo = [min(v["dev_curve_trained_cell"][str(u)]["values"]) for u in xs]
-        hi = [max(v["dev_curve_trained_cell"][str(u)]["values"]) for u in xs]
-        b.plot(xs, mean, color=MECH[mech], ls=lsK[K], lw=0.8)
-        b.fill_between(xs, lo, hi, color=MECH[mech], alpha=0.12, lw=0)
+    for g, lab, col, ls in SEL16:
+        _curve(b, G[g], col, ls, lab)
     b.set_xlabel("update")
     b.set_ylabel("dev acc. (trained cell)")
-    b.set_ylim(0, 1.5)
+    b.set_ylim(-0.05, 1.55)
     b.set_yticks([0, 0.5, 1.0])
-    hs = [Line2D([], [], color=col, lw=1) for col in MECH.values()] + [Line2D([], [], color="k", ls=l, lw=0.8)
-                                                                        for l in lsK.values()]
-    b.legend(hs, list(MECH) + [f"K={k}" for k in lsK], ncol=4, fontsize=5.0, loc="upper center", columnspacing=0.5,
-             handlelength=1.3, borderaxespad=0.1)
+    b.legend(ncol=4, fontsize=5.0, loc="upper center", handlelength=1.2, columnspacing=0.5, borderaxespad=0.1)
     bins = ["[0,32)", "[32,64)", "[64,128)", "[128,256)"]
     mids = [16, 48, 96, 192]
-    sel = [("dense_K16_mixed", "dense mixed", MECH["dense"], "-"), ("dense_K16_near", "dense near", MECH["dense"], ":"),
-           ("window_K16_near", "window near", MECH["window"], ":"), ("window_K16_mixed", "window mixed", MECH["window"], "-"),
-           ("window_K16_curriculum", "curriculum", MECH["curriculum"], "-"), ("linear_K16_mixed", "linear", MECH["linear"], "-"),
-           ("dilated_K16_mixed", "dilated", MECH["dilated"], "-")]
-    for g, lab, col, ls in sel:
+    for g, lab, col, ls in SEL16:
         ys = [G[g]["dist_bins"]["K16_mixed"][bb]["mean"] for bb in bins]
         c.plot(mids, ys, color=col, ls=ls, marker="o", ms=2, lw=0.8, label=lab)
     c.axvline(126, color=R.OI["grey"], lw=0.6, ls="--")
@@ -276,9 +301,9 @@ def figA_curriculum():
     for ax in (a, b):
         ax.axvspan(0, 1500, color=R.OI["sky"], alpha=0.12, lw=0)
         ax.axvspan(1500, 3000, color=R.OI["yellow"], alpha=0.15, lw=0)
-    a.text(750, 1.02, "near only", ha="center", fontsize=5.5)
-    a.text(2250, 1.02, "ramp", ha="center", fontsize=5.5)
-    a.text(3750, 1.02, "mixed", ha="center", fontsize=5.5)
+    a.text(750, 1.06, "near only", ha="center", fontsize=5.5)
+    a.text(2250, 1.06, "ramp", ha="center", fontsize=5.5)
+    a.text(3750, 1.06, "mixed", ha="center", fontsize=5.5)
     for g, lab, col in (("window_K16_curriculum", "curriculum", MECH["curriculum"]),
                         ("window_K16_mixed", "window mixed", MECH["window"]),
                         ("window_K16_near", "window near", R.OI["sky"])):
@@ -289,19 +314,21 @@ def figA_curriculum():
                        alpha=0.15, lw=0)
     a.set_xlabel("update")
     a.set_ylabel("dev acc. (own trained cell)")
-    a.set_ylim(0, 1.1)
-    a.legend(fontsize=5.5, loc="center right")
+    a.set_ylim(0, 1.15)
+    a.legend(fontsize=5.5, loc="center right", bbox_to_anchor=(1.0, 0.62), ncol=1, columnspacing=0.8, handlelength=1.4)
     for s in (6304, 6305, 6306):
         r = R.load(f"{PB}/runs/window_K16_curriculum_s{s}.json")
         xs = [d["update"] for d in r["dev_curve"]]
         for cell, col in (("K16_near", R.OI["blue"]), ("K16_mixed", R.OI["verm"]), ("K16_far", R.OI["grey"])):
-            b.plot(xs, [d["dev"][cell]["acc"] for d in r["dev_curve"]], color=col, lw=0.6, alpha=0.8,
-                   label=cell.replace("_", " ") if s == 6304 else None)
+            b.plot(xs, [d["dev"][cell]["acc"] for d in r["dev_curve"]], color=col, lw=0.6, alpha=0.8)
     b.axhline(0.501, color=R.OI["verm"], ls=":", lw=0.6)
+    CURR_CELLS = (("K16 near", R.OI["blue"]), ("K16 mixed", R.OI["verm"]), ("K16 far", R.OI["grey"]))
     b.set_xlabel("update")
     b.set_ylabel("curriculum dev acc.")
-    b.set_ylim(0, 1.1)
-    b.legend(fontsize=5.5, loc="center right")
+    b.set_ylim(0, 1.15)
+    b.legend([Line2D([], [], color=col, lw=1.2) for _, col in CURR_CELLS] + [Line2D([], [], color=R.OI["verm"], ls=":", lw=0.8)],
+             [lab for lab, _ in CURR_CELLS] + ["predicted 0.501"], fontsize=5.5, loc="upper right",
+             bbox_to_anchor=(1.0, 0.82), ncol=2, columnspacing=0.6, handlelength=1.4)
     R.panel(a, "a")
     R.panel(b, "b")
     R.record(R.save(f, 2, "figA_t2_curriculum.pdf", w, h), S, [f"{PB}/summary.json"] +
@@ -368,6 +395,10 @@ def fig5():
     for i, m in enumerate(pols):
         ys = [P["breakdown"]["evidence_position"][p_][m]["accuracy"] for p_ in pos]
         a.bar(np.arange(3) + (i - 2) * wbar, ys, width=wbar, color=KVCOL[m], label=KVLAB[m])
+        for j, y in enumerate(ys):
+            if y == 0:  # zero-height bar: explicit "0" marker at the baseline (INT4 token-wise is 0 everywhere)
+                a.text(j + (i - 2) * wbar, 0.01, "0", color=KVCOL[m], ha="center", va="bottom", fontsize=5.5,
+                       fontweight="bold")
     a.set_xticks(range(3), pos)
     a.set_ylabel("accuracy")
     a.set_ylim(0, 1.05)
@@ -394,15 +425,25 @@ def fig5():
              ["FP16 cache", "INT4 unpack+dequant+step"], fontsize=5.2, loc="upper left")
     ex = next(r for r in rows if tuple(r["cell"]) == (2048, "middle", 8))
     L = ex["L"]
-    for k, (m, lab) in enumerate((("sink_recent", "sink+recent"), ("qaware", "question-aware"), ("hybrid", "hybrid FP16"))):
+    # every FP16-kept run drawn with a minimum width so single tokens and the 8 sinks stay visible;
+    # hybrid row: light-grey background = INT2 positions, coloured ticks = FP16 positions
+    minw = 0.0025 * L
+    m_ax.add_patch(Rectangle((0, -0.4), L, 0.8, color="#D9D9D9", lw=0, zorder=0))
+    for k, (m, lab) in enumerate((("sink_recent", "sink+recent"), ("qaware", "question-aware"), ("hybrid", "hybrid"))):
         for s0, n in ex["methods"][m]["fp16_selection_rle"]:
-            m_ax.add_patch(Rectangle((s0, 2 - k - 0.4), n, 0.8, color=KVCOL[m], lw=0))
+            m_ax.add_patch(Rectangle((s0, 2 - k - 0.4), max(n, minw), 0.8, color=KVCOL[m], lw=0, zorder=1))
     e0, e1 = ex["evidence_token_range"]
-    m_ax.axvspan(e0, e1, color=R.OI["yellow"], alpha=0.6, lw=0)
+    m_ax.axvspan(e0, e1, color=R.OI["yellow"], alpha=0.6, lw=0, zorder=2)
+    from matplotlib.legend_handler import HandlerTuple
+    kept = tuple(Rectangle((0, 0), 1, 1, color=KVCOL[m]) for m in ("sink_recent", "qaware", "hybrid"))
+    m_ax.legend([kept, Rectangle((0, 0), 1, 1, color="#D9D9D9"), Rectangle((0, 0), 1, 1, color=R.OI["yellow"], alpha=0.6)],
+                ["FP16 kept", "INT2 (hybrid)", "gold evidence"], handler_map={tuple: HandlerTuple(ndivide=None, pad=0)},
+                loc="lower right", bbox_to_anchor=(1.0, 1.0), ncol=3, fontsize=5.5, frameon=False, borderaxespad=0.1,
+                handlelength=1.6, columnspacing=0.8)
     m_ax.set_xlim(0, L)
     m_ax.set_ylim(-0.6, 2.6)
-    m_ax.set_yticks([2, 1, 0], ["sink+recent", "question-aware", "hybrid FP16"], fontsize=5.5)
-    m_ax.set_xlabel(f"context position ({ex['id']}, $L$={L}; gold evidence shaded)")
+    m_ax.set_yticks([2, 1, 0], ["sink+recent", "question-aware", "hybrid"], fontsize=5.5)
+    m_ax.set_xlabel(f"context position ({ex['id']}, $L$={L})")
     hs = [Rectangle((0, 0), 1, 1, color=KVCOL[m]) for m in pols] + [Line2D([], [], color=KVCOL["fp16"], marker="o", ms=2)]
     f.legend(hs, [KVLAB[m] for m in pols] + ["FP16 ref"], loc="outside upper center", ncol=6, fontsize=R.SMALL,
              columnspacing=0.8, handlelength=1.0)
@@ -498,6 +539,7 @@ def main():
     tabA_mqar_full()
     tabA_dilated()
     figA_curriculum()
+    figA_curves()
     tab2_kv()
     tab2_kv_contrasts()
     fig5()
