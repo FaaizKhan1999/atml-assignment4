@@ -36,6 +36,9 @@ def t1():
            f"({sum(abs(v - 0.85) < 1e-9 for v in g['p3_blocks']['0.75']['s_l'])} blocks at the 0.85 cap)",
            f"- Spearman(D_l, P2 block output error): {g['p3_blocks']['0.5']['spearman_D_vs_P2_err']['rho']:.2f} (S=0.5), "
            f"{g['p3_blocks']['0.75']['spearman_D_vs_P2_err']['rho']:.2f} (S=0.75)",
+           f"- (b) 3-bit sensitivity heatmap: {sum(r[qp['bits_options'].index(3)] <= 1e-5 for r in qp['sensitivity_dnll'])} of "
+           f"{len(qp['sensitivity_dnll'])} cells <= 1e-5 clipped to the 1e-5 floor (colorbar extend='min'); of these "
+           f"{sum(r[qp['bits_options'].index(3)] < 0 for r in qp['sensitivity_dnll'])} have negative dNLL",
            f"- Q3-proj bit counts B4: " + str({n: {b: c for b, c in v.items() if c} for n, v in qp['allocations']['B4']['counts_proj_type_x_bits'].items()}),
            f"- Q3-proj bit counts B3: " + str({n: {b: c for b, c in v.items() if c} for n, v in qp['allocations']['B3']['counts_proj_type_x_bits'].items()}),
            f"- B4/B3 realised bytes {qp['allocations']['B4']['total_bytes']:,} / {qp['allocations']['B3']['total_bytes']:,} (slack 6,528 each); "

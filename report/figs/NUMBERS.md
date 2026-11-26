@@ -12,6 +12,7 @@
 ### fig2_allocation.pdf
 - P3 S=0.50: M=5, lambda=0.05, s_l in [0.436, 0.536]; S=0.75: M=3, lambda=0.2, s_l in [0.536, 0.850] (7 blocks at the 0.85 cap)
 - Spearman(D_l, P2 block output error): -0.91 (S=0.5), -0.80 (S=0.75)
+- (b) 3-bit sensitivity heatmap: 17 of 196 cells <= 1e-5 clipped to the 1e-5 floor (colorbar extend='min'); of these 17 have negative dNLL
 - Q3-proj bit counts B4: {'q_proj': {'2': 3, '3': 8, '4': 17}, 'k_proj': {'2': 1, '3': 5, '4': 8, '8': 14}, 'v_proj': {'2': 1, '3': 2, '4': 9, '8': 16}, 'o_proj': {'2': 1, '3': 3, '4': 18, '8': 6}, 'gate_proj': {'3': 5, '4': 22, '8': 1}, 'up_proj': {'2': 1, '3': 5, '4': 22}, 'down_proj': {'3': 4, '4': 22, '8': 2}}
 - Q3-proj bit counts B3: {'q_proj': {'2': 9, '3': 19}, 'k_proj': {'2': 1, '3': 12, '4': 15}, 'v_proj': {'2': 1, '3': 4, '4': 22, '8': 1}, 'o_proj': {'2': 3, '3': 14, '4': 11}, 'gate_proj': {'2': 4, '3': 22, '4': 2}, 'up_proj': {'2': 3, '3': 24, '4': 1}, 'down_proj': {'3': 25, '4': 3}}
 - B4/B3 realised bytes 1,147,976,320 / 982,922,368 (slack 6,528 each); predicted vs realised dev dNLL B4 0.0254/0.0412, B3 0.1471/0.2694

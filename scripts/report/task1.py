@@ -130,11 +130,13 @@ def fig2():
     L = 28
     x = np.arange(L)
     ax2 = a.twinx()
+    from matplotlib.patches import Patch
+    bar_handles = []
     for k, (S_, col) in enumerate((("0.5", R.OI["blue"]), ("0.75", R.OI["verm"]))):
         p = g["p3_blocks"][S_]
         ax2.bar(x + (k - 0.5) * 0.4, np.array(p["D_l"]) * 1e3, width=0.4, color=col, alpha=0.25, lw=0)
-        a.plot(x, p["s_l"], color=col, lw=0.9, marker="o", ms=1.6, label=f"$s_l$, S={S_} (M={p['M']}, "
-                                                                       f"$\\lambda$={p['lambda']})")
+        a.plot(x, p["s_l"], color=col, lw=0.9, marker="o", ms=1.6, label=f"$s_l$, S={float(S_):.2f}")
+        bar_handles.append((Patch(color=col, alpha=0.25, lw=0), f"$D_l$ (M={p['M']})"))
         a.axhline(float(S_), color=col, ls=":", lw=0.6)
     for v in (0.10, 0.85):
         a.axhline(v, color=R.OI["grey"], ls=":", lw=0.6)
@@ -146,7 +148,9 @@ def fig2():
     a.set_ylim(0.0, 1.22)
     ax2.set_ylim(0, 75)
     a.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
-    a.legend(loc="upper center", fontsize=5.5, handlelength=1.0)
+    lh, ll = a.get_legend_handles_labels()
+    a.legend(lh + [h_ for h_, _ in bar_handles], ll + [l_ for _, l_ in bar_handles], loc="upper center", ncol=2,
+             fontsize=5.5, handlelength=1.0, columnspacing=0.6)
     units = qp["units"]
     sens = np.array(qp["sensitivity_dnll"])  # [196, 4] bits (2,3,4,8)
     j3 = qp["bits_options"].index(3)
@@ -158,7 +162,7 @@ def fig2():
                   interpolation="nearest")
     b.set_yticks(range(7), PSHORT)
     b.set_xlabel("block")
-    cb = f.colorbar(im, ax=b, pad=0.01, fraction=0.06)
+    cb = f.colorbar(im, ax=b, pad=0.01, fraction=0.06, extend="min")
     cb.set_label("dev $\\Delta$NLL at 3 bits (nats)", fontsize=R.SMALL)
     cb.ax.tick_params(labelsize=5.5)
     cmap = ListedColormap([R.OI["verm"], R.OI["orange"], R.OI["sky"], R.OI["blue"]])
@@ -173,7 +177,6 @@ def fig2():
         ax.text(1.01, 0.5, name, transform=ax.transAxes, rotation=90, va="center", fontsize=R.SMALL)
     c1.set_xticks([])
     c2.set_xlabel("block")
-    from matplotlib.patches import Patch
     c2.legend([Patch(color=cmap(i)) for i in range(4)], ["2", "3", "4", "8 bit"], ncol=4, loc="upper center",
               bbox_to_anchor=(0.5, -0.38), fontsize=5.5, handlelength=0.8, columnspacing=0.6)
     R.panel(a, "a")
@@ -193,12 +196,13 @@ def figA_q3block():
                   interpolation="nearest")
     a.set_yticks(range(4), [f"{b_} bit" for b_ in qa["bits_options"]])
     a.set_xlabel("block")
-    cb = f.colorbar(im, ax=a, pad=0.01, fraction=0.04)
+    cb = f.colorbar(im, ax=a, pad=0.01, fraction=0.04, extend="min" if (dn <= 1e-5).any() else "neither")
     cb.set_label("isolated dev $\\Delta$NLL", fontsize=R.SMALL)
     b4, b3 = (sorted(set(qa["allocations"][n]["bits"])) for n in ("B4", "B3"))
     assert len(b4) == 1 and len(b3) == 1
     a.text(0.995, 0.97, f"knapsack choice: all blocks {b4[0]}-bit (B4), {b3[0]}-bit (B3)", transform=a.transAxes,
-           ha="right", va="top", fontsize=5.5, color="white")
+           ha="right", va="top", fontsize=5.5, color="black",
+           bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.85))
     R.record(R.save(f, 1, "figA_t1_q3block.pdf", w, h), S, ["results/task1/q3_allocation.json"])
 
 
@@ -265,26 +269,41 @@ def tab1_contrasts():
 
 
 def tab1_resources():
-    timing = {"prefill_512", "prefill_2048", "decode_64_after_512"}
+    """calib. s = activation-statistics capture; search+apply s = scoring / AWQ search + apply (+ pack/verify).
+    Times marked double-dagger are paid once and shared across rows (FP16 activation statistics for pruning; one AWQ
+    capture + search reused for INT8/INT4/INT3), not per row."""
+    global PRUNE_STATS_S
+    PRUNE_STATS_S = R.load("results/task1/diagnostics.json")["selection_effort_gpu_seconds"]["calibration_stats_baseline_s"]
     spec = [("FP16", "baseline"), ("Unstruct. 50\\% (P2)", "p2_wanda_s50"), ("2:4 50\\%", "p2_wanda_2of4"),
             ("INT8 (Q2)", "q2_awq_int8"), ("INT4 (Q2)", "q2_awq_int4"), ("INT3 (Q2)", "q2_awq_int3")]
+    dd = "$^\\ddagger$"
     rows = []
     for lab, c in spec:
         x = C[c]
-        full = R.load(f"results/task1/{c}/summary.json")
-        ci_ = full.get("condition_info", {}).get("compress_seconds", {})
-        tsec = sum(v for v in ci_.values() if isinstance(v, (int, float)))
+        cs = R.load(f"results/task1/{c}/summary.json").get("condition_info", {}).get("compress_seconds", {})
         nb = 16 if c == "baseline" else (x["storage"]["nominal_bits"] if x["storage"]["quant_total_bytes"] else 16)
         r = x["latency_drift_adjusted_ratio"]
+        if c == "baseline":
+            calib, sa = "", ""
+        elif c.startswith("p2"):
+            calib = f"{PRUNE_STATS_S:.0f}{dd} + {cs['stat_load_s']:.1f}"
+            sa = f"{cs['score_and_mask_s'] + cs['search_s'] + cs['apply_s']:.1f}"
+        else:
+            calib = f"{cs['stat_capture_s_shared_all_bits']:.0f}{dd}"
+            sa = f"{cs['search_s_shared_all_bits']:.0f}{dd} + {cs['apply_and_pack_verify_s']:.0f}"
         rows.append([lab, str(nb), f"{total_gb(c):.3f}", f"{max(x['peak_alloc_bytes'].values()) / GB:.3f}",
-                     f"{r['prefill_512']:.2f}", f"{r['prefill_2048']:.2f}", f"{r['decode_64_after_512']:.2f}",
-                     f"{tsec:.0f}" if c != "baseline" else ""])
-    p = R.write_tab(1, "tab1_resources.tex", "lrrrrrrr",
+                     f"{r['prefill_512']:.2f}", f"{r['prefill_2048']:.2f}", f"{r['decode_64_after_512']:.2f}", calib, sa])
+    q = R.load("results/task1/q2_awq_int4/summary.json")["condition_info"]["compress_seconds"]
+    shared = q["stat_capture_s_shared_all_bits"] + q["search_s_shared_all_bits"]
+    p = R.write_tab(1, "tab1_resources.tex", "lrrrrrrrr",
                     ["Condition", "bits/w", "Packed GB", "Peak GB$^\\dagger$", "P512", "P2048", "D64",
-                     "Comp. s"], rows,
+                     "calib. s", "search+apply s"], rows,
                     "% dagger: all conditions execute dense FP16 kernels (zeros / dequantized weights); ratios are "
-                    "drift-adjusted vs interleaved FP16 references")
-    R.record(p, S, [SUM] + [f"results/task1/{c}/summary.json" for _, c in spec])
+                    "drift-adjusted vs interleaved FP16 references\n"
+                    f"% double dagger: paid once and shared across rows, not per row: the FP16 activation-statistics "
+                    f"capture ({PRUNE_STATS_S:.1f} s) is loaded by every pruning condition; the Q2 AWQ capture + search "
+                    f"({shared:,.0f} s) is run once and reused for INT8/INT4/INT3 (only apply+pack/verify is per row)")
+    R.record(p, S, [SUM, "results/task1/diagnostics.json"] + [f"results/task1/{c}/summary.json" for _, c in spec])
 
 
 QCFG = [("FP16", "baseline"), ("P1@50", "p1_mag_s50"), ("P2@50", "p2_wanda_s50"), ("P3@50", "p3_owl_s50"),
@@ -308,24 +327,31 @@ def _esc(s):
 
 
 def tab_qual(name, cases_sel):
+    """Per-case header row spans all columns in a fixed-width p{} cell; the model's choice (highest per-character
+    log-likelihood = pred_acc_norm) is bold; checkmark when it equals gold. The gold ending is marked in the column
+    header when every case shown shares it, otherwise only in the case header."""
     q = R.load("results/task1/qualitative.json")
+    cases = [c for c in q["cases"] if c["order"] in cases_sel]
+    golds = {c["gold"] for c in cases}
     rows = []
-    for case in q["cases"]:
-        if case["order"] not in cases_sel:
-            continue
-        rows.append([f"\\multicolumn{{6}}{{@{{}}l@{{}}}}{{\\parbox{{3.3in}}{{\\textit{{order {case['order']} ({_esc(case['rule'])})}}: "
-                     f"{_esc(_trunc(case['context'], 15))} $\\to$ gold [{case['gold']}]: "
-                     f"{_esc(_trunc(case['endings'][case['gold']], 10))}}}}}"])
+    for case in cases:
+        g = case["gold"]
+        rows.append([f"\\multicolumn{{6}}{{@{{}}p{{3.2in}}@{{}}}}{{HellaSwag ID {_esc(case['id'])} (first-512 order "
+                     f"{case['order']}): {_esc(_trunc(case['context'], 15))} Gold [{g}]: "
+                     f"{_esc(_trunc(case['endings'][g], 10))}}}"])
         for lab, c in QCFG:
             sc, pred = _hs_scores(c, case["order"])
-            cells = [("\\textbf{" + f"{v:.2f}" + "}") if i == case["gold"] else f"{v:.2f}" for i, v in enumerate(sc)]
+            assert pred == int(np.argmax(sc)), (c, case["order"])
+            cells = [("\\textbf{" + f"{v:.3f}" + "}") if i == pred else f"{v:.3f}" for i, v in enumerate(sc)]
             cells = [x.replace("-", "$-$") for x in cells]
-            rows.append([lab, str(pred) + (" \\checkmark" if pred == case["gold"] else "")] + cells)
+            rows.append([lab, str(pred) + (" \\checkmark" if pred == g else "")] + cells)
         rows.append("MID")
     if rows and rows[-1] == "MID":
         rows.pop()
-    p = R.write_tab(1, name, "llrrrr", ["Model", "Chosen", "end 0", "end 1", "end 2", "end 3"], rows,
-                    "% per-character log-likelihood of each ending; gold ending in bold")
+    ends = [f"end {k}" + (" (gold)" if golds == {k} else "") for k in range(4)]
+    p = R.write_tab(1, name, "llrrrr", ["Model", "Chosen", *ends], rows,
+                    "% per-character log-likelihood of each ending; bold = the model's choice (highest score); "
+                    "checkmark = choice equals gold")
     R.record(p, S, ["results/task1/qualitative.json"] + [f"results/task1/{c}/hellaswag.jsonl" for _, c in QCFG])
 
 
