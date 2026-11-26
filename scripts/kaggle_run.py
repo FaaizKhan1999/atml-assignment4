@@ -186,11 +186,27 @@ def _ledger_append(row: dict) -> float:
     return total
 
 
-def fetch(name: str) -> None:
+def _download(kernel_id: str, dl: Path, pattern: str | None, attempts: int = 10) -> str:
+    """Download kernel outputs with retries. No -o: files already complete locally are skipped, so a retry resumes
+    after a network failure instead of restarting. pattern = --file-pattern regex (e.g. to skip large checkpoints)."""
+    cmd = ["kaggle", "kernels", "output", kernel_id, "-p", str(dl)] + (["--file-pattern", pattern] if pattern else [])
+    out = ""
+    for i in range(attempts):
+        r = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
+        out = (r.stdout + r.stderr)[-2000:]
+        failed = r.returncode != 0 or "Max retries exceeded" in out or "ConnectionError" in out
+        if not failed:
+            return out
+        print(f"download attempt {i + 1}/{attempts} failed; retrying in 20s", flush=True)
+        time.sleep(20)
+    return out
+
+
+def fetch(name: str, pattern: str | None = None) -> None:
     info = json.loads((RUNS / name / "launch.json").read_text())
     dl = RUNS / name / "output"
     dl.mkdir(parents=True, exist_ok=True)
-    print(run(["kaggle", "kernels", "output", info["kernel_id"], "-p", str(dl), "-o"], check=False)[-2000:])
+    print(_download(info["kernel_id"], dl, pattern))
     st = status(name)
     rm_path = dl / "run_meta.json"
     rm = json.loads(rm_path.read_text()) if rm_path.exists() else {}
@@ -240,6 +256,8 @@ def main():
     for n in ("status", "fetch", "wait"):
         s = sp.add_parser(n)
         s.add_argument("name")
+        if n in ("fetch", "wait"):
+            s.add_argument("--pattern", default=None, help="--file-pattern regex for the download")
     a = p.parse_args()
     if a.action == "launch":
         if a.accelerator == "":
@@ -249,9 +267,9 @@ def main():
         print(status(a.name))
     elif a.action == "wait":
         wait(a.name)
-        fetch(a.name)
+        fetch(a.name, a.pattern)
     else:
-        fetch(a.name)
+        fetch(a.name, a.pattern)
 
 
 if __name__ == "__main__":

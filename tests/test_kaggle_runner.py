@@ -68,7 +68,7 @@ def test_fetch_without_run_meta_writes_nothing(tmp_path, monkeypatch):
     led = tmp_path / "ledger.md"
     monkeypatch.setattr(kr, "RUNS", runs)
     monkeypatch.setattr(kr, "LEDGER", led)
-    monkeypatch.setattr(kr, "run", lambda *a, **k: "ConnectionError")
+    monkeypatch.setattr(kr, "_download", lambda *a, **k: "ConnectionError")
     monkeypatch.setattr(kr, "status", lambda name: "ConnectionError")
     with pytest.raises(SystemExit):
         kr.fetch("k")
