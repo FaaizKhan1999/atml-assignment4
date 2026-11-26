@@ -41,6 +41,7 @@
   "scripts/report/task1.py",
   [
    "results/task1/summary_all.json",
+   "results/task1/diagnostics.json",
    "results/task1/baseline/summary.json",
    "results/task1/p2_wanda_s50/summary.json",
    "results/task1/p2_wanda_2of4/summary.json",

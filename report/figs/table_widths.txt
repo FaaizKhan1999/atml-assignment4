@@ -1,11 +1,11 @@
 task1/tab1_contrasts.tex	5.48 in
-task1/tab1_qualitative.tex	3.33 in
-task1/tab1_resources.tex	4.52 in
-task1/tab1_summary.tex	5.17 in
+task1/tab1_qualitative.tex	3.46 in
+task1/tab1_resources.tex	5.39 in
+task1/tab1_summary.tex	5.10 in
 task1/tabA_t1_full.tex	6.49 in	WIDER THAN 5.5 in
 task1/tabA_t1_p3grid.tex	3.39 in
 task1/tabA_t1_pruning_diag.tex	4.06 in
-task1/tabA_t1_qualitative_all.tex	3.33 in
+task1/tabA_t1_qualitative_all.tex	3.29 in
 task1/tabA_t1_retiming.tex	4.52 in
 task2/tab2_backends.tex	2.94 in
 task2/tab2_kv.tex	5.43 in
@@ -30,3 +30,4 @@ task3/tabA_t3_chisq_joint.tex	2.93 in
 task3/tabA_t3_disagree.tex	3.71 in
 task3/tabA_t3_fixed64.tex	2.65 in
 task3/tabA_t3_merge.tex	4.41 in
+task3/tabA_t3_workload.tex	4.46 in

@@ -174,8 +174,8 @@ def tab3_sampler():
                  "bonus path, EOS as accepted / bonus / residual token, budget truncation and one-token rounds, tiny-HF "
                  "full acceptance and post-run cache = fresh forward; real-model split prefill and cache-length checks "
                  "(T3-a).}}"])
-    p = R.write_tab(3, "tab3_sampler.tex", "lrrrr", ["$\\gamma$", "$\\chi^2$ correct", "$p$", "$\\chi^2$ residual$\\to p$",
-                                                     "$p$"], rows,
+    p = R.write_tab(3, "tab3_sampler.tex", "lrrrr", ["$\\gamma$", "$\\chi^2$ (exact)", "$p$",
+                                                     "$\\chi^2$ (residual$\\to p$ control)", "$p$"], rows,
                     "% 100,000 length-3 sequences, 27 categories (26 dof), min expected count 500")
     R.record(p, S, ["results/task3/toy_chisquare.json"])
 
@@ -333,8 +333,49 @@ def tabA_misc():
     R.record(p, S, ["results/task3/toy_chisquare.json"])
 
 
+def tabA_workload():
+    """Speculative outcomes by workload and by realised output-length bin, every draft, both gamma."""
+    rows = []
+    eos64 = {}
+    for g in (2, 4):
+        rows.append([f"\\multicolumn{{6}}{{l}}{{\\textit{{$\\gamma$={g}}}}}"])
+        for kind in ("workload", "length"):
+            segs = ["math", "familiar", "shifted"] if kind == "workload" else ["[1,16]", "[17,32]", "[33,63]", "[64,64]"]
+            for sg in segs:
+                for k, d in enumerate(DRAFTS):
+                    v = P["step6"][f"gamma{g}"][d]
+                    if kind == "workload":
+                        x = v["by_workload"][sg]
+                        ci_, n = x["latency_ratio"], f"{x['n_runs']} ({x['n_prompts']})"
+                        lab = sg
+                    else:
+                        x = v["by_output_length"].get(sg)
+                        if x is None:
+                            rows.append(["" if k else sg.strip("[]").replace(",", "--"), LAB[d], "", "", "", "0"])
+                            continue
+                        ci_, n = x["latency_ratio_runs"], f"{x['n_runs']} ({x['n_prompts']})"
+                        eos64[(g, d)] = x["eos_at_64"] if sg == "[64,64]" else eos64.get((g, d), 0)
+                        lab = "64 (cap)" if sg == "[64,64]" else sg.strip("[]").replace(",", "--")
+                    rows.append([lab if k == 0 else "", LAB[d], f"{x['accepted_over_examined']:.3f}",
+                                 f"{x['target_passes_per_token']:.3f}", R.ci(ci_, 1, "{:.2f}", signed=False), n])
+                rows.append("MID")
+    rows.pop()
+    n64 = sum(eos64.values())
+    note = ("% segment rows: workload (math / familiar / shifted), then realised output length in tokens (EOS-aware "
+            "64-token cap). acc/exam. = accepted / examined draft tokens; passes/tok = target forward passes per "
+            "generated token; latency ratio = spec / adjacent target-only. Workload: mean of per-prompt ratios "
+            "(averaged over the 2 reps), 95% bootstrap CI over prompts. Length bins: mean over runs, 95% bootstrap CI "
+            "clustered by prompt (a prompt's 2 reps can fall in different bins). n = runs (prompts). "
+            f"The 64 bin includes {n64} run(s) that emitted EOS as the 64th token. All 5 drafts shown (no averaging).")
+    p = R.write_tab(3, "tabA_t3_workload.tex", "llrrrr",
+                    ["Segment", "Draft", "acc/exam.", "passes/tok", "latency ratio [95\\% CI]", "n runs (prompts)"],
+                    rows, note)
+    R.record(p, S, [SUM, "results/task3/step6_g2.jsonl", "results/task3/step6_g4.jsonl"])
+
+
 def main():
     R.setup()
+    tabA_workload()
     fig6()
     fig7()
     tab3_sampler()

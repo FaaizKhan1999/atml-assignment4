@@ -190,7 +190,7 @@ def accuracy():
 
 
 DRAFTS = ["original"] + RUNS
-LEN_BINS = [(1, 16), (17, 32), (33, 64)]
+LEN_BINS = [(1, 16), (17, 32), (33, 63), (64, 64)]  # 64 = the EOS-aware cap (n_tokens == 64)
 
 
 def step6():
@@ -253,20 +253,33 @@ def step6():
                    "expected_acceptance_1mTV_teacher_bank": tv1.get(d),
                    "_ratio_p": dict(zip(ids, ratio_p)), "_acc_p": dict(zip(ids, acc_p)),
                    "mean_request_saving_s": (ar_t - spec_t) / len(rs)}
+            def seg(xs):
+                """segment metrics over runs xs: acceptance, target passes / token, latency ratio (mean over runs,
+                95% CI clustered by prompt), counts."""
+                return {"n_runs": len(xs), "n_prompts": len({r["id"] for r in xs}),
+                        "accepted_over_examined": sum(r["spec"]["accepted"] for r in xs)
+                        / max(1, sum(r["spec"]["examined"] for r in xs)),
+                        "target_passes_per_token": sum(r["spec"]["target_passes"] for r in xs)
+                        / sum(r["spec"]["n_tokens"] for r in xs),
+                        "latency_ratio_runs": bootstrap_ci([r["latency_ratio_spec_over_ar"] for r in xs],
+                                                           groups=[r["id"] for r in xs], unit="prompt (clustered runs)"),
+                        "eos_at_64": sum(r["spec"]["n_tokens"] == 64 and r["spec"]["stop"] != "cap" for r in xs)}
+
             wl = {}
             for w in ("math", "familiar", "shifted"):
                 ws = [i for i in ids if byp[i][0]["workload"] == w]
                 wl[w] = {"latency_ratio": bootstrap_ci([rec["_ratio_p"][i] for i in ws], unit="prompt"),
                          "accepted_over_examined": sum(x["spec"]["accepted"] for i in ws for x in byp[i])
-                         / max(1, sum(x["spec"]["examined"] for i in ws for x in byp[i]))}
+                         / max(1, sum(x["spec"]["examined"] for i in ws for x in byp[i])),
+                         "target_passes_per_token": sum(x["spec"]["target_passes"] for i in ws for x in byp[i])
+                         / sum(x["spec"]["n_tokens"] for i in ws for x in byp[i]),
+                         "n_prompts": len(ws), "n_runs": sum(len(byp[i]) for i in ws)}
             rec["by_workload"] = wl
             lb = {}
             for lo, hi in LEN_BINS:
                 xs = [r for r in rs if lo <= r["spec"]["n_tokens"] <= hi]
                 if xs:
-                    lb[f"[{lo},{hi}]"] = {"n": len(xs), "latency_ratio_mean": statistics.mean(r["latency_ratio_spec_over_ar"] for r in xs),
-                                          "accepted_over_examined": sum(r["spec"]["accepted"] for r in xs)
-                                          / max(1, sum(r["spec"]["examined"] for r in xs))}
+                    lb[f"[{lo},{hi}]"] = seg(xs)
             rec["by_output_length"] = lb
             if d != "original":
                 ds = dist[d]

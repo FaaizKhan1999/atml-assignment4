@@ -342,8 +342,8 @@ def tab_qual(name, cases_sel):
         for lab, c in QCFG:
             sc, pred = _hs_scores(c, case["order"])
             assert pred == int(np.argmax(sc)), (c, case["order"])
-            cells = [("\\textbf{" + f"{v:.3f}" + "}") if i == pred else f"{v:.3f}" for i, v in enumerate(sc)]
-            cells = [x.replace("-", "$-$") for x in cells]
+            cells = [f"{v:.3f}".replace("-", "$-$") for v in sc]
+            cells[pred] = "\\textbf{\\boldmath " + cells[pred] + "}"
             rows.append([lab, str(pred) + (" \\checkmark" if pred == g else "")] + cells)
         rows.append("MID")
     if rows and rows[-1] == "MID":

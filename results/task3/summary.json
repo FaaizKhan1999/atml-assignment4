@@ -1,6 +1,6 @@
 {
  "meta": {
-  "timestamp_utc": "2026-11-26T12:03:19+00:00",
+  "timestamp_utc": "2026-11-26T14:26:18+00:00",
   "command": "python scripts/task3_summarize.py",
   "cwd": "/home/faaiz/Desktop/atml/assignments/assignment-4",
   "hostname": "focusedkognition",
@@ -9,7 +9,7 @@
    "run_type": null
   },
   "git": {
-   "commit": "aba83ff736c7c91b14a80bc224d80d1ca0b4e6fd",
+   "commit": "d874343bf802a9125edfe4efb683dfc8b5ce1969",
    "dirty": true,
    "submodule_path": "external/atml-pa4-datasets",
    "submodule_commit": "6a0a9ec9da7ef3d313ee3036cfec493886723644"
@@ -8494,7 +8494,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8729924312350009
+       "accepted_over_examined": 0.8729924312350009,
+       "target_passes_per_token": 0.38424479166666664,
+       "n_prompts": 60,
+       "n_runs": 120
       },
       "familiar": {
        "latency_ratio": {
@@ -8508,7 +8511,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.7893660531697342
+       "accepted_over_examined": 0.7893660531697342,
+       "target_passes_per_token": 0.4360960495739737,
+       "n_prompts": 30,
+       "n_runs": 60
       },
       "shifted": {
        "latency_ratio": {
@@ -8522,24 +8528,84 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8056478405315615
+       "accepted_over_examined": 0.8056478405315615,
+       "target_passes_per_token": 0.44050632911392407,
+       "n_prompts": 30,
+       "n_runs": 60
       }
      },
      "by_output_length": {
       "[1,16]": {
-       "n": 85,
-       "latency_ratio_mean": 1.6431479103088469,
-       "accepted_over_examined": 0.8675324675324675
+       "n_runs": 85,
+       "n_prompts": 52,
+       "accepted_over_examined": 0.8675324675324675,
+       "target_passes_per_token": 0.45168067226890757,
+       "latency_ratio_runs": {
+        "point": 1.6431479103088467,
+        "ci_low": 1.434600864984514,
+        "ci_high": 1.8400241949160583,
+        "level": 0.95,
+        "n": 52,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
       "[17,32]": {
-       "n": 9,
-       "latency_ratio_mean": 2.806224667763263,
-       "accepted_over_examined": 0.7801418439716312
+       "n_runs": 9,
+       "n_prompts": 9,
+       "accepted_over_examined": 0.7801418439716312,
+       "target_passes_per_token": 0.44148936170212766,
+       "latency_ratio_runs": {
+        "point": 2.806224667763263,
+        "ci_low": 1.470994153307025,
+        "ci_high": 5.028119799872817,
+        "level": 0.95,
+        "n": 9,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
-      "[33,64]": {
-       "n": 146,
-       "latency_ratio_mean": 1.313962277526984,
-       "accepted_over_examined": 0.8564364085921805
+      "[33,63]": {
+       "n_runs": 15,
+       "n_prompts": 14,
+       "accepted_over_examined": 0.7606679035250464,
+       "target_passes_per_token": 0.4375876577840112,
+       "latency_ratio_runs": {
+        "point": 2.7337857140874138,
+        "ci_low": 1.7462593733242033,
+        "ci_high": 3.7521901988853785,
+        "level": 0.95,
+        "n": 14,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
+      },
+      "[64,64]": {
+       "n_runs": 131,
+       "n_prompts": 70,
+       "accepted_over_examined": 0.8651382333108564,
+       "target_passes_per_token": 0.38788167938931295,
+       "latency_ratio_runs": {
+        "point": 1.1513870748673927,
+        "ci_low": 1.058084569546418,
+        "ci_high": 1.2691188644732396,
+        "level": 0.95,
+        "n": 70,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       }
      }
     },
@@ -8609,7 +8675,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8836776474967429
+       "accepted_over_examined": 0.8836776474967429,
+       "target_passes_per_token": 0.38177083333333334,
+       "n_prompts": 60,
+       "n_runs": 120
       },
       "familiar": {
        "latency_ratio": {
@@ -8623,7 +8692,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8667496886674969
+       "accepted_over_examined": 0.8667496886674969,
+       "target_passes_per_token": 0.4036697247706422,
+       "n_prompts": 30,
+       "n_runs": 60
       },
       "shifted": {
        "latency_ratio": {
@@ -8637,24 +8709,84 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.800818553888131
+       "accepted_over_examined": 0.800818553888131,
+       "target_passes_per_token": 0.43626943005181346,
+       "n_prompts": 30,
+       "n_runs": 60
       }
      },
      "by_output_length": {
       "[1,16]": {
-       "n": 82,
-       "latency_ratio_mean": 1.6272908113534106,
-       "accepted_over_examined": 0.9277456647398844
+       "n_runs": 82,
+       "n_prompts": 51,
+       "accepted_over_examined": 0.9277456647398844,
+       "target_passes_per_token": 0.43935926773455375,
+       "latency_ratio_runs": {
+        "point": 1.627290811353411,
+        "ci_low": 1.4394213369987712,
+        "ci_high": 1.7967384403715334,
+        "level": 0.95,
+        "n": 51,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
       "[17,32]": {
-       "n": 17,
-       "latency_ratio_mean": 1.787026438358298,
-       "accepted_over_examined": 0.8357142857142857
+       "n_runs": 17,
+       "n_prompts": 16,
+       "accepted_over_examined": 0.8357142857142857,
+       "target_passes_per_token": 0.4052631578947368,
+       "latency_ratio_runs": {
+        "point": 1.787026438358298,
+        "ci_low": 0.9659504472862193,
+        "ci_high": 3.0636845216030917,
+        "level": 0.95,
+        "n": 16,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
-      "[33,64]": {
-       "n": 141,
-       "latency_ratio_mean": 1.3075711033192434,
-       "accepted_over_examined": 0.8715581728473659
+      "[33,63]": {
+       "n_runs": 6,
+       "n_prompts": 6,
+       "accepted_over_examined": 0.7990430622009569,
+       "target_passes_per_token": 0.4172661870503597,
+       "latency_ratio_runs": {
+        "point": 3.0580293130112444,
+        "ci_low": 2.1999155142803155,
+        "ci_high": 3.882899536111756,
+        "level": 0.95,
+        "n": 6,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
+      },
+      "[64,64]": {
+       "n_runs": 135,
+       "n_prompts": 72,
+       "accepted_over_examined": 0.8740533421139283,
+       "target_passes_per_token": 0.3855324074074074,
+       "latency_ratio_runs": {
+        "point": 1.2297729606662655,
+        "ci_low": 1.0869013085175045,
+        "ci_high": 1.423763865277157,
+        "level": 0.95,
+        "n": 72,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 1
       }
      },
      "upfront_cost_s": {
@@ -8760,7 +8892,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8791535177278633
+       "accepted_over_examined": 0.8791535177278633,
+       "target_passes_per_token": 0.38333333333333336,
+       "n_prompts": 60,
+       "n_runs": 120
       },
       "familiar": {
        "latency_ratio": {
@@ -8774,7 +8909,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8552311435523114
+       "accepted_over_examined": 0.8552311435523114,
+       "target_passes_per_token": 0.4077757685352622,
+       "n_prompts": 30,
+       "n_runs": 60
       },
       "shifted": {
        "latency_ratio": {
@@ -8788,24 +8926,84 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.7720994475138122
+       "accepted_over_examined": 0.7720994475138122,
+       "target_passes_per_token": 0.452991452991453,
+       "n_prompts": 30,
+       "n_runs": 60
       }
      },
      "by_output_length": {
       "[1,16]": {
-       "n": 85,
-       "latency_ratio_mean": 1.5919028911153708,
-       "accepted_over_examined": 0.9314285714285714
+       "n_runs": 85,
+       "n_prompts": 50,
+       "accepted_over_examined": 0.9314285714285714,
+       "target_passes_per_token": 0.4429223744292237,
+       "latency_ratio_runs": {
+        "point": 1.591902891115371,
+        "ci_low": 1.3862462380446106,
+        "ci_high": 1.768561767932373,
+        "level": 0.95,
+        "n": 50,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
       "[17,32]": {
-       "n": 13,
-       "latency_ratio_mean": 1.5199248752475034,
-       "accepted_over_examined": 0.8483412322274881
+       "n_runs": 13,
+       "n_prompts": 13,
+       "accepted_over_examined": 0.8483412322274881,
+       "target_passes_per_token": 0.40625,
+       "latency_ratio_runs": {
+        "point": 1.5199248752475032,
+        "ci_low": 0.9065999927248837,
+        "ci_high": 2.26251638377267,
+        "level": 0.95,
+        "n": 13,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
-      "[33,64]": {
-       "n": 142,
-       "latency_ratio_mean": 1.3363939900954587,
-       "accepted_over_examined": 0.8620527306967984
+      "[33,63]": {
+       "n_runs": 7,
+       "n_prompts": 6,
+       "accepted_over_examined": 0.7355072463768116,
+       "target_passes_per_token": 0.4438202247191011,
+       "latency_ratio_runs": {
+        "point": 3.322343933342399,
+        "ci_low": 2.409221045267687,
+        "ci_high": 4.023223139420896,
+        "level": 0.95,
+        "n": 6,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
+      },
+      "[64,64]": {
+       "n_runs": 135,
+       "n_prompts": 72,
+       "accepted_over_examined": 0.8677821522309711,
+       "target_passes_per_token": 0.38773148148148145,
+       "latency_ratio_runs": {
+        "point": 1.2334188078530246,
+        "ci_low": 1.0857056614886278,
+        "ci_high": 1.4190735983655933,
+        "level": 0.95,
+        "n": 72,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       }
      },
      "upfront_cost_s": {
@@ -8911,7 +9109,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8659907834101382
+       "accepted_over_examined": 0.8659907834101382,
+       "target_passes_per_token": 0.3869746802401462,
+       "n_prompts": 60,
+       "n_runs": 120
       },
       "familiar": {
        "latency_ratio": {
@@ -8925,7 +9126,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8782287822878229
+       "accepted_over_examined": 0.8782287822878229,
+       "target_passes_per_token": 0.3960573476702509,
+       "n_prompts": 30,
+       "n_runs": 60
       },
       "shifted": {
        "latency_ratio": {
@@ -8939,24 +9143,84 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.7788309636650869
+       "accepted_over_examined": 0.7788309636650869,
+       "target_passes_per_token": 0.4556500607533414,
+       "n_prompts": 30,
+       "n_runs": 60
       }
      },
      "by_output_length": {
       "[1,16]": {
-       "n": 80,
-       "latency_ratio_mean": 1.6376025086444232,
-       "accepted_over_examined": 0.9021406727828746
+       "n_runs": 80,
+       "n_prompts": 50,
+       "accepted_over_examined": 0.9021406727828746,
+       "target_passes_per_token": 0.4458128078817734,
+       "latency_ratio_runs": {
+        "point": 1.6376025086444237,
+        "ci_low": 1.4602474725091807,
+        "ci_high": 1.800316955339175,
+        "level": 0.95,
+        "n": 50,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
       "[17,32]": {
-       "n": 22,
-       "latency_ratio_mean": 1.5757921854578711,
-       "accepted_over_examined": 0.8768328445747801
+       "n_runs": 22,
+       "n_prompts": 18,
+       "accepted_over_examined": 0.8768328445747801,
+       "target_passes_per_token": 0.3936842105263158,
+       "latency_ratio_runs": {
+        "point": 1.5757921854578711,
+        "ci_low": 0.916533198733527,
+        "ci_high": 2.6155347237705047,
+        "level": 0.95,
+        "n": 18,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
-      "[33,64]": {
-       "n": 138,
-       "latency_ratio_mean": 1.305194204902978,
-       "accepted_over_examined": 0.856198613574077
+      "[33,63]": {
+       "n_runs": 7,
+       "n_prompts": 7,
+       "accepted_over_examined": 0.8007968127490039,
+       "target_passes_per_token": 0.4166666666666667,
+       "latency_ratio_runs": {
+        "point": 3.2270877872722257,
+        "ci_low": 1.4933675562416069,
+        "ci_high": 5.38852799781296,
+        "level": 0.95,
+        "n": 7,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
+      },
+      "[64,64]": {
+       "n_runs": 131,
+       "n_prompts": 71,
+       "accepted_over_examined": 0.8585349462365591,
+       "target_passes_per_token": 0.3905057251908397,
+       "latency_ratio_runs": {
+        "point": 1.2024976012649269,
+        "ci_low": 1.0888585585079618,
+        "ci_high": 1.3450344794767888,
+        "level": 0.95,
+        "n": 71,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 1
       }
      },
      "upfront_cost_s": {
@@ -9062,7 +9326,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8823091247672253
+       "accepted_over_examined": 0.8823091247672253,
+       "target_passes_per_token": 0.381946256196191,
+       "n_prompts": 60,
+       "n_runs": 120
       },
       "familiar": {
        "latency_ratio": {
@@ -9076,7 +9343,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8834586466165414
+       "accepted_over_examined": 0.8834586466165414,
+       "target_passes_per_token": 0.39636363636363636,
+       "n_prompts": 30,
+       "n_runs": 60
       },
       "shifted": {
        "latency_ratio": {
@@ -9090,24 +9360,84 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.7779433681073026
+       "accepted_over_examined": 0.7779433681073026,
+       "target_passes_per_token": 0.45017182130584193,
+       "n_prompts": 30,
+       "n_runs": 60
       }
      },
      "by_output_length": {
       "[1,16]": {
-       "n": 85,
-       "latency_ratio_mean": 1.5636586637670342,
-       "accepted_over_examined": 0.904891304347826
+       "n_runs": 85,
+       "n_prompts": 53,
+       "accepted_over_examined": 0.904891304347826,
+       "target_passes_per_token": 0.44396551724137934,
+       "latency_ratio_runs": {
+        "point": 1.5636586637670344,
+        "ci_low": 1.3597074954299646,
+        "ci_high": 1.73821320739151,
+        "level": 0.95,
+        "n": 53,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
       "[17,32]": {
-       "n": 15,
-       "latency_ratio_mean": 2.795439115819281,
-       "accepted_over_examined": 0.875
+       "n_runs": 15,
+       "n_prompts": 13,
+       "accepted_over_examined": 0.875,
+       "target_passes_per_token": 0.3931888544891641,
+       "latency_ratio_runs": {
+        "point": 2.7954391158192795,
+        "ci_low": 1.405518454028521,
+        "ci_high": 4.428872792539034,
+        "level": 0.95,
+        "n": 13,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
-      "[33,64]": {
-       "n": 140,
-       "latency_ratio_mean": 1.253047379441177,
-       "accepted_over_examined": 0.8701715018432441
+      "[33,63]": {
+       "n_runs": 6,
+       "n_prompts": 6,
+       "accepted_over_examined": 0.8159203980099502,
+       "target_passes_per_token": 0.40942028985507245,
+       "latency_ratio_runs": {
+        "point": 1.6726466755170228,
+        "ci_low": 0.8586175547667811,
+        "ci_high": 2.4870732409111516,
+        "level": 0.95,
+        "n": 6,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
+      },
+      "[64,64]": {
+       "n_runs": 134,
+       "n_prompts": 73,
+       "accepted_over_examined": 0.8719774759854256,
+       "target_passes_per_token": 0.38607742537313433,
+       "latency_ratio_runs": {
+        "point": 1.2342593512586764,
+        "ci_low": 1.102319104341026,
+        "ci_high": 1.3989177524522194,
+        "level": 0.95,
+        "n": 73,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       }
      },
      "upfront_cost_s": {
@@ -9242,7 +9572,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8862714508580343
+       "accepted_over_examined": 0.8862714508580343,
+       "target_passes_per_token": 0.2589355596138795,
+       "n_prompts": 60,
+       "n_runs": 120
       },
       "familiar": {
        "latency_ratio": {
@@ -9256,7 +9589,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.7786640079760718
+       "accepted_over_examined": 0.7786640079760718,
+       "target_passes_per_token": 0.3485254691689008,
+       "n_prompts": 30,
+       "n_runs": 60
       },
       "shifted": {
        "latency_ratio": {
@@ -9270,24 +9606,84 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.814388489208633
+       "accepted_over_examined": 0.814388489208633,
+       "target_passes_per_token": 0.3244274809160305,
+       "n_prompts": 30,
+       "n_runs": 60
       }
      },
      "by_output_length": {
       "[1,16]": {
-       "n": 84,
-       "latency_ratio_mean": 1.9991414891211914,
-       "accepted_over_examined": 0.8765743073047859
+       "n_runs": 84,
+       "n_prompts": 50,
+       "accepted_over_examined": 0.8765743073047859,
+       "target_passes_per_token": 0.3463302752293578,
+       "latency_ratio_runs": {
+        "point": 1.9991414891211912,
+        "ci_low": 1.7226651033975646,
+        "ci_high": 2.2690009001455955,
+        "level": 0.95,
+        "n": 50,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
       "[17,32]": {
-       "n": 14,
-       "latency_ratio_mean": 2.3298634135120384,
-       "accepted_over_examined": 0.7956989247311828
+       "n_runs": 14,
+       "n_prompts": 12,
+       "accepted_over_examined": 0.7956989247311828,
+       "target_passes_per_token": 0.33226837060702874,
+       "latency_ratio_runs": {
+        "point": 2.329863413512039,
+        "ci_low": 1.2913466774203042,
+        "ci_high": 4.139636243822621,
+        "level": 0.95,
+        "n": 12,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
-      "[33,64]": {
-       "n": 142,
-       "latency_ratio_mean": 1.4607945163635974,
-       "accepted_over_examined": 0.8689451022604952
+      "[33,63]": {
+       "n_runs": 14,
+       "n_prompts": 14,
+       "accepted_over_examined": 0.7620751341681574,
+       "target_passes_per_token": 0.3412698412698413,
+       "latency_ratio_runs": {
+        "point": 2.8841349022158718,
+        "ci_low": 1.8390928011549312,
+        "ci_high": 4.113510158694115,
+        "level": 0.95,
+        "n": 14,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
+      },
+      "[64,64]": {
+       "n_runs": 128,
+       "n_prompts": 67,
+       "accepted_over_examined": 0.8776371308016878,
+       "target_passes_per_token": 0.263671875,
+       "latency_ratio_runs": {
+        "point": 1.3051166616610048,
+        "ci_low": 1.1724637187051328,
+        "ci_high": 1.4666382810133822,
+        "level": 0.95,
+        "n": 67,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       }
      }
     },
@@ -9357,7 +9753,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8806897623116359
+       "accepted_over_examined": 0.8806897623116359,
+       "target_passes_per_token": 0.2618489583333333,
+       "n_prompts": 60,
+       "n_runs": 120
       },
       "familiar": {
        "latency_ratio": {
@@ -9371,7 +9770,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.9043478260869565
+       "accepted_over_examined": 0.9043478260869565,
+       "target_passes_per_token": 0.2817796610169492,
+       "n_prompts": 30,
+       "n_runs": 60
       },
       "shifted": {
        "latency_ratio": {
@@ -9385,24 +9787,84 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8186528497409327
+       "accepted_over_examined": 0.8186528497409327,
+       "target_passes_per_token": 0.31922196796338675,
+       "n_prompts": 30,
+       "n_runs": 60
       }
      },
      "by_output_length": {
       "[1,16]": {
-       "n": 87,
-       "latency_ratio_mean": 1.884442807837317,
-       "accepted_over_examined": 0.9324618736383442
+       "n_runs": 87,
+       "n_prompts": 54,
+       "accepted_over_examined": 0.9324618736383442,
+       "target_passes_per_token": 0.3078393881453155,
+       "latency_ratio_runs": {
+        "point": 1.8844428078373168,
+        "ci_low": 1.5999805208455884,
+        "ci_high": 2.163406749294146,
+        "level": 0.95,
+        "n": 54,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
       "[17,32]": {
-       "n": 16,
-       "latency_ratio_mean": 3.79039159370098,
-       "accepted_over_examined": 0.8322981366459627
+       "n_runs": 16,
+       "n_prompts": 16,
+       "accepted_over_examined": 0.8322981366459627,
+       "target_passes_per_token": 0.3079019073569482,
+       "latency_ratio_runs": {
+        "point": 3.79039159370098,
+        "ci_low": 1.3515767710362538,
+        "ci_high": 7.3144597246190655,
+        "level": 0.95,
+        "n": 16,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
-      "[33,64]": {
-       "n": 137,
-       "latency_ratio_mean": 1.3996892568865824,
-       "accepted_over_examined": 0.8755703027789299
+      "[33,63]": {
+       "n_runs": 8,
+       "n_prompts": 7,
+       "accepted_over_examined": 0.8327868852459016,
+       "target_passes_per_token": 0.29829545454545453,
+       "latency_ratio_runs": {
+        "point": 2.860837712285348,
+        "ci_low": 1.5535622103535818,
+        "ci_high": 4.42856520848985,
+        "level": 0.95,
+        "n": 7,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
+      },
+      "[64,64]": {
+       "n_runs": 129,
+       "n_prompts": 68,
+       "accepted_over_examined": 0.8774538106235565,
+       "target_passes_per_token": 0.26368701550387597,
+       "latency_ratio_runs": {
+        "point": 1.309075399187434,
+        "ci_low": 1.1823039425810677,
+        "ci_high": 1.4729687927711819,
+        "level": 0.95,
+        "n": 68,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       }
      },
      "upfront_cost_s": {
@@ -9508,7 +9970,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8816485225505444
+       "accepted_over_examined": 0.8816485225505444,
+       "target_passes_per_token": 0.2618489583333333,
+       "n_prompts": 60,
+       "n_runs": 120
       },
       "familiar": {
        "latency_ratio": {
@@ -9522,7 +9987,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8677248677248677
+       "accepted_over_examined": 0.8677248677248677,
+       "target_passes_per_token": 0.29936305732484075,
+       "n_prompts": 30,
+       "n_runs": 60
       },
       "shifted": {
        "latency_ratio": {
@@ -9536,24 +10004,84 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8245614035087719
+       "accepted_over_examined": 0.8245614035087719,
+       "target_passes_per_token": 0.31953428201811124,
+       "n_prompts": 30,
+       "n_runs": 60
       }
      },
      "by_output_length": {
       "[1,16]": {
-       "n": 86,
-       "latency_ratio_mean": 1.8973110978319117,
-       "accepted_over_examined": 0.9379474940334129
+       "n_runs": 86,
+       "n_prompts": 52,
+       "accepted_over_examined": 0.9379474940334129,
+       "target_passes_per_token": 0.3143459915611814,
+       "latency_ratio_runs": {
+        "point": 1.8973110978319114,
+        "ci_low": 1.6213792302723777,
+        "ci_high": 2.1598750296095592,
+        "level": 0.95,
+        "n": 52,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
       "[17,32]": {
-       "n": 15,
-       "latency_ratio_mean": 2.206092970970858,
-       "accepted_over_examined": 0.8478260869565217
+       "n_runs": 15,
+       "n_prompts": 14,
+       "accepted_over_examined": 0.8478260869565217,
+       "target_passes_per_token": 0.2984126984126984,
+       "latency_ratio_runs": {
+        "point": 2.206092970970858,
+        "ci_low": 1.1282319911825425,
+        "ci_high": 3.9767670845149024,
+        "level": 0.95,
+        "n": 14,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
-      "[33,64]": {
-       "n": 139,
-       "latency_ratio_mean": 1.4163203335102965,
-       "accepted_over_examined": 0.8726235741444867
+      "[33,63]": {
+       "n_runs": 7,
+       "n_prompts": 7,
+       "accepted_over_examined": 0.8566176470588235,
+       "target_passes_per_token": 0.28253968253968254,
+       "latency_ratio_runs": {
+        "point": 2.3895685295782703,
+        "ci_low": 1.2953343882423833,
+        "ci_high": 3.6660756919054287,
+        "level": 0.95,
+        "n": 7,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
+      },
+      "[64,64]": {
+       "n_runs": 132,
+       "n_prompts": 72,
+       "accepted_over_examined": 0.8732374506486181,
+       "target_passes_per_token": 0.2669270833333333,
+       "latency_ratio_runs": {
+        "point": 1.364708686749116,
+        "ci_low": 1.2142350658316479,
+        "ci_high": 1.55620449254765,
+        "level": 0.95,
+        "n": 72,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       }
      },
      "upfront_cost_s": {
@@ -9659,7 +10187,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8739742994271559
+       "accepted_over_examined": 0.8739742994271559,
+       "target_passes_per_token": 0.2649739583333333,
+       "n_prompts": 60,
+       "n_runs": 120
       },
       "familiar": {
        "latency_ratio": {
@@ -9673,7 +10204,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8894230769230769
+       "accepted_over_examined": 0.8894230769230769,
+       "target_passes_per_token": 0.2826086956521739,
+       "n_prompts": 30,
+       "n_runs": 60
       },
       "shifted": {
        "latency_ratio": {
@@ -9687,24 +10221,84 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8137108792846498
+       "accepted_over_examined": 0.8137108792846498,
+       "target_passes_per_token": 0.32180851063829785,
+       "n_prompts": 30,
+       "n_runs": 60
       }
      },
      "by_output_length": {
       "[1,16]": {
-       "n": 92,
-       "latency_ratio_mean": 1.868165131550946,
-       "accepted_over_examined": 0.902970297029703
+       "n_runs": 92,
+       "n_prompts": 56,
+       "accepted_over_examined": 0.902970297029703,
+       "target_passes_per_token": 0.31504424778761064,
+       "latency_ratio_runs": {
+        "point": 1.8681651315509462,
+        "ci_low": 1.6015373053738675,
+        "ci_high": 2.138378490172589,
+        "level": 0.95,
+        "n": 56,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
       "[17,32]": {
-       "n": 12,
-       "latency_ratio_mean": 2.4211906455123793,
-       "accepted_over_examined": 0.8577777777777778
+       "n_runs": 12,
+       "n_prompts": 12,
+       "accepted_over_examined": 0.8577777777777778,
+       "target_passes_per_token": 0.29343629343629346,
+       "latency_ratio_runs": {
+        "point": 2.4211906455123793,
+        "ci_low": 1.0240923044154526,
+        "ci_high": 4.598872803819739,
+        "level": 0.95,
+        "n": 12,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
-      "[33,64]": {
-       "n": 136,
-       "latency_ratio_mean": 1.3259047289697854,
-       "accepted_over_examined": 0.8686393805309734
+      "[33,63]": {
+       "n_runs": 6,
+       "n_prompts": 6,
+       "accepted_over_examined": 0.8288288288288288,
+       "target_passes_per_token": 0.29133858267716534,
+       "latency_ratio_runs": {
+        "point": 2.727895566943076,
+        "ci_low": 1.4283321061670582,
+        "ci_high": 4.222927715266912,
+        "level": 0.95,
+        "n": 6,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
+      },
+      "[64,64]": {
+       "n_runs": 130,
+       "n_prompts": 69,
+       "accepted_over_examined": 0.8699001426533524,
+       "target_passes_per_token": 0.2670673076923077,
+       "latency_ratio_runs": {
+        "point": 1.2611974595248643,
+        "ci_low": 1.1636702991584025,
+        "ci_high": 1.3899808894445964,
+        "level": 0.95,
+        "n": 69,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       }
      },
      "upfront_cost_s": {
@@ -9810,7 +10404,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8873129675810474
+       "accepted_over_examined": 0.8873129675810474,
+       "target_passes_per_token": 0.25872395833333334,
+       "n_prompts": 60,
+       "n_runs": 120
       },
       "familiar": {
        "latency_ratio": {
@@ -9824,7 +10421,10 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8931718061674009
+       "accepted_over_examined": 0.8931718061674009,
+       "target_passes_per_token": 0.2806026365348399,
+       "n_prompts": 30,
+       "n_runs": 60
       },
       "shifted": {
        "latency_ratio": {
@@ -9838,24 +10438,84 @@
         "seed": 6304,
         "method": "percentile"
        },
-       "accepted_over_examined": 0.8229166666666666
+       "accepted_over_examined": 0.8229166666666666,
+       "target_passes_per_token": 0.31752305665349145,
+       "n_prompts": 30,
+       "n_runs": 60
       }
      },
      "by_output_length": {
       "[1,16]": {
-       "n": 89,
-       "latency_ratio_mean": 1.9088360703466338,
-       "accepted_over_examined": 0.9068825910931174
+       "n_runs": 89,
+       "n_prompts": 53,
+       "accepted_over_examined": 0.9068825910931174,
+       "target_passes_per_token": 0.31521739130434784,
+       "latency_ratio_runs": {
+        "point": 1.908836070346634,
+        "ci_low": 1.6586838716107288,
+        "ci_high": 2.1800519435322436,
+        "level": 0.95,
+        "n": 53,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
       "[17,32]": {
-       "n": 15,
-       "latency_ratio_mean": 2.542589615370074,
-       "accepted_over_examined": 0.872
+       "n_runs": 15,
+       "n_prompts": 13,
+       "accepted_over_examined": 0.872,
+       "target_passes_per_token": 0.2827586206896552,
+       "latency_ratio_runs": {
+        "point": 2.5425896153700744,
+        "ci_low": 1.1064673309178434,
+        "ci_high": 4.599397443377282,
+        "level": 0.95,
+        "n": 13,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       },
-      "[33,64]": {
-       "n": 136,
-       "latency_ratio_mean": 1.325319419900372,
-       "accepted_over_examined": 0.8812741312741312
+      "[33,63]": {
+       "n_runs": 2,
+       "n_prompts": 2,
+       "accepted_over_examined": 0.8082191780821918,
+       "target_passes_per_token": 0.3132530120481928,
+       "latency_ratio_runs": {
+        "point": 1.4471794501911746,
+        "ci_low": 1.1704117722295937,
+        "ci_high": 1.7239471281527554,
+        "level": 0.95,
+        "n": 2,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
+      },
+      "[64,64]": {
+       "n_runs": 134,
+       "n_prompts": 73,
+       "accepted_over_examined": 0.8820169940103079,
+       "target_passes_per_token": 0.261660447761194,
+       "latency_ratio_runs": {
+        "point": 1.3235006134781213,
+        "ci_low": 1.1833768175985666,
+        "ci_high": 1.495499605526564,
+        "level": 0.95,
+        "n": 73,
+        "n_resamples": 2000,
+        "unit": "prompt (clustered runs)",
+        "seed": 6304,
+        "method": "percentile"
+       },
+       "eos_at_64": 0
       }
      },
      "upfront_cost_s": {

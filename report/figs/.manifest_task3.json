@@ -1,5 +1,14 @@
 [
  [
+  "report/figs/task3/tabA_t3_workload.tex",
+  "scripts/report/task3.py",
+  [
+   "results/task3/summary.json",
+   "results/task3/step6_g2.jsonl",
+   "results/task3/step6_g4.jsonl"
+  ]
+ ],
+ [
   "report/figs/task3/fig6_distill_align.pdf",
   "scripts/report/task3.py",
   [

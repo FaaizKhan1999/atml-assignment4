@@ -72,6 +72,13 @@
   ]
  ],
  [
+  "report/figs/task2/figA_t2_curves.pdf",
+  "scripts/report/task2.py",
+  [
+   "results/task2/partB/summary.json"
+  ]
+ ],
+ [
   "report/figs/task2/tab2_kv.tex",
   "scripts/report/task2.py",
   [

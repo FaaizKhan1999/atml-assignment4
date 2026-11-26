@@ -7,7 +7,7 @@
 | `report/figs/task1/figA_t1_q3block.pdf` | `scripts/report/task1.py` | `results/task1/q3_allocation.json` |
 | `report/figs/task1/tab1_contrasts.tex` | `scripts/report/task1.py` | `results/task1/summary_all.json` |
 | `report/figs/task1/tab1_qualitative.tex` | `scripts/report/task1.py` | `results/task1/qualitative.json`, `results/task1/baseline/hellaswag.jsonl`, `results/task1/p1_mag_s50/hellaswag.jsonl`, `results/task1/p2_wanda_s50/hellaswag.jsonl`, `results/task1/p3_owl_s50/hellaswag.jsonl`, `results/task1/q2_awq_int4/hellaswag.jsonl`, `results/task1/q3proj_b4/hellaswag.jsonl`, `results/task1/q2_awq_int3/hellaswag.jsonl` |
-| `report/figs/task1/tab1_resources.tex` | `scripts/report/task1.py` | `results/task1/summary_all.json`, `results/task1/baseline/summary.json`, `results/task1/p2_wanda_s50/summary.json`, `results/task1/p2_wanda_2of4/summary.json`, `results/task1/q2_awq_int8/summary.json`, `results/task1/q2_awq_int4/summary.json`, `results/task1/q2_awq_int3/summary.json` |
+| `report/figs/task1/tab1_resources.tex` | `scripts/report/task1.py` | `results/task1/summary_all.json`, `results/task1/diagnostics.json`, `results/task1/baseline/summary.json`, `results/task1/p2_wanda_s50/summary.json`, `results/task1/p2_wanda_2of4/summary.json`, `results/task1/q2_awq_int8/summary.json`, `results/task1/q2_awq_int4/summary.json`, `results/task1/q2_awq_int3/summary.json` |
 | `report/figs/task1/tab1_summary.tex` | `scripts/report/task1.py` | `results/task1/summary_all.json` |
 | `report/figs/task1/tabA_t1_full.tex` | `scripts/report/task1.py` | `results/task1/summary_all.json` |
 | `report/figs/task1/tabA_t1_p3grid.tex` | `scripts/report/task1.py` | `results/task1/diagnostics.json`, `results/task1/p3_selection.json` |
@@ -18,6 +18,7 @@
 | `report/figs/task2/fig4_mqar.pdf` | `scripts/report/task2.py` | `results/task2/partB/summary.json`, `results/task2/partB/runs/dense_K16_mixed_s6304.json`, `results/task2/partB/runs/dense_K16_mixed_s6305.json`, `results/task2/partB/runs/dense_K16_mixed_s6306.json` |
 | `report/figs/task2/fig5_kv.pdf` | `scripts/report/task2.py` | `results/task2/partC/summary.json`, `results/task2/partC/quality_s0.jsonl`, `results/task2/partC/quality_s1.jsonl` |
 | `report/figs/task2/figA_t2_curriculum.pdf` | `scripts/report/task2.py` | `results/task2/partB/summary.json`, `results/task2/partB/runs/window_K16_curriculum_s6304.json`, `results/task2/partB/runs/window_K16_curriculum_s6305.json`, `results/task2/partB/runs/window_K16_curriculum_s6306.json` |
+| `report/figs/task2/figA_t2_curves.pdf` | `scripts/report/task2.py` | `results/task2/partB/summary.json` |
 | `report/figs/task2/tab2_backends.tex` | `scripts/report/task2.py` | `results/task2/partA/backend_table.json` |
 | `report/figs/task2/tab2_kv.tex` | `scripts/report/task2.py` | `results/task2/partC/summary.json` |
 | `report/figs/task2/tab2_kv_contrasts.tex` | `scripts/report/task2.py` | `results/task2/partC/summary.json` |
@@ -43,3 +44,4 @@
 | `report/figs/task3/tabA_t3_disagree.tex` | `scripts/report/task3.py` | `results/task3/summary.json` |
 | `report/figs/task3/tabA_t3_fixed64.tex` | `scripts/report/task3.py` | `results/task3/summary.json` |
 | `report/figs/task3/tabA_t3_merge.tex` | `scripts/report/task3.py` | `results/task3/summary.json` |
+| `report/figs/task3/tabA_t3_workload.tex` | `scripts/report/task3.py` | `results/task3/summary.json`, `results/task3/step6_g2.jsonl`, `results/task3/step6_g4.jsonl` |
