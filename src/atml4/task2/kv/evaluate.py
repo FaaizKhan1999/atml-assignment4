@@ -49,6 +49,7 @@ def evaluate_prompt(model, tok, p: Prompt, device, methods=CP.METHODS, verify_se
     ev = torch.tensor(p.evidence_tokens)
     rec = {"id": p.id, "cell": [p.case["target_tokens"], p.case["position"], p.case["distractors"]], "L": L,
            "suffix_len": len(p.suffix_ids), "total_len": len(p.ids), "n_evidence_tokens": len(p.evidence_tokens),
+           "evidence_token_range": [min(p.evidence_tokens), max(p.evidence_tokens) + 1],
            "code": p.case["code"], "budget_M4": KB.m_b(L, C, 4), "M16": KB.m16(L, C),
            "untimed_seconds": {"prefill": t_prefill, "score": t_score}, "methods": {}}
     ref_first = None
