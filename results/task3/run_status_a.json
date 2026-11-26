@@ -1,0 +1,36 @@
+{
+ "commit": "0ad859a28cf670e342bac4ffb60bdaedf723312a",
+ "start": 1795671635.2236536,
+ "steps": [
+  {
+   "name": "a_phase1",
+   "rcs": {
+    "cuda:0": 0,
+    "cuda:1": 0
+   },
+   "seconds": 606.7312519550323,
+   "cmds": {
+    "cuda:0": [
+     "/usr/bin/python3 scripts/task3_a.py checks --device cuda:0",
+     "/usr/bin/python3 scripts/task3_a.py bank3 --device cuda:0"
+    ],
+    "cuda:1": [
+     "/usr/bin/python3 scripts/task3_a.py collection --device cuda:1"
+    ]
+   }
+  },
+  {
+   "name": "a_baseline_exclusive",
+   "rcs": {
+    "cuda:0": 0
+   },
+   "seconds": 2226.3258969783783,
+   "cmds": {
+    "cuda:0": [
+     "/usr/bin/python3 scripts/task3_a.py baseline --device cuda:0"
+    ]
+   }
+  }
+ ],
+ "total_seconds": 2833.057498216629
+}
