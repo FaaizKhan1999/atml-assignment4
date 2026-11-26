@@ -1,0 +1,25 @@
+{
+ "commit": "8c0129beacdcd0d8e9ffd535b8102e0d463abae9",
+ "start": 1795675376.1724107,
+ "steps": [
+  {
+   "name": "b_distill",
+   "rcs": {
+    "cuda:0": 1,
+    "cuda:1": 1
+   },
+   "seconds": 76.45398902893066,
+   "cmds": {
+    "cuda:0": [
+     "/usr/bin/python3 scripts/task3_b.py distill --method off --seed 6304 --device cuda:0",
+     "/usr/bin/python3 scripts/task3_b.py distill --method on --seed 6304 --device cuda:0"
+    ],
+    "cuda:1": [
+     "/usr/bin/python3 scripts/task3_b.py distill --method off --seed 6305 --device cuda:1",
+     "/usr/bin/python3 scripts/task3_b.py distill --method on --seed 6305 --device cuda:1"
+    ]
+   }
+  }
+ ],
+ "total_seconds": 76.45428776741028
+}
