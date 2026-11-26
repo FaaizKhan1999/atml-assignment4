@@ -197,6 +197,10 @@ def fetch(name: str) -> None:
     gpus = rm.get("gpu_names") or []
     acc = f"{len(gpus)}x {gpus[0]}" if gpus else ("none (CPU)" if not info["gpu"] else "unknown")
     wall_h = rm.get("wall_seconds", 0) / 3600
+    if not rm:
+        # download failed (e.g. network) or the kernel produced no run_meta: never write a ledger row or sync
+        raise SystemExit(f"fetch incomplete for {info['kernel_id']}: no run_meta.json in {dl} (status: {st[:200]}); "
+                         "nothing synced, ledger unchanged - re-run fetch")
     ok = rm.get("exit_code") == 0 and not rm.get("error")
     state = ("ok" if ok else f"FAILED(rc={rm.get('exit_code')},err={rm.get('error')})") if rm else f"no run_meta: {st}"
     sync = _sync_results(dl, info["commit"])

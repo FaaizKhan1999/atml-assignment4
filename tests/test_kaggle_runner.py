@@ -56,3 +56,20 @@ def test_git_blob_sha_matches_git(tmp_path):
     f.write_bytes(b'{"a": 1}\n')
     ref = subprocess.run(["git", "hash-object", str(f)], capture_output=True, text=True).stdout.strip()
     assert kr._git_blob_sha(f.read_bytes()) == ref
+
+
+def test_fetch_without_run_meta_writes_nothing(tmp_path, monkeypatch):
+    import pytest
+
+    runs = tmp_path / "runs"
+    (runs / "k").mkdir(parents=True)
+    (runs / "k" / "launch.json").write_text(json.dumps({"kernel_id": "u/k", "commit": "a" * 40, "gpu": True,
+                                                         "pushed_utc": "t"}))
+    led = tmp_path / "ledger.md"
+    monkeypatch.setattr(kr, "RUNS", runs)
+    monkeypatch.setattr(kr, "LEDGER", led)
+    monkeypatch.setattr(kr, "run", lambda *a, **k: "ConnectionError")
+    monkeypatch.setattr(kr, "status", lambda name: "ConnectionError")
+    with pytest.raises(SystemExit):
+        kr.fetch("k")
+    assert not led.exists()
