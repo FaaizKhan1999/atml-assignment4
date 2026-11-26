@@ -1,14 +1,14 @@
 {
- "commit": "8c0129beacdcd0d8e9ffd535b8102e0d463abae9",
- "start": 1795675376.1724107,
+ "commit": "6aab2240ea399d11185f6f08b906b60bf685064e",
+ "start": 1795681530.510341,
  "steps": [
   {
    "name": "b_distill",
    "rcs": {
-    "cuda:0": 1,
-    "cuda:1": 1
+    "cuda:0": 0,
+    "cuda:1": 0
    },
-   "seconds": 76.45398902893066,
+   "seconds": 2653.3870046138763,
    "cmds": {
     "cuda:0": [
      "/usr/bin/python3 scripts/task3_b.py distill --method off --seed 6304 --device cuda:0",
@@ -19,7 +19,41 @@
      "/usr/bin/python3 scripts/task3_b.py distill --method on --seed 6305 --device cuda:1"
     ]
    }
+  },
+  {
+   "name": "b_ownbank",
+   "rcs": {
+    "cuda:0": 0,
+    "cuda:1": 0
+   },
+   "seconds": 114.40649914741516,
+   "cmds": {
+    "cuda:0": [
+     "/usr/bin/python3 scripts/task3_b.py ownbank --run off_s6304 --device cuda:0",
+     "/usr/bin/python3 scripts/task3_b.py ownbank --run on_s6304 --device cuda:0"
+    ],
+    "cuda:1": [
+     "/usr/bin/python3 scripts/task3_b.py ownbank --run off_s6305 --device cuda:1",
+     "/usr/bin/python3 scripts/task3_b.py ownbank --run on_s6305 --device cuda:1"
+    ]
+   }
+  },
+  {
+   "name": "b_align_accuracy",
+   "rcs": {
+    "cuda:0": 0,
+    "cuda:1": 0
+   },
+   "seconds": 788.3939452171326,
+   "cmds": {
+    "cuda:0": [
+     "/usr/bin/python3 scripts/task3_b.py align --device cuda:0"
+    ],
+    "cuda:1": [
+     "/usr/bin/python3 scripts/task3_b.py accuracy --device cuda:1"
+    ]
+   }
   }
  ],
- "total_seconds": 76.45428776741028
+ "total_seconds": 3556.1881816387177
 }

@@ -2,7 +2,7 @@
 
 One row per Kaggle kernel run (appended by `scripts/kaggle_run.py fetch`). Wall time is the bootstrap's own wall clock (excludes Kaggle queue/startup). GPU-hours = wall hours for GPU kernels, 0 for CPU kernels.
 
-**Running total GPU-hours: 6.661**
+**Running total GPU-hours: 7.656**
 
 | date (UTC) | kernel | accelerator (nvidia-smi) | wall time (h) | GPU-hours | status | commit | purpose |
 |---|---|---|---|---|---|---|---|
@@ -22,3 +22,4 @@ One row per Kaggle kernel run (appended by `scripts/kaggle_run.py fetch`). Wall 
 | 2026-11-26T05:40:11+00:00 | focusedkognition/atml4-t3-a | 2x Tesla T4 | 0.793 | 0.793 | ok | 0ad859a28c | Task3 T3-a: real-model sampler checks, bank (iii), teacher collection || ; exclusive Step 2 baseline |
 | 2026-11-26T06:23:18+00:00 | focusedkognition/atml4-t2c-full | 2x Tesla T4 | 0.612 | 0.612 | ok | af7432327f | Task2C full run: quality 180 x (6 required + 2 supplementary zp) on 2 GPUs; exclusive timing subset; packed benchmark |
 | 2026-11-26T06:42:33+00:00 | focusedkognition/atml4-t3-b | 2x Tesla T4 | 0.028 | 0.028 | FAILED(rc=1,err=None) | 8c0129beac | Task3 T3-b: 4 distillation runs (2/GPU), merge+check, own banks, Step 5 alignment, standalone accuracy |
+| 2026-11-26T08:25:05+00:00 | focusedkognition/atml4-t3-b2 | 2x Tesla T4 | 0.995 | 0.995 | ok | 6aab2240ea | Task3 T3-b (relaunch, torchao removed): 4 distillation runs, merge+check, own banks, Step 5 alignment, standalone accuracy |

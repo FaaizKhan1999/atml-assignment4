@@ -153,8 +153,9 @@ def distillation():
         if not p.exists():
             continue
         d = load_result(p)[1]
-        out[run] = {k: d[k] for k in ("updates", "skipped_updates", "scored", "presentations", "time", "train_wall_s",
+        out[run] = {k: d[k] for k in ("updates", "skipped_updates", "scored", "time", "train_wall_s",
                                       "params", "peak_memory", "merge_s")}
+        out[run]["presentations"] = len(d["presentations"])  # the log's list overwrote the trainer's count key
         out[run]["merged_vs_unmerged_max_abs_logit"] = max(e["max_abs_logit_diff"] for e in d["merged_vs_unmerged"])
         out[run]["merged_vs_unmerged_max_kl"] = max(e["max_kl_unmerged_merged"] for e in d["merged_vs_unmerged"])
         out[run]["loss_curve"] = [(u["update"], u["loss_mean_kl"], u["cum_scored"]) for u in d["updates_log"]]
