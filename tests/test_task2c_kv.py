@@ -312,3 +312,27 @@ def test_evaluate_prompt_end_to_end_tiny():
     assert rec["methods"]["int4_chan"]["packed_bytes"] == KB.m_b(L, C, 4) == rec["methods"]["int4_tok"]["packed_bytes"]
     r = rec["methods"]["int4_chan"]
     assert r["recon_error"]["K"]["mean"] > 0 and r["evidence_retained_fp16"] is None
+
+
+def test_bench_encode_decode_roundtrip():
+    import importlib.util
+
+    from atml4.common.meta import repo_root
+
+    spec = importlib.util.spec_from_file_location("t2crun", repo_root() / "scripts/task2c_run.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    g = torch.Generator().manual_seed(3)
+    Ks = [torch.randn(4, 200, 64, generator=g).half() for _ in range(2)]
+    Vs = [torch.randn(4, 200, 64, generator=g).half() for _ in range(2)]
+    qpos = torch.tensor(sorted(torch.randperm(200, generator=g)[:128].tolist()))
+    for kind, N in (("int4_chan", 192), ("int4_tok", 192), ("int2_hybrid_low", 128)):
+        blobs = mod._encode(Ks, Vs, kind, qpos, 192)
+        dec = mod._decode(blobs, (4, N, 64), kind)
+        for (k, v), K, V in zip(dec, Ks, Vs):
+            src_k = K[:, qpos] if kind == "int2_hybrid_low" else K[:, :192]
+            src_v = V[:, qpos] if kind == "int2_hybrid_low" else V[:, :192]
+            bits = 2 if kind == "int2_hybrid_low" else 4
+            kl = "token" if kind == "int4_tok" else "channel"
+            assert torch.equal(k, KQ.quantize_tensor(src_k, kl, bits)["x_hat"])
+            assert torch.equal(v, KQ.quantize_tensor(src_v, "token", bits)["x_hat"])

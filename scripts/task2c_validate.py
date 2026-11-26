@@ -21,26 +21,18 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 import torch  # noqa: E402
-from transformers import AutoModelForCausalLM, AutoTokenizer  # noqa: E402
 
 from atml4.common.io import save_result  # noqa: E402
-from atml4.common.meta import collect_meta, model_revision  # noqa: E402
+from atml4.common.meta import collect_meta  # noqa: E402
 from atml4.common.seed import set_seed  # noqa: E402
 from atml4.task2.kv import compress as CP  # noqa: E402
 from atml4.task2.kv import kvbytes as KB  # noqa: E402
 from atml4.task2.kv import prompts as PR  # noqa: E402
 from atml4.task2.kv.evaluate import eos_ids, evaluate_prompt, kl  # noqa: E402
+from atml4.task2.kv.model import load  # noqa: E402
 from atml4.task2.kv.kvcache import forward_step, make_cache, prefill, run_suffix_and_generate  # noqa: E402
 
 OUT = ROOT / "results/task2/partC"
-
-
-def load(device):
-    mid, rev = model_revision("target")
-    tok = AutoTokenizer.from_pretrained(mid, revision=rev)
-    model = AutoModelForCausalLM.from_pretrained(mid, revision=rev, dtype=torch.float16, attn_implementation="sdpa")
-    model.to(device).eval().requires_grad_(False)
-    return model, tok
 
 
 @torch.no_grad()
