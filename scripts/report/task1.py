@@ -184,27 +184,21 @@ def fig2():
 
 
 def figA_q3block():
-    w, h = 5.5, 1.6
+    w, h = 5.5, 1.35
     qa = R.load("results/task1/q3_allocation.json")
     dn = np.array(qa["probe_dnll"])  # [28, 4]
     f = R.fig(w, h)
-    a, b = f.subplots(1, 2, width_ratios=[3, 1])
+    a = f.subplots(1, 1)
     im = a.imshow(np.clip(dn.T, 1e-5, None), aspect="auto", cmap="viridis", norm=LogNorm(vmin=1e-5, vmax=dn.max()),
                   interpolation="nearest")
     a.set_yticks(range(4), [f"{b_} bit" for b_ in qa["bits_options"]])
     a.set_xlabel("block")
     cb = f.colorbar(im, ax=a, pad=0.01, fraction=0.04)
     cb.set_label("isolated dev $\\Delta$NLL", fontsize=R.SMALL)
-    names = ["B4", "B3"]
-    for i, n in enumerate(names):
-        bits = qa["allocations"][n]["bits"]
-        b.bar(i, np.mean(bits), color=R.OI["purple"], width=0.6)
-        b.text(i, np.mean(bits) + 0.1, f"all {bits[0]}-bit", ha="center", fontsize=5.5)
-    b.set_xticks([0, 1], names)
-    b.set_ylabel("chosen bits (all 28 blocks)")
-    b.set_ylim(0, 5)
-    R.panel(a, "a")
-    R.panel(b, "b")
+    b4, b3 = (sorted(set(qa["allocations"][n]["bits"])) for n in ("B4", "B3"))
+    assert len(b4) == 1 and len(b3) == 1
+    a.text(0.995, 0.97, f"knapsack choice: all blocks {b4[0]}-bit (B4), {b3[0]}-bit (B3)", transform=a.transAxes,
+           ha="right", va="top", fontsize=5.5, color="white")
     R.record(R.save(f, 1, "figA_t1_q3block.pdf", w, h), S, ["results/task1/q3_allocation.json"])
 
 
@@ -226,6 +220,11 @@ def compress_desc(c):
     return f"{100 * st['mask_pruned_fraction']:.0f}\\%"
 
 
+def ppl_fmt(v):
+    """perplexities >= 10,000 in scientific notation (e.g. 6.39e4), otherwise 2 decimals."""
+    return R.num(v, "{:.2f}") if v < 1e4 else f"{v:.2e}".replace("e+0", "e").replace("e+", "e")
+
+
 def tab1_summary():
     rows = []
     for r in ROWS:
@@ -235,9 +234,7 @@ def tab1_summary():
         lab, c = r
         x = C[c]
         hs = x["hellaswag"]
-        rows.append([lab, compress_desc(c), f"{total_gb(c):.3f}", R.num(x["wikitext2"]["ppl"], "{:.2f}")
-                     if x["wikitext2"]["ppl"] < 1e5 else f"{x['wikitext2']['ppl']:.2e}".replace("e+0", "e"),
-                     R.num(x["c4"]["ppl"], "{:.2f}") if x["c4"]["ppl"] < 1e5 else f"{x['c4']['ppl']:.2e}".replace("e+0", "e"),
+        rows.append([lab, compress_desc(c), f"{total_gb(c):.3f}", ppl_fmt(x["wikitext2"]["ppl"]), ppl_fmt(x["c4"]["ppl"]),
                      f"{hs['first_512']['acc_norm']:.3f}", f"{hs['all']['acc_norm']:.3f}" if x["hellaswag_n"] >= 2000 else "",
                      "" if x["output_error_param_weighted"] is None else
                      (f"{x['output_error_param_weighted']:.4f}" if x["output_error_param_weighted"] >= 1e-3 else
