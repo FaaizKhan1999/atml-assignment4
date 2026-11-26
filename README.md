@@ -30,5 +30,11 @@ python scripts/kaggle_run.py launch gpu-smoke --gpu --wait --source <user>/atml4
   --output env/requirements-lock.txt --cmd "python scripts/gpu_smoke.py"
 ```
 
+## Artifacts kept outside git
+- Task 2 Part B MQAR checkpoints (39 runs, `results/task2/partB/ckpt/<run>.pt`, ~1.7 MB each) are NOT committed.
+  They are in the output of Kaggle kernel `focusedkognition/atml4-t2-ab` (run at commit d651fac), and the B3
+  curriculum checkpoints (`window_K16_curriculum_s*.pt`) in the output of `focusedkognition/atml4-q3proj-b3`.
+  Per-query test predictions for every run are committed (`results/task2/partB/queries/*.jsonl.gz`).
+
 ## Attribution of reused code
 None so far.

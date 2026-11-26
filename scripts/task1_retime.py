@@ -24,7 +24,7 @@ from atml4.common.io import load_result, save_result  # noqa: E402
 from atml4.common.meta import collect_meta  # noqa: E402
 from atml4.common.seed import set_seed  # noqa: E402
 from atml4.task1 import resources  # noqa: E402
-from atml4.task1.conditions import CONDITIONS, FIXED_CONDITIONS, NEW_CONDITIONS  # noqa: E402
+from atml4.task1.conditions import CONDITIONS, FIXED_CONDITIONS, NEW_CONDITIONS, Q3PROJ_CONDITIONS  # noqa: E402
 from atml4.task1.model import Pristine, load_base_model  # noqa: E402
 
 METRICS = ("prefill_512", "prefill_2048", "decode_64_after_512")
@@ -75,6 +75,9 @@ def main():
     ap.add_argument("--device", default="cuda:0")
     ap.add_argument("--reps", type=int, default=5)
     ap.add_argument("--lock-mhz", type=int, default=1305)
+    ap.add_argument("--conditions", nargs="*", default=None,
+                    help="short pass: these conditions + baseline references (default: all Task 1 conditions)")
+    ap.add_argument("--out", default="retiming.json")
     a = ap.parse_args()
     set_seed(6304, deterministic=False)
     dev = torch.device(a.device)
@@ -86,7 +89,8 @@ def main():
     model, tok = load_base_model(a.device)
     pr = Pristine(model)
     tin = load_result(ROOT / "results/task1/timing_inputs.json")[1]["token_ids"]
-    conds = ["baseline"] + FIXED_CONDITIONS + NEW_CONDITIONS
+    conds = ["baseline"] + (a.conditions if a.conditions else FIXED_CONDITIONS + NEW_CONDITIONS)
+    assert all(c in CONDITIONS for c in conds) and Q3PROJ_CONDITIONS
     seq = sequence(conds)
     ctx = {"tokenizer": tok, "device": dev, "pristine": pr, "root": ROOT, "verify_pack": False}
     runs = []
@@ -139,9 +143,11 @@ def main():
                "execution": "dense FP16 kernels for every condition (zeros / fake-quant weights)"}
     meta = collect_meta(seed=6304, dtype=torch.float16, models=["base"],
                         extra={"timing_exclusive": True, "other_gpu_state": resources.gpu_state()})
-    save_result(ROOT / "results/task1/retiming.json", payload, meta)
+    save_result(ROOT / "results/task1" / a.out, payload, meta)
     for c in conds:
         p = ROOT / "results/task1" / c / "summary.json"
+        if a.conditions and c == "baseline":
+            continue  # short pass: the baseline summary keeps the full pass; refs are in the short-pass file
         if not p.exists():
             continue
         m0, s = load_result(p)
@@ -150,6 +156,7 @@ def main():
                                               "superseded_by": "results/task1/retiming.json",
                                               "reason": "order-dependent clock/thermal drift; see docs/deviations.md"}
         s["latency_retimed"] = {k: per[c][k] for k in METRICS}
+        s["latency_retimed_source"] = f"results/task1/{a.out}"
         save_result(p, s, m0)
     print("clock lock:", lock, flush=True)
 

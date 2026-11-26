@@ -252,3 +252,84 @@ def unfolded_equivalent(res: dict, bits, res_by_bits=None):
             return W.float() * sd[:, None]
         return W
     return eq
+
+
+PROJ_NAMES = ("q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj")
+PROJ_GROUP = {"q_proj": "qkv", "k_proj": "qkv", "v_proj": "qkv", "o_proj": "o", "gate_proj": "gateup",
+              "up_proj": "gateup", "down_proj": "down"}
+
+
+def _scale(r, li, g, b, device):
+    return torch.from_numpy(r["scales"][f"L{li}.{g}.b{b}"]).to(device)
+
+
+def serialized_bytes_proj(bits_map: dict, res_by_bits: dict, layers) -> int:
+    """Serialized FP16 AWQ scale bytes for per-projection bits: per (block, serialized group), the number of
+    DISTINCT scale vectors used by the group's quantized projections x d_in x 2 (down scales are folded: 0)."""
+    tot = 0
+    for li in layers:
+        for g in SERIALIZED:
+            vecs = []
+            for n in PROJ_NAMES:
+                b = bits_map.get((li, n))
+                if PROJ_GROUP[n] != g or b is None:
+                    continue
+                v = res_by_bits[b]["scales"][f"L{li}.{g}.b{b}"]
+                if not any(np.array_equal(v, w) for w in vecs):
+                    vecs.append(v)
+            tot += sum(v.size * 2 for v in vecs)
+    return tot
+
+
+@torch.no_grad()
+def apply_quantized_proj(model, bits_map: dict, res_by_bits: dict, on_matrix=None) -> dict:
+    """Per-projection AWQ-style quantization. bits_map[(layer, proj_name)] = bits or None (projection stays FP16).
+    Each projection uses the scale vector of its own bit width for its group; down scales are folded into up rows
+    only if down_proj is quantized (with down's bit width). With identical bits for every projection of a block
+    this reproduces apply_quantized exactly."""
+    L = len(model.model.layers)
+    layers = sorted({li for li, _ in bits_map if bits_map[(li, _)] is not None})
+    for li in layers:
+        mods = _mods(model.model.layers[li])
+        dev = mods["q_proj"].weight.device
+        bl = {n: bits_map.get((li, n)) for n in PROJ_NAMES}
+        new = {}
+        up_src = mods["up_proj"].weight
+        if bl["down_proj"] is not None:
+            b = bl["down_proj"]
+            sd = _scale(res_by_bits[b], li, "down", b, dev).float()
+            qd = quantize(mods["down_proj"].weight.float() * sd[None, :], b)
+            if on_matrix:
+                on_matrix(f"model.layers.{li}.mlp.down_proj", qd)
+            new["down_proj"] = qd.w_hat
+            up_src = mods["up_proj"].weight.float() / sd[:, None]
+            if bl["up_proj"] is None:
+                new["up_proj"] = up_src.half()  # deployed fold, FP16
+        for n in PROJ_NAMES[:6]:
+            b = bl[n]
+            if b is None:
+                continue
+            W = up_src if n == "up_proj" else mods[n].weight
+            weff, qr = effective_weight(W, _scale(res_by_bits[b], li, PROJ_GROUP[n], b, dev), b)
+            new[n] = weff
+            if on_matrix:
+                parent = "self_attn" if n in ("q_proj", "k_proj", "v_proj", "o_proj") else "mlp"
+                on_matrix(f"model.layers.{li}.{parent}.{n}", qr)
+        for n, w in new.items():
+            mods[n].weight.copy_(w)
+    assert all(0 <= li < L for li in layers)
+    return {"serialized_scale_bytes": serialized_bytes_proj(bits_map, res_by_bits, layers),
+            "serialized_scales": {"groups": list(SERIALIZED), "dtype": "float16",
+                                  "rule": "distinct scale vectors per (block, group) x d_in x 2"}}
+
+
+def unfolded_equivalent_proj(bits_map: dict, res_by_bits: dict):
+    """Output-error equivalents for per-projection bits (down/up unfolded with down's scales if down quantized)."""
+    def eq(qualname: str, W: torch.Tensor) -> torch.Tensor:
+        li = int(qualname.split(".")[2])
+        bd = bits_map.get((li, "down_proj"))
+        if bd is not None and (qualname.endswith("down_proj") or qualname.endswith("up_proj")):
+            sd = torch.from_numpy(res_by_bits[bd]["scales"][f"L{li}.down.b{bd}"]).to(W.device).float()
+            return W.float() / sd[None, :] if qualname.endswith("down_proj") else W.float() * sd[:, None]
+        return W
+    return eq

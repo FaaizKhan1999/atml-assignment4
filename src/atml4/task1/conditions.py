@@ -286,3 +286,47 @@ def _q3(model, ctx, budget: str) -> dict:
 register("q3_mixed_b4", 2000, "quant")(lambda m, c: _q3(m, c, "B4"))
 register("q3_mixed_b3", 2000, "quant")(lambda m, c: _q3(m, c, "B3"))
 NEW_CONDITIONS = ["p3_owl_s50", "p3_owl_s75", "q3_mixed_b4", "q3_mixed_b3"]
+
+
+# ---------------------------------------------------------------- Q3-proj (second pre-registered Q3 design)
+@torch.no_grad()
+def _q3proj(model, ctx, budget: str) -> dict:
+    import json
+
+    from . import awq, storage
+
+    global _Q3RES
+    alloc = json.loads((ctx["root"] / "results/task1/q3proj_allocation.json").read_text())["payload"]
+    a = alloc["allocations"][budget]
+    bm = {(x["layer"], x["proj"]): x["bits"] for x in a["bits_map"]}
+    if _Q3RES is None:
+        q2 = awq.load_search(ctx["root"] / "results/task1/q2_awq_search.npz")
+        new = awq.load_search(ctx["root"] / "results/task1/q3_awq_search.npz")
+        _Q3RES = {8: q2, 4: q2, 3: q2, 2: new}
+    acc, on_matrix = _pack_checker(ctx)
+    t0 = time.perf_counter()
+    info = awq.apply_quantized_proj(model, bm, _Q3RES, on_matrix=on_matrix)
+    _sync()
+    t_apply = time.perf_counter() - t0
+    ctx["outerr_equivalent"] = awq.unfolded_equivalent_proj(bm, _Q3RES)
+    st, per = storage.model_storage_from_torch(model)
+    assert acc["matrices"] == len(per)
+    total = acc["packed_bytes"] + info["serialized_scale_bytes"] + st.other_bytes
+    assert total <= a["budget_bytes"], f"realised {total} > budget {a['budget_bytes']}"
+    assert total == a["total_bytes"], "realised bytes differ from the allocation record"
+    numel = {m["qualname"]: m["numel"] for m in per}
+    nominal = sum(m["bits"] * numel[m["qualname"]] for m in acc["per_matrix"]) / sum(numel.values())
+    return {"family": "quant", "method": f"Q3-proj mixed precision (per-projection probes + exact MILP) @ {budget}",
+            "bits": "mixed", "counts_proj_type_x_bits": a["counts_proj_type_x_bits"],
+            "nominal_bits": nominal, "group_size": 128, "budget_bytes": a["budget_bytes"],
+            "realised_total_bytes": total,
+            "execution": "fake-quantized FP16 (dequantized, inverse scales merged into FP16 weights)",
+            "packing": acc, **info, "predicted_dev_dnll": a["predicted_dev_dnll"],
+            "realised_dev_dnll": a["realised_dev_dnll"], "primary_at_budget": a["primary"],
+            "compress_seconds": {"apply_and_pack_verify_s": t_apply,
+                                 "probe_and_search_s": "see results/task1/q3proj_allocation.json gpu_seconds"}}
+
+
+register("q3proj_b4", 2000, "quant")(lambda m, c: _q3proj(m, c, "B4"))
+register("q3proj_b3", 2000, "quant")(lambda m, c: _q3proj(m, c, "B3"))
+Q3PROJ_CONDITIONS = ["q3proj_b4", "q3proj_b3"]

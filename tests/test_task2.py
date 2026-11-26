@@ -127,3 +127,27 @@ def test_generator_invariants_and_stream_rule():
     rows = mqar_data.load_split("development")
     g.validate(rows[0])
     assert len(rows) == 2304
+
+
+def test_curriculum_schedule_and_examples():
+    import importlib.util
+
+    import numpy as np
+
+    from atml4.task2 import mqar_data
+
+    spec = importlib.util.spec_from_file_location("cur", mqar_data.repo_root() / "scripts/task2_curriculum.py")
+    cur = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cur)
+    assert cur.p_mixed(0) == 0 and cur.p_mixed(1499) == 0 and cur.p_mixed(1500) == 0
+    assert cur.p_mixed(2250) == 0.5 and cur.p_mixed(3000) == 1 and cur.p_mixed(4499) == 1
+    m = cur.regime_mask(6305)
+    assert m.shape == (4500, 32) and not m[:1500].any() and m[3000:].all()
+    frac = m[1500:3000].mean()
+    assert 0.45 < frac < 0.55
+    assert np.array_equal(m, cur.regime_mask(6305)) and not np.array_equal(m, cur.regime_mask(6304))
+    g = mqar_data._gen()
+    for u, i in ((10, 3), (2000, 7), (4000, 31)):
+        reg = "mixed" if m[u, i] else "near"
+        ex = g.make_example("train", 16, reg, mqar_data.stream_index(6305, u, i))
+        assert ex["regime"] == reg and ex["K"] == 16
