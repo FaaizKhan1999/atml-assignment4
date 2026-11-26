@@ -1,6 +1,6 @@
 {
  "meta": {
-  "timestamp_utc": "2026-11-25T22:41:28+00:00",
+  "timestamp_utc": "2026-11-26T05:43:41+00:00",
   "command": "python scripts/task1_diagnostics.py",
   "cwd": "/home/faaiz/Desktop/atml/assignments/assignment-4",
   "hostname": "focusedkognition",
@@ -9,7 +9,7 @@
    "run_type": null
   },
   "git": {
-   "commit": "d651facfb15e4b7271b15c091bea09037ee5829b",
+   "commit": "286cdf71535713858a05fea59dd3b12104bb3846",
    "dirty": true,
    "submodule_path": "external/atml-pa4-datasets",
    "submodule_commit": "6a0a9ec9da7ef3d313ee3036cfec493886723644"
@@ -23,7 +23,7 @@
    "datasets": "5.0.1",
    "numpy": "2.5.5",
    "scipy": "1.18.1",
-   "peft": null,
+   "peft": "0.21.2",
    "accelerate": "1.16.0"
   },
   "cuda": {

@@ -1,0 +1,1737 @@
+{
+ "meta": {
+  "timestamp_utc": "2026-11-26T05:37:07+00:00",
+  "command": "python3 scripts/task1_retime.py --device cuda:0 --conditions q3proj_b4 q3proj_b3 --out retiming_q3proj.json",
+  "cwd": "/tmp/atml4_repo",
+  "hostname": "3edf2a0e704d",
+  "kaggle": {
+   "kernel_slug": "focusedkognition/atml4-q3proj-b3",
+   "run_type": "Batch"
+  },
+  "git": {
+   "commit": "9f06b3212c6c9758d4501373f286820ab4d56e5f",
+   "dirty": false,
+   "submodule_path": "external/atml-pa4-datasets",
+   "submodule_commit": "6a0a9ec9da7ef3d313ee3036cfec493886723644"
+  },
+  "versions": {
+   "python": "3.13.16",
+   "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+   "torch": "2.11.0+cu130",
+   "transformers": "4.57.1",
+   "huggingface_hub": "0.36.2",
+   "datasets": "4.8.5",
+   "numpy": "2.1.3",
+   "scipy": "1.16.3",
+   "peft": "0.21.2",
+   "accelerate": "1.15.0"
+  },
+  "cuda": {
+   "available": true,
+   "devices": [
+    {
+     "index": 0,
+     "name": "Tesla T4",
+     "capability": "7.5",
+     "total_memory_bytes": 15636037632
+    },
+    {
+     "index": 1,
+     "name": "Tesla T4",
+     "capability": "7.5",
+     "total_memory_bytes": 15636037632
+    }
+   ],
+   "torch_cuda_build": "13.0",
+   "cudnn": 92700,
+   "driver": "580.178.04"
+  },
+  "sdpa": {
+   "flash_sdp_enabled": true,
+   "mem_efficient_sdp_enabled": true,
+   "math_sdp_enabled": true,
+   "cudnn_sdp_enabled": true,
+   "is_flash_attention_available": true
+  },
+  "dtype": "torch.float16",
+  "seed": 6304,
+  "models": [
+   {
+    "id": "Qwen/Qwen2.5-1.5B",
+    "revision": "8faed761d45a263340a0528343f099c05c9a4323"
+   }
+  ],
+  "extra": {
+   "timing_exclusive": true,
+   "other_gpu_state": "0, Tesla T4, 7 %, 4515 MiB\n1, Tesla T4, 0 %, 3 MiB"
+  }
+ },
+ "payload": {
+  "sequence": [
+   "baseline",
+   "q3proj_b4",
+   "q3proj_b3",
+   "baseline",
+   "baseline",
+   "q3proj_b3",
+   "q3proj_b4",
+   "baseline"
+  ],
+  "per_condition": {
+   "baseline": {
+    "occurrences": 4,
+    "prefill_512": {
+     "median_all_reps_ms": 119.57024002075195,
+     "n_reps": 20,
+     "occurrence_medians_ms": [
+      103.76204681396484,
+      130.3206024169922,
+      119.45782470703125,
+      119.64991760253906
+     ],
+     "drift_adjusted_ratio": 1.0,
+     "occurrence_ratios": [],
+     "peak_alloc_bytes": 3270028800,
+     "peak_reserved_bytes": 4594860032
+    },
+    "prefill_2048": {
+     "median_all_reps_ms": 798.421875,
+     "n_reps": 20,
+     "occurrence_medians_ms": [
+      697.6961669921875,
+      841.1236572265625,
+      791.2711181640625,
+      800.82958984375
+     ],
+     "drift_adjusted_ratio": 1.0,
+     "occurrence_ratios": [],
+     "peak_alloc_bytes": 3785797120,
+     "peak_reserved_bytes": 4594860032
+    },
+    "decode_64_after_512": {
+     "median_all_reps_ms": 2366.656494140625,
+     "n_reps": 20,
+     "occurrence_medians_ms": [
+      2379.665283203125,
+      2360.095947265625,
+      2370.59912109375,
+      2358.2861328125
+     ],
+     "drift_adjusted_ratio": 1.0,
+     "occurrence_ratios": [],
+     "peak_alloc_bytes": 3286544384,
+     "peak_reserved_bytes": 4594860032
+    }
+   },
+   "q3proj_b4": {
+    "occurrences": 2,
+    "prefill_512": {
+     "median_all_reps_ms": 118.50347518920898,
+     "n_reps": 10,
+     "occurrence_medians_ms": [
+      110.83468627929688,
+      122.08172607421875
+     ],
+     "drift_adjusted_ratio": 1.0439692618759846,
+     "occurrence_ratios": [
+      1.068162104377264,
+      1.0203243639478117
+     ],
+     "peak_alloc_bytes": 3270028800,
+     "peak_reserved_bytes": 4594860032
+    },
+    "prefill_2048": {
+     "median_all_reps_ms": 765.1598510742188,
+     "n_reps": 10,
+     "occurrence_medians_ms": [
+      735.4671020507812,
+      791.227294921875
+     ],
+     "drift_adjusted_ratio": 1.020537650428399,
+     "occurrence_ratios": [
+      1.0541366526656246,
+      0.9880095652762425
+     ],
+     "peak_alloc_bytes": 3785797120,
+     "peak_reserved_bytes": 4594860032
+    },
+    "decode_64_after_512": {
+     "median_all_reps_ms": 2340.5699462890625,
+     "n_reps": 10,
+     "occurrence_medians_ms": [
+      2307.927978515625,
+      2389.383544921875
+     ],
+     "drift_adjusted_ratio": 0.9912834929035695,
+     "occurrence_ratios": [
+      0.9698540356940709,
+      1.0131864457313702
+     ],
+     "peak_alloc_bytes": 3286544384,
+     "peak_reserved_bytes": 4594860032
+    }
+   },
+   "q3proj_b3": {
+    "occurrences": 2,
+    "prefill_512": {
+     "median_all_reps_ms": 117.19574356079102,
+     "n_reps": 10,
+     "occurrence_medians_ms": [
+      117.59661102294922,
+      116.43084716796875
+     ],
+     "drift_adjusted_ratio": 0.9378158993413633,
+     "occurrence_ratios": [
+      0.9023639305063256,
+      0.9746607009922864
+     ],
+     "peak_alloc_bytes": 3270028800,
+     "peak_reserved_bytes": 4594860032
+    },
+    "prefill_2048": {
+     "median_all_reps_ms": 778.501220703125,
+     "n_reps": 10,
+     "occurrence_medians_ms": [
+      787.2860107421875,
+      767.3575439453125
+     ],
+     "drift_adjusted_ratio": 0.9527359869358679,
+     "occurrence_ratios": [
+      0.9359931848048432,
+      0.9697782799475416
+     ],
+     "peak_alloc_bytes": 3785797120,
+     "peak_reserved_bytes": 4594860032
+    },
+    "decode_64_after_512": {
+     "median_all_reps_ms": 2368.2371826171875,
+     "n_reps": 10,
+     "occurrence_medians_ms": [
+      2378.017578125,
+      2364.28076171875
+     ],
+     "drift_adjusted_ratio": 1.0024510276196925,
+     "occurrence_ratios": [
+      1.007593602658459,
+      0.9973346993514092
+     ],
+     "peak_alloc_bytes": 3286544384,
+     "peak_reserved_bytes": 4594860032
+    }
+   }
+  },
+  "runs": [
+   {
+    "pos": 0,
+    "pass": "forward",
+    "condition": "baseline",
+    "is_reference": true,
+    "prefill_512": {
+     "samples": [
+      105.39212799072266,
+      102.15606689453125,
+      103.76204681396484,
+      103.79043579101562,
+      102.94271850585938
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 103.60867919921876,
+     "median": 103.76204681396484,
+     "std": 1.2032074663852133,
+     "min": 102.15606689453125,
+     "max": 105.39212799072266,
+     "max_memory_allocated_bytes": 3270028800,
+     "max_memory_reserved_bytes": 3512729600,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 975,
+       "mem_mhz": 5000,
+       "temp_c": 56,
+       "power_w": 65.28,
+       "t": 1795671223.944028
+      },
+      {
+       "sm_mhz": 945,
+       "mem_mhz": 5000,
+       "temp_c": 57,
+       "power_w": 55.315,
+       "t": 1795671224.060987
+      },
+      {
+       "sm_mhz": 960,
+       "mem_mhz": 5000,
+       "temp_c": 57,
+       "power_w": 68.921,
+       "t": 1795671224.1768694
+      },
+      {
+       "sm_mhz": 945,
+       "mem_mhz": 5000,
+       "temp_c": 57,
+       "power_w": 69.747,
+       "t": 1795671224.2867312
+      },
+      {
+       "sm_mhz": 945,
+       "mem_mhz": 5000,
+       "temp_c": 58,
+       "power_w": 70.292,
+       "t": 1795671224.4007568
+      }
+     ]
+    },
+    "prefill_2048": {
+     "samples": [
+      698.728759765625,
+      688.0476684570312,
+      683.6039428710938,
+      697.6961669921875,
+      701.5076293945312
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 693.9168334960938,
+     "median": 697.6961669921875,
+     "std": 7.678883215819914,
+     "min": 683.6039428710938,
+     "max": 701.5076293945312,
+     "max_memory_allocated_bytes": 3785797120,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 690,
+       "mem_mhz": 5000,
+       "temp_c": 59,
+       "power_w": 61.826,
+       "t": 1795671226.5003333
+      },
+      {
+       "sm_mhz": 750,
+       "mem_mhz": 5000,
+       "temp_c": 58,
+       "power_w": 29.907,
+       "t": 1795671227.3072522
+      },
+      {
+       "sm_mhz": 765,
+       "mem_mhz": 5000,
+       "temp_c": 60,
+       "power_w": 68.921,
+       "t": 1795671228.0031714
+      },
+      {
+       "sm_mhz": 765,
+       "mem_mhz": 5000,
+       "temp_c": 61,
+       "power_w": 68.236,
+       "t": 1795671228.7122972
+      },
+      {
+       "sm_mhz": 660,
+       "mem_mhz": 5000,
+       "temp_c": 61,
+       "power_w": 67.746,
+       "t": 1795671229.4257617
+      }
+     ]
+    },
+    "decode_64_after_512": {
+     "samples": [
+      2461.9541015625,
+      2373.497314453125,
+      2365.5078125,
+      2379.665283203125,
+      2384.092041015625
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 2392.943310546875,
+     "median": 2379.665283203125,
+     "std": 39.20457108621614,
+     "min": 2365.5078125,
+     "max": 2461.9541015625,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 1590,
+       "mem_mhz": 5000,
+       "temp_c": 64,
+       "power_w": 65.926,
+       "t": 1795671237.0287404
+      },
+      {
+       "sm_mhz": 1590,
+       "mem_mhz": 5000,
+       "temp_c": 65,
+       "power_w": 65.902,
+       "t": 1795671239.5094962
+      },
+      {
+       "sm_mhz": 1590,
+       "mem_mhz": 5000,
+       "temp_c": 66,
+       "power_w": 65.378,
+       "t": 1795671241.9829893
+      },
+      {
+       "sm_mhz": 1590,
+       "mem_mhz": 5000,
+       "temp_c": 67,
+       "power_w": 66.767,
+       "t": 1795671244.4699547
+      },
+      {
+       "sm_mhz": 1590,
+       "mem_mhz": 5000,
+       "temp_c": 68,
+       "power_w": 62.731,
+       "t": 1795671246.9641068
+      }
+     ],
+     "prefill_tokens_untimed": 512,
+     "decode_steps": 64,
+     "ms_per_token_mean": 37.389739227294925,
+     "ms_per_token_median": 37.18227005004883,
+     "max_memory_allocated_bytes": 3286544384,
+     "max_memory_reserved_bytes": 4594860032
+    },
+    "gpu_state_before": "0, Tesla T4, 48 %, 3289 MiB\n1, Tesla T4, 0 %, 3 MiB"
+   },
+   {
+    "pos": 1,
+    "pass": "forward",
+    "condition": "q3proj_b4",
+    "is_reference": false,
+    "prefill_512": {
+     "samples": [
+      118.4044189453125,
+      110.59814453125,
+      110.35836791992188,
+      110.83468627929688,
+      111.86396789550781
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 112.41191711425782,
+     "median": 110.83468627929688,
+     "std": 3.3987063319998208,
+     "min": 110.35836791992188,
+     "max": 118.4044189453125,
+     "max_memory_allocated_bytes": 3270028800,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 840,
+       "mem_mhz": 5000,
+       "temp_c": 68,
+       "power_w": 68.236,
+       "t": 1795671249.3867044
+      },
+      {
+       "sm_mhz": 855,
+       "mem_mhz": 5000,
+       "temp_c": 68,
+       "power_w": 70.596,
+       "t": 1795671249.5087295
+      },
+      {
+       "sm_mhz": 840,
+       "mem_mhz": 5000,
+       "temp_c": 69,
+       "power_w": 68.529,
+       "t": 1795671249.630628
+      },
+      {
+       "sm_mhz": 840,
+       "mem_mhz": 5000,
+       "temp_c": 69,
+       "power_w": 71.031,
+       "t": 1795671249.753383
+      },
+      {
+       "sm_mhz": 735,
+       "mem_mhz": 5000,
+       "temp_c": 68,
+       "power_w": 68.585,
+       "t": 1795671249.8773034
+      }
+     ]
+    },
+    "prefill_2048": {
+     "samples": [
+      735.4671020507812,
+      740.1085205078125,
+      733.165283203125,
+      731.0438232421875,
+      740.1455078125
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 735.9860473632813,
+     "median": 735.4671020507812,
+     "std": 4.091072292312402,
+     "min": 731.0438232421875,
+     "max": 740.1455078125,
+     "max_memory_allocated_bytes": 3785797120,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 660,
+       "mem_mhz": 5000,
+       "temp_c": 69,
+       "power_w": 75.537,
+       "t": 1795671252.087554
+      },
+      {
+       "sm_mhz": 660,
+       "mem_mhz": 5000,
+       "temp_c": 70,
+       "power_w": 65.926,
+       "t": 1795671252.8374412
+      },
+      {
+       "sm_mhz": 675,
+       "mem_mhz": 5000,
+       "temp_c": 70,
+       "power_w": 70.444,
+       "t": 1795671253.5865257
+      },
+      {
+       "sm_mhz": 660,
+       "mem_mhz": 5000,
+       "temp_c": 70,
+       "power_w": 74.704,
+       "t": 1795671254.3245475
+      },
+      {
+       "sm_mhz": 645,
+       "mem_mhz": 5000,
+       "temp_c": 70,
+       "power_w": 69.802,
+       "t": 1795671255.0715756
+      }
+     ]
+    },
+    "decode_64_after_512": {
+     "samples": [
+      2293.775146484375,
+      2302.21875,
+      2350.337646484375,
+      2311.325927734375,
+      2307.927978515625
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 2313.11708984375,
+     "median": 2307.927978515625,
+     "std": 21.842559139114453,
+     "min": 2293.775146484375,
+     "max": 2350.337646484375,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 73,
+       "power_w": 65.828,
+       "t": 1795671262.290691
+      },
+      {
+       "sm_mhz": 1545,
+       "mem_mhz": 5000,
+       "temp_c": 74,
+       "power_w": 62.692,
+       "t": 1795671264.706628
+      },
+      {
+       "sm_mhz": 1560,
+       "mem_mhz": 5000,
+       "temp_c": 74,
+       "power_w": 63.789,
+       "t": 1795671267.1702144
+      },
+      {
+       "sm_mhz": 1560,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 65.494,
+       "t": 1795671269.5953844
+      },
+      {
+       "sm_mhz": 1515,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 65.044,
+       "t": 1795671272.0190012
+      }
+     ],
+     "prefill_tokens_untimed": 512,
+     "decode_steps": 64,
+     "ms_per_token_mean": 36.14245452880859,
+     "ms_per_token_median": 36.06137466430664,
+     "max_memory_allocated_bytes": 3286544384,
+     "max_memory_reserved_bytes": 4594860032
+    },
+    "gpu_state_before": "0, Tesla T4, 96 %, 4515 MiB\n1, Tesla T4, 0 %, 3 MiB"
+   },
+   {
+    "pos": 2,
+    "pass": "forward",
+    "condition": "q3proj_b3",
+    "is_reference": false,
+    "prefill_512": {
+     "samples": [
+      124.99561309814453,
+      117.57161712646484,
+      116.81986999511719,
+      117.70777893066406,
+      117.59661102294922
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 118.93829803466797,
+     "median": 117.59661102294922,
+     "std": 3.4044427276925706,
+     "min": 116.81986999511719,
+     "max": 124.99561309814453,
+     "max_memory_allocated_bytes": 3270028800,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 795,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 68.319,
+       "t": 1795671274.2410462
+      },
+      {
+       "sm_mhz": 765,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 69.802,
+       "t": 1795671274.3651912
+      },
+      {
+       "sm_mhz": 780,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 69.019,
+       "t": 1795671274.4885375
+      },
+      {
+       "sm_mhz": 750,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 68.375,
+       "t": 1795671274.618952
+      },
+      {
+       "sm_mhz": 690,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 69.313,
+       "t": 1795671274.74457
+      }
+     ]
+    },
+    "prefill_2048": {
+     "samples": [
+      791.55615234375,
+      784.732177734375,
+      782.7702026367188,
+      787.2860107421875,
+      788.021484375
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 786.8732055664062,
+     "median": 787.2860107421875,
+     "std": 3.348043311899061,
+     "min": 782.7702026367188,
+     "max": 791.55615234375,
+     "max_memory_allocated_bytes": 3785797120,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 66.808,
+       "t": 1795671277.0964057
+      },
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 68.627,
+       "t": 1795671277.8883522
+      },
+      {
+       "sm_mhz": 600,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 73.53,
+       "t": 1795671278.678553
+      },
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 70.249,
+       "t": 1795671279.4731731
+      },
+      {
+       "sm_mhz": 600,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 67.158,
+       "t": 1795671280.2754686
+      }
+     ]
+    },
+    "decode_64_after_512": {
+     "samples": [
+      2391.33447265625,
+      2336.341796875,
+      2378.017578125,
+      2362.952392578125,
+      2467.790771484375
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 2387.28740234375,
+     "median": 2378.017578125,
+     "std": 49.42354772530795,
+     "min": 2336.341796875,
+     "max": 2467.790771484375,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 1530,
+       "mem_mhz": 5000,
+       "temp_c": 80,
+       "power_w": 67.731,
+       "t": 1795671287.6877365
+      },
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 80,
+       "power_w": 66.105,
+       "t": 1795671290.1498458
+      },
+      {
+       "sm_mhz": 1485,
+       "mem_mhz": 5000,
+       "temp_c": 81,
+       "power_w": 68.096,
+       "t": 1795671292.6152322
+      },
+      {
+       "sm_mhz": 1560,
+       "mem_mhz": 5000,
+       "temp_c": 82,
+       "power_w": 72.891,
+       "t": 1795671295.101783
+      },
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 82,
+       "power_w": 69.716,
+       "t": 1795671297.6960256
+      }
+     ],
+     "prefill_tokens_untimed": 512,
+     "decode_steps": 64,
+     "ms_per_token_mean": 37.30136566162109,
+     "ms_per_token_median": 37.156524658203125,
+     "max_memory_allocated_bytes": 3286544384,
+     "max_memory_reserved_bytes": 4594860032
+    },
+    "gpu_state_before": "0, Tesla T4, 95 %, 4515 MiB\n1, Tesla T4, 0 %, 3 MiB"
+   },
+   {
+    "pos": 3,
+    "pass": "forward",
+    "condition": "baseline",
+    "is_reference": true,
+    "prefill_512": {
+     "samples": [
+      136.55970764160156,
+      129.5851593017578,
+      130.3206024169922,
+      131.40992736816406,
+      127.97734069824219
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 131.17054748535156,
+     "median": 130.3206024169922,
+     "std": 3.2608580855028153,
+     "min": 127.97734069824219,
+     "max": 136.55970764160156,
+     "max_memory_allocated_bytes": 3270028800,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 660,
+       "mem_mhz": 5000,
+       "temp_c": 81,
+       "power_w": 65.69,
+       "t": 1795671298.785643
+      },
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 81,
+       "power_w": 66.081,
+       "t": 1795671298.924848
+      },
+      {
+       "sm_mhz": 600,
+       "mem_mhz": 5000,
+       "temp_c": 81,
+       "power_w": 67.256,
+       "t": 1795671299.0667567
+      },
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 81,
+       "power_w": 63.652,
+       "t": 1795671299.2122908
+      },
+      {
+       "sm_mhz": 600,
+       "mem_mhz": 5000,
+       "temp_c": 81,
+       "power_w": 66.318,
+       "t": 1795671299.3513894
+      }
+     ]
+    },
+    "prefill_2048": {
+     "samples": [
+      855.7003173828125,
+      841.1236572265625,
+      844.3248901367188,
+      840.875244140625,
+      834.6966552734375
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 843.3441528320312,
+     "median": 841.1236572265625,
+     "std": 7.736956329091582,
+     "min": 834.6966552734375,
+     "max": 855.7003173828125,
+     "max_memory_allocated_bytes": 3785797120,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 570,
+       "mem_mhz": 5000,
+       "temp_c": 81,
+       "power_w": 66.824,
+       "t": 1795671301.9232304
+      },
+      {
+       "sm_mhz": 570,
+       "mem_mhz": 5000,
+       "temp_c": 81,
+       "power_w": 69.955,
+       "t": 1795671302.7755249
+      },
+      {
+       "sm_mhz": 555,
+       "mem_mhz": 5000,
+       "temp_c": 81,
+       "power_w": 66.963,
+       "t": 1795671303.627058
+      },
+      {
+       "sm_mhz": 570,
+       "mem_mhz": 5000,
+       "temp_c": 81,
+       "power_w": 68.333,
+       "t": 1795671304.4779072
+      },
+      {
+       "sm_mhz": 570,
+       "mem_mhz": 5000,
+       "temp_c": 81,
+       "power_w": 69.802,
+       "t": 1795671305.3248959
+      }
+     ]
+    },
+    "decode_64_after_512": {
+     "samples": [
+      2335.385498046875,
+      2336.65185546875,
+      2414.250244140625,
+      2367.80517578125,
+      2360.095947265625
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 2362.837744140625,
+     "median": 2360.095947265625,
+     "std": 32.073215322858125,
+     "min": 2335.385498046875,
+     "max": 2414.250244140625,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 1560,
+       "mem_mhz": 5000,
+       "temp_c": 80,
+       "power_w": 62.654,
+       "t": 1795671312.7472954
+      },
+      {
+       "sm_mhz": 1485,
+       "mem_mhz": 5000,
+       "temp_c": 79,
+       "power_w": 66.416,
+       "t": 1795671315.2034678
+      },
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 79,
+       "power_w": 66.963,
+       "t": 1795671317.7446394
+      },
+      {
+       "sm_mhz": 1530,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 65.494,
+       "t": 1795671320.231891
+      },
+      {
+       "sm_mhz": 1560,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 66.359,
+       "t": 1795671322.717296
+      }
+     ],
+     "prefill_tokens_untimed": 512,
+     "decode_steps": 64,
+     "ms_per_token_mean": 36.91933975219727,
+     "ms_per_token_median": 36.87649917602539,
+     "max_memory_allocated_bytes": 3286544384,
+     "max_memory_reserved_bytes": 4594860032
+    },
+    "gpu_state_before": "0, Tesla T4, 46 %, 4515 MiB\n1, Tesla T4, 0 %, 3 MiB"
+   },
+   {
+    "pos": 4,
+    "pass": "reverse",
+    "condition": "baseline",
+    "is_reference": true,
+    "prefill_512": {
+     "samples": [
+      129.81321716308594,
+      119.18358612060547,
+      118.37455749511719,
+      121.64924621582031,
+      119.45782470703125
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 121.69568634033203,
+     "median": 119.45782470703125,
+     "std": 4.696941354588971,
+     "min": 118.37455749511719,
+     "max": 129.81321716308594,
+     "max_memory_allocated_bytes": 3270028800,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 750,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 66.22,
+       "t": 1795671323.7752247
+      },
+      {
+       "sm_mhz": 735,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 68.529,
+       "t": 1795671323.9072971
+      },
+      {
+       "sm_mhz": 705,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 69.411,
+       "t": 1795671324.0325994
+      },
+      {
+       "sm_mhz": 765,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 69.27,
+       "t": 1795671324.1608927
+      },
+      {
+       "sm_mhz": 750,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 69.466,
+       "t": 1795671324.288896
+      }
+     ]
+    },
+    "prefill_2048": {
+     "samples": [
+      803.6024169921875,
+      791.2711181640625,
+      795.2449340820312,
+      786.2149047851562,
+      786.5632934570312
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 792.5793334960938,
+     "median": 791.2711181640625,
+     "std": 7.194162810375768,
+     "min": 786.2149047851562,
+     "max": 803.6024169921875,
+     "max_memory_allocated_bytes": 3785797120,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 630,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 67.452,
+       "t": 1795671326.7081084
+      },
+      {
+       "sm_mhz": 585,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 64.496,
+       "t": 1795671327.5068734
+      },
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 65.983,
+       "t": 1795671328.3107822
+      },
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 66.612,
+       "t": 1795671329.1045487
+      },
+      {
+       "sm_mhz": 600,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 69.215,
+       "t": 1795671329.8982296
+      }
+     ]
+    },
+    "decode_64_after_512": {
+     "samples": [
+      2409.643310546875,
+      2370.59912109375,
+      2334.8388671875,
+      2365.39892578125,
+      2391.311767578125
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 2374.3583984375,
+     "median": 2370.59912109375,
+     "std": 28.234019437682196,
+     "min": 2334.8388671875,
+     "max": 2409.643310546875,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 69.912,
+       "t": 1795671337.407595
+      },
+      {
+       "sm_mhz": 1560,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 69.074,
+       "t": 1795671339.894065
+      },
+      {
+       "sm_mhz": 1545,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 69.618,
+       "t": 1795671342.3444598
+      },
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 67.886,
+       "t": 1795671344.8258355
+      },
+      {
+       "sm_mhz": 1530,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 63.966,
+       "t": 1795671347.3351867
+      }
+     ],
+     "prefill_tokens_untimed": 512,
+     "decode_steps": 64,
+     "ms_per_token_mean": 37.09934997558594,
+     "ms_per_token_median": 37.040611267089844,
+     "max_memory_allocated_bytes": 3286544384,
+     "max_memory_reserved_bytes": 4594860032
+    },
+    "gpu_state_before": "0, Tesla T4, 46 %, 4515 MiB\n1, Tesla T4, 0 %, 3 MiB"
+   },
+   {
+    "pos": 5,
+    "pass": "reverse",
+    "condition": "q3proj_b3",
+    "is_reference": false,
+    "prefill_512": {
+     "samples": [
+      126.56758117675781,
+      115.45667266845703,
+      116.43084716796875,
+      116.46975708007812,
+      116.04991912841797
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 118.19495544433593,
+     "median": 116.43084716796875,
+     "std": 4.698101276560564,
+     "min": 115.45667266845703,
+     "max": 126.56758117675781,
+     "max_memory_allocated_bytes": 3270028800,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 720,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 65.828,
+       "t": 1795671349.5569878
+      },
+      {
+       "sm_mhz": 810,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 68.389,
+       "t": 1795671349.6789742
+      },
+      {
+       "sm_mhz": 780,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 67.746,
+       "t": 1795671349.801923
+      },
+      {
+       "sm_mhz": 765,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 69.466,
+       "t": 1795671349.9249983
+      },
+      {
+       "sm_mhz": 795,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 68.487,
+       "t": 1795671350.0475507
+      }
+     ]
+    },
+    "prefill_2048": {
+     "samples": [
+      774.2322387695312,
+      767.3575439453125,
+      764.016845703125,
+      762.7225952148438,
+      767.8062133789062
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 767.2270874023437,
+     "median": 767.3575439453125,
+     "std": 4.4727131899495065,
+     "min": 762.7225952148438,
+     "max": 774.2322387695312,
+     "max_memory_allocated_bytes": 3785797120,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 645,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 66.612,
+       "t": 1795671352.3687835
+      },
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 68.781,
+       "t": 1795671353.144482
+      },
+      {
+       "sm_mhz": 630,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 71.618,
+       "t": 1795671353.918089
+      },
+      {
+       "sm_mhz": 600,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 68.627,
+       "t": 1795671354.68828
+      },
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 75,
+       "power_w": 75.095,
+       "t": 1795671355.463319
+      }
+     ]
+    },
+    "decode_64_after_512": {
+     "samples": [
+      2372.193603515625,
+      2341.94287109375,
+      2415.124755859375,
+      2364.28076171875,
+      2360.9365234375
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 2370.895703125,
+     "median": 2364.28076171875,
+     "std": 27.10674659420565,
+     "min": 2341.94287109375,
+     "max": 2415.124755859375,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 66.162,
+       "t": 1795671362.8984094
+      },
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 67.06,
+       "t": 1795671365.3596709
+      },
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 64.612,
+       "t": 1795671367.8894658
+      },
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 65.142,
+       "t": 1795671370.3707476
+      },
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 65.73,
+       "t": 1795671372.8546968
+      }
+     ],
+     "prefill_tokens_untimed": 512,
+     "decode_steps": 64,
+     "ms_per_token_mean": 37.04524536132813,
+     "ms_per_token_median": 36.94188690185547,
+     "max_memory_allocated_bytes": 3286544384,
+     "max_memory_reserved_bytes": 4594860032
+    },
+    "gpu_state_before": "0, Tesla T4, 97 %, 4515 MiB\n1, Tesla T4, 0 %, 3 MiB"
+   },
+   {
+    "pos": 6,
+    "pass": "reverse",
+    "condition": "q3proj_b4",
+    "is_reference": false,
+    "prefill_512": {
+     "samples": [
+      126.42281341552734,
+      122.74281311035156,
+      118.60253143310547,
+      121.13442993164062,
+      122.08172607421875
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 122.19686279296874,
+     "median": 122.08172607421875,
+     "std": 2.8380432689920694,
+     "min": 118.60253143310547,
+     "max": 126.42281341552734,
+     "max_memory_allocated_bytes": 3270028800,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 735,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 66.906,
+       "t": 1795671375.0993102
+      },
+      {
+       "sm_mhz": 735,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 61.101,
+       "t": 1795671375.2287557
+      },
+      {
+       "sm_mhz": 750,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 68.138,
+       "t": 1795671375.3558886
+      },
+      {
+       "sm_mhz": 705,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 67.55,
+       "t": 1795671375.4839573
+      },
+      {
+       "sm_mhz": 750,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 68.333,
+       "t": 1795671375.612919
+      }
+     ]
+    },
+    "prefill_2048": {
+     "samples": [
+      803.9469604492188,
+      790.1741943359375,
+      791.4857788085938,
+      790.6419677734375,
+      791.227294921875
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 793.4952392578125,
+     "median": 791.227294921875,
+     "std": 5.864948341789447,
+     "min": 790.1741943359375,
+     "max": 803.9469604492188,
+     "max_memory_allocated_bytes": 3785797120,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 70.151,
+       "t": 1795671378.0072393
+      },
+      {
+       "sm_mhz": 600,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 70.934,
+       "t": 1795671378.8095732
+      },
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 71.521,
+       "t": 1795671379.6080813
+      },
+      {
+       "sm_mhz": 600,
+       "mem_mhz": 5000,
+       "temp_c": 76,
+       "power_w": 69.215,
+       "t": 1795671380.4111109
+      },
+      {
+       "sm_mhz": 615,
+       "mem_mhz": 5000,
+       "temp_c": 77,
+       "power_w": 61.199,
+       "t": 1795671381.2097886
+      }
+     ]
+    },
+    "decode_64_after_512": {
+     "samples": [
+      2406.826416015625,
+      2473.195556640625,
+      2366.042724609375,
+      2330.80224609375,
+      2389.383544921875
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 2393.25009765625,
+     "median": 2389.383544921875,
+     "std": 52.98707006277344,
+     "min": 2330.80224609375,
+     "max": 2473.195556640625,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 1560,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 64.652,
+       "t": 1795671388.6402528
+      },
+      {
+       "sm_mhz": 1560,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 68.529,
+       "t": 1795671391.2382464
+      },
+      {
+       "sm_mhz": 1545,
+       "mem_mhz": 5000,
+       "temp_c": 79,
+       "power_w": 65.69,
+       "t": 1795671393.7303069
+      },
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 79,
+       "power_w": 64.358,
+       "t": 1795671396.1821399
+      },
+      {
+       "sm_mhz": 1515,
+       "mem_mhz": 5000,
+       "temp_c": 79,
+       "power_w": 68.347,
+       "t": 1795671398.6940007
+      }
+     ],
+     "prefill_tokens_untimed": 512,
+     "decode_steps": 64,
+     "ms_per_token_mean": 37.39453277587891,
+     "ms_per_token_median": 37.3341178894043,
+     "max_memory_allocated_bytes": 3286544384,
+     "max_memory_reserved_bytes": 4594860032
+    },
+    "gpu_state_before": "0, Tesla T4, 87 %, 4515 MiB\n1, Tesla T4, 0 %, 3 MiB"
+   },
+   {
+    "pos": 7,
+    "pass": "reverse",
+    "condition": "baseline",
+    "is_reference": true,
+    "prefill_512": {
+     "samples": [
+      132.6461181640625,
+      119.49056243896484,
+      118.89158630371094,
+      123.48979187011719,
+      119.64991760253906
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 122.8335952758789,
+     "median": 119.64991760253906,
+     "std": 5.778566133014268,
+     "min": 118.89158630371094,
+     "max": 132.6461181640625,
+     "max_memory_allocated_bytes": 3270028800,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 735,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 66.122,
+       "t": 1795671399.7634425
+      },
+      {
+       "sm_mhz": 765,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 70.096,
+       "t": 1795671399.895443
+      },
+      {
+       "sm_mhz": 705,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 66.782,
+       "t": 1795671400.0209775
+      },
+      {
+       "sm_mhz": 735,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 67.746,
+       "t": 1795671400.1586409
+      },
+      {
+       "sm_mhz": 675,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 70.053,
+       "t": 1795671400.2849987
+      }
+     ]
+    },
+    "prefill_2048": {
+     "samples": [
+      810.5372924804688,
+      797.25537109375,
+      803.0310668945312,
+      800.82958984375,
+      799.58837890625
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 802.24833984375,
+     "median": 800.82958984375,
+     "std": 5.08274970217386,
+     "min": 797.25537109375,
+     "max": 810.5372924804688,
+     "max_memory_allocated_bytes": 3785797120,
+     "max_memory_reserved_bytes": 4594860032,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 600,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 64.946,
+       "t": 1795671402.7179654
+      },
+      {
+       "sm_mhz": 585,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 65.632,
+       "t": 1795671403.5230756
+      },
+      {
+       "sm_mhz": 600,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 65.73,
+       "t": 1795671404.333842
+      },
+      {
+       "sm_mhz": 585,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 66.612,
+       "t": 1795671405.143836
+      },
+      {
+       "sm_mhz": 555,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 66.514,
+       "t": 1795671405.9531832
+      }
+     ]
+    },
+    "decode_64_after_512": {
+     "samples": [
+      2358.2861328125,
+      2350.856201171875,
+      2439.380859375,
+      2351.068359375,
+      2364.676025390625
+     ],
+     "unit": "ms",
+     "reps": 5,
+     "warmup": 2,
+     "device": "Tesla T4",
+     "mean": 2372.853515625,
+     "median": 2358.2861328125,
+     "std": 37.6279229128996,
+     "min": 2350.856201171875,
+     "max": 2439.380859375,
+     "per_rep_gpu": [
+      {
+       "sm_mhz": 1560,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 64.123,
+       "t": 1795671413.4306173
+      },
+      {
+       "sm_mhz": 1560,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 66.906,
+       "t": 1795671415.901888
+      },
+      {
+       "sm_mhz": 1545,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 69.019,
+       "t": 1795671418.4646451
+      },
+      {
+       "sm_mhz": 1575,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 65.044,
+       "t": 1795671420.9349365
+      },
+      {
+       "sm_mhz": 1485,
+       "mem_mhz": 5000,
+       "temp_c": 78,
+       "power_w": 69.104,
+       "t": 1795671423.4182281
+      }
+     ],
+     "prefill_tokens_untimed": 512,
+     "decode_steps": 64,
+     "ms_per_token_mean": 37.075836181640625,
+     "ms_per_token_median": 36.84822082519531,
+     "max_memory_allocated_bytes": 3286544384,
+     "max_memory_reserved_bytes": 4594860032
+    },
+    "gpu_state_before": "0, Tesla T4, 41 %, 4515 MiB\n1, Tesla T4, 0 %, 3 MiB"
+   }
+  ],
+  "clock_lock": {
+   "attempt": {
+    "cmd": "nvidia-smi -i 0 -lgc 1305,1305",
+    "rc": 4,
+    "out": "The current user does not have permission to change clocks for GPU 00000000:00:04.0.\nTerminating early due to previous errors."
+   },
+   "permitted": false
+  },
+  "sampler": "pynvml",
+  "clock_summary": {
+   "sm_mhz": {
+    "min": 555,
+    "max": 1590,
+    "median": 757.5
+   },
+   "mem_mhz": {
+    "min": 5000,
+    "max": 5000,
+    "median": 5000.0
+   },
+   "temp_c": {
+    "min": 56,
+    "max": 82,
+    "median": 76.0
+   },
+   "power_w": {
+    "min": 29.907,
+    "max": 75.537,
+    "median": 67.6405
+   }
+  },
+  "reference_baseline_medians": {
+   "prefill_512": [
+    103.76204681396484,
+    130.3206024169922,
+    119.45782470703125,
+    119.64991760253906
+   ],
+   "prefill_2048": [
+    697.6961669921875,
+    841.1236572265625,
+    791.2711181640625,
+    800.82958984375
+   ],
+   "decode_64_after_512": [
+    2379.665283203125,
+    2360.095947265625,
+    2370.59912109375,
+    2358.2861328125
+   ]
+  },
+  "drift_rule": "ratio of each occurrence median to the mean of the nearest baseline reference(s) by sequence position; geometric mean over the condition's occurrences",
+  "seconds": 204.44696974754333,
+  "exclusive": true,
+  "execution": "dense FP16 kernels for every condition (zeros / fake-quant weights)"
+ }
+}

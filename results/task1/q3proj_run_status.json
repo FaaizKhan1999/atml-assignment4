@@ -1,0 +1,21 @@
+{
+ "commit": "9f06b3212c6c9758d4501373f286820ab4d56e5f",
+ "start": 1795668079.2824154,
+ "steps": [
+  {
+   "name": "parallel",
+   "rc_A": 0,
+   "rc_B": 0,
+   "rc_streams": 0,
+   "seconds": 3120.0294184684753,
+   "cmd_A": "/usr/bin/python3 scripts/task1_q3proj.py probe --device cuda:0 --derive-bits 8 4 --blocks 0 14 --tag a && /usr/bin/python3 scripts/task1_q3proj.py solve --device cuda:0 --shards a b && /usr/bin/python3 scripts/task1_eval.py --device cuda:0 --phases storage,outerr,ppl,hellaswag --timing-exclusive no --conditions q3proj_b4",
+   "cmd_B": "/usr/bin/python3 scripts/task1_q3proj.py probe --device cuda:1 --derive-bits 3 2 --blocks 15 27 --tag b && /usr/bin/python3 scripts/task2_curriculum.py train --device cuda:1 && /usr/bin/python3 -c \"import time,pathlib;p=pathlib.Path('results/task1/q3proj_allocation.json');[time.sleep(20) for _ in iter(lambda: p.exists(), True)]\" && /usr/bin/python3 scripts/task1_eval.py --device cuda:1 --phases storage,outerr,ppl,hellaswag --timing-exclusive no --conditions q3proj_b3"
+  },
+  {
+   "name": "retime_short_exclusive_cuda0",
+   "rc": 0,
+   "seconds": 230.986967086792
+  }
+ ],
+ "total_seconds": 3351.017674446106
+}
