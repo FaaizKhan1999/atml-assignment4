@@ -2,7 +2,7 @@
 
 One row per Kaggle kernel run (appended by `scripts/kaggle_run.py fetch`). Wall time is the bootstrap's own wall clock (excludes Kaggle queue/startup). GPU-hours = wall hours for GPU kernels, 0 for CPU kernels.
 
-**Running total GPU-hours: 6.021**
+**Running total GPU-hours: 6.633**
 
 | date (UTC) | kernel | accelerator (nvidia-smi) | wall time (h) | GPU-hours | status | commit | purpose |
 |---|---|---|---|---|---|---|---|
@@ -20,3 +20,4 @@ One row per Kaggle kernel run (appended by `scripts/kaggle_run.py fetch`). Wall 
 | 2026-11-26T04:40:56+00:00 | focusedkognition/atml4-q3proj-b3 | 2x Tesla T4 | 0.937 | 0.937 | ok | 9f06b3212c | Task1 Q3-proj probes+MILP+evals (cuda0/cuda1 split) || Task2 B3 curriculum x3; exclusive short ABBA retiming |
 | 2026-11-26T05:37:18+00:00 | focusedkognition/atml4-t2c-revalidate | 2x Tesla T4 | 0.199 | 0.199 | ok | 8a766451a4 | Task2C re-validation after KV quantizer fix |
 | 2026-11-26T05:40:11+00:00 | focusedkognition/atml4-t3-a | 2x Tesla T4 | 0.793 | 0.793 | ok | 0ad859a28c | Task3 T3-a: real-model sampler checks, bank (iii), teacher collection || ; exclusive Step 2 baseline |
+| 2026-11-26T06:23:18+00:00 | focusedkognition/atml4-t2c-full | 2x Tesla T4 | 0.612 | 0.612 | ok | af7432327f | Task2C full run: quality 180 x (6 required + 2 supplementary zp) on 2 GPUs; exclusive timing subset; packed benchmark |

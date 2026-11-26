@@ -1,0 +1,25 @@
+{
+ "commit": "af7432327f09efff1787b3221565c2f1ac391f9c",
+ "start": 1795674222.7874691,
+ "steps": [
+  {
+   "name": "quality_parallel",
+   "rcs": [
+    0,
+    0
+   ],
+   "seconds": 860.0300443172455
+  },
+  {
+   "name": "timing_exclusive_cuda0",
+   "rc": 0,
+   "seconds": 1187.504508972168
+  },
+  {
+   "name": "bench_exclusive_cuda0",
+   "rc": 0,
+   "seconds": 131.10886025428772
+  }
+ ],
+ "total_seconds": 2178.643743991852
+}

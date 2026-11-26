@@ -202,11 +202,12 @@ def _download(kernel_id: str, dl: Path, pattern: str | None, attempts: int = 60)
     return out
 
 
-def fetch(name: str, pattern: str | None = None) -> None:
+def fetch(name: str, pattern: str | None = None, no_download: bool = False) -> None:
     info = json.loads((RUNS / name / "launch.json").read_text())
     dl = RUNS / name / "output"
     dl.mkdir(parents=True, exist_ok=True)
-    print(_download(info["kernel_id"], dl, pattern))
+    if not no_download:  # --no-download: use files already placed in dl (scripts/kaggle_download.py)
+        print(_download(info["kernel_id"], dl, pattern))
     st = status(name)
     rm_path = dl / "run_meta.json"
     rm = json.loads(rm_path.read_text()) if rm_path.exists() else {}
@@ -258,6 +259,7 @@ def main():
         s.add_argument("name")
         if n in ("fetch", "wait"):
             s.add_argument("--pattern", default=None, help="--file-pattern regex for the download")
+            s.add_argument("--no-download", action="store_true", help="sync/ledger from an existing download dir")
     a = p.parse_args()
     if a.action == "launch":
         if a.accelerator == "":
@@ -269,7 +271,7 @@ def main():
         wait(a.name)
         fetch(a.name, a.pattern)
     else:
-        fetch(a.name, a.pattern)
+        fetch(a.name, a.pattern, a.no_download)
 
 
 if __name__ == "__main__":
