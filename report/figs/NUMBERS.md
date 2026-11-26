@@ -59,3 +59,29 @@
 - decode step FP16 vs unpack+step (ms): B1 L2636 41.5/59.5, B8 L2636 136.2/250.4, B1 L5220 54.0/82.7, B8 L5220 283.9/509.7
 - sink+recent correct only when evidence at the end: start/middle/end 0.00/0.00/1.00
 
+## Task 3
+
+### tab3_sampler.tex
+- correct sampler chi-square p (gamma 1/2/3): 0.384, 0.383, 0.824
+- negative control chi-square (gamma 1/2/3): 10207, 17562, 18012, all p < 1e-16
+
+### fig6_distill_align.pdf
+- TV on teacher bank (pos 1-64): original 0.143, off_s6304 0.133, off_s6305 0.134, on_s6304 0.142, on_s6305 0.139
+- forward KL on teacher bank: original 0.224, off_s6304 0.183, on_s6304 0.186
+- bank consistency (original draft, (iii)-(i)): TV -0.0049 [-0.0185, +0.0080]
+- note: the 'own rollout' group for the original draft is bank (ii) (its own course-built rollouts)
+
+### fig7_spec_cost.pdf / tab3_spec.tex
+- gamma 2 original: acc/exam 0.856, S_total 0.926, per-prompt latency ratio 1.49, S_hat 1.011, break-even alpha 0.845, c 0.81
+- gamma 2 off_s6304: acc/exam 0.873, S_total 0.945, per-prompt latency ratio 1.45, S_hat 0.991, break-even alpha 0.881, c 0.84
+- gamma 2 on_s6305: acc/exam 0.872, S_total 0.952, per-prompt latency ratio 1.46, S_hat 0.994, break-even alpha 0.878, c 0.84
+- gamma 4 original: acc/exam 0.867, S_total 0.834, per-prompt latency ratio 1.70, S_hat 0.900, break-even alpha 0.920, c 0.83
+- gamma 4 off_s6304: acc/exam 0.877, S_total 0.862, per-prompt latency ratio 1.73, S_hat 0.921, break-even alpha 0.919, c 0.83
+- gamma 4 on_s6305: acc/exam 0.883, S_total 0.875, per-prompt latency ratio 1.62, S_hat 0.906, break-even alpha 0.932, c 0.85
+
+### tab3_costs.tex
+- train wall s: off_s6304 191, off_s6305 191, on_s6304 2311, on_s6305 2358
+- GSM8K standalone accuracy: original 0.392, off_s6304 0.350, off_s6305 0.267, on_s6304 0.242, on_s6305 0.267
+- deployment break-even vs target-only: none for every distilled draft at both gammas (speculation slower)
+- merged vs unmerged mean KL: off_s6304 4.6e-05, off_s6305 3.9e-05, on_s6304 1.2e-04, on_s6305 3.3e-05
+

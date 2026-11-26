@@ -2,7 +2,7 @@
 
 One row per Kaggle kernel run (appended by `scripts/kaggle_run.py fetch`). Wall time is the bootstrap's own wall clock (excludes Kaggle queue/startup). GPU-hours = wall hours for GPU kernels, 0 for CPU kernels.
 
-**Running total GPU-hours: 7.656**
+**Running total GPU-hours: 10.936**
 
 | date (UTC) | kernel | accelerator (nvidia-smi) | wall time (h) | GPU-hours | status | commit | purpose |
 |---|---|---|---|---|---|---|---|
@@ -23,3 +23,5 @@ One row per Kaggle kernel run (appended by `scripts/kaggle_run.py fetch`). Wall 
 | 2026-11-26T06:23:18+00:00 | focusedkognition/atml4-t2c-full | 2x Tesla T4 | 0.612 | 0.612 | ok | af7432327f | Task2C full run: quality 180 x (6 required + 2 supplementary zp) on 2 GPUs; exclusive timing subset; packed benchmark |
 | 2026-11-26T06:42:33+00:00 | focusedkognition/atml4-t3-b | 2x Tesla T4 | 0.028 | 0.028 | FAILED(rc=1,err=None) | 8c0129beac | Task3 T3-b: 4 distillation runs (2/GPU), merge+check, own banks, Step 5 alignment, standalone accuracy |
 | 2026-11-26T08:25:05+00:00 | focusedkognition/atml4-t3-b2 | 2x Tesla T4 | 0.995 | 0.995 | ok | 6aab2240ea | Task3 T3-b (relaunch, torchao removed): 4 distillation runs, merge+check, own banks, Step 5 alignment, standalone accuracy |
+| 2026-11-26T09:48:06+00:00 | focusedkognition/atml4-t3-step6-g2 | 2x Tesla T4 | 1.562 | 1.562 | ok | 482e7fb5a8 | Task3 Step 6 gamma=2 (one GPU, other idle): 5 drafts x 120 x 2 reps + adjacent target-only; fixed-64 diag --merge-check |
+| 2026-11-26T10:11:51+00:00 | focusedkognition/atml4-t3-step6-g4 | 2x Tesla T4 | 1.718 | 1.718 | ok | 482e7fb5a8 | Task3 Step 6 gamma=4 (one GPU, other idle): 5 drafts x 120 x 2 reps + adjacent target-only; fixed-64 diag --unmerged off_s6305 |

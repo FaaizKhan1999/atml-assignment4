@@ -30,3 +30,16 @@
 | `report/figs/task2/tabA_t2_mqar_full.tex` | `scripts/report/task2.py` | `results/task2/partB/summary.json` |
 | `report/figs/task2/tabA_t2_packed.tex` | `scripts/report/task2.py` | `results/task2/partC/summary.json` |
 | `report/figs/task2/tabA_t2_partA_full.tex` | `scripts/report/task2.py` | `results/task2/partA/timing.jsonl`, `results/task2/partA/correctness.json` |
+| `report/figs/task3/fig6_distill_align.pdf` | `scripts/report/task3.py` | `results/task3/summary.json`, `results/task3/align_rows.jsonl.gz`, `results/task3/distill_off_s6304.json`, `results/task3/distill_off_s6305.json`, `results/task3/distill_on_s6304.json`, `results/task3/distill_on_s6305.json` |
+| `report/figs/task3/fig7_spec_cost.pdf` | `scripts/report/task3.py` | `results/task3/summary.json`, `results/task3/step6_g2.jsonl`, `results/task3/step6_g4.jsonl` |
+| `report/figs/task3/tab3_costs.tex` | `scripts/report/task3.py` | `results/task3/summary.json`, `results/task3/teacher_collection.jsonl.gz` |
+| `report/figs/task3/tab3_sampler.tex` | `scripts/report/task3.py` | `results/task3/toy_chisquare.json` |
+| `report/figs/task3/tab3_spec.tex` | `scripts/report/task3.py` | `results/task3/summary.json` |
+| `report/figs/task3/tabA_t3_accuracy.tex` | `scripts/report/task3.py` | `results/task3/summary.json` |
+| `report/figs/task3/tabA_t3_align_bins.tex` | `scripts/report/task3.py` | `results/task3/align_rows.jsonl.gz` |
+| `report/figs/task3/tabA_t3_align_domain.tex` | `scripts/report/task3.py` | `results/task3/align_rows.jsonl.gz` |
+| `report/figs/task3/tabA_t3_baseline.tex` | `scripts/report/task3.py` | `results/task3/summary.json` |
+| `report/figs/task3/tabA_t3_chisq_joint.tex` | `scripts/report/task3.py` | `results/task3/toy_chisquare.json` |
+| `report/figs/task3/tabA_t3_disagree.tex` | `scripts/report/task3.py` | `results/task3/summary.json` |
+| `report/figs/task3/tabA_t3_fixed64.tex` | `scripts/report/task3.py` | `results/task3/summary.json` |
+| `report/figs/task3/tabA_t3_merge.tex` | `scripts/report/task3.py` | `results/task3/summary.json` |

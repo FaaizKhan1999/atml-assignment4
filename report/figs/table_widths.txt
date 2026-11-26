@@ -19,3 +19,14 @@ task2/tabA_t2_mqar_bins.tex	3.58 in
 task2/tabA_t2_mqar_full.tex	8.31 in	WIDER THAN 5.5 in
 task2/tabA_t2_packed.tex	5.43 in
 task2/tabA_t2_partA_full.tex	4.63 in
+task3/tab3_costs.tex	4.77 in
+task3/tab3_sampler.tex	4.23 in
+task3/tab3_spec.tex	5.16 in
+task3/tabA_t3_accuracy.tex	3.87 in
+task3/tabA_t3_align_bins.tex	4.99 in
+task3/tabA_t3_align_domain.tex	5.18 in
+task3/tabA_t3_baseline.tex	5.23 in
+task3/tabA_t3_chisq_joint.tex	2.93 in
+task3/tabA_t3_disagree.tex	3.71 in
+task3/tabA_t3_fixed64.tex	2.65 in
+task3/tabA_t3_merge.tex	4.41 in
