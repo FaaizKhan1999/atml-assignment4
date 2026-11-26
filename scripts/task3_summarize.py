@@ -189,9 +189,124 @@ def accuracy():
     return out or None
 
 
+DRAFTS = ["original"] + RUNS
+LEN_BINS = [(1, 16), (17, 32), (33, 64)]
+
+
+def step6():
+    out = {}
+    if not (R / "step6_g2.jsonl").exists() and not (R / "step6_g4.jsonl").exists():
+        return None
+    dist = {r: load_result(R / f"distill_{r}.json")[1] for r in RUNS if (R / f"distill_{r}.json").exists()}
+    coll_s = None
+    if (R / "teacher_collection.jsonl.gz").exists():
+        coll_s = load_jsonl_result(R / "teacher_collection.jsonl.gz")[0]["extra"]["teacher_generation_seconds"]
+    tv1 = {}
+    if (R / "align_rows.jsonl.gz").exists():
+        _, rows_a = load_jsonl_result(R / "align_rows.jsonl.gz")
+        for d in DRAFTS:
+            xs = [r["acc1"] for r in rows_a if r["bank"] == "teacher" and r["draft"] == d and r["position"] <= 64]
+            tv1[d] = statistics.mean(xs) if xs else None
+    for g in (2, 4):
+        p = R / f"step6_g{g}.jsonl"
+        if not p.exists():
+            continue
+        _, rows = load_jsonl_result(p)
+        costs = load_result(R / f"step6_g{g}_costs.json")[1]["isolated"]
+        per = {}
+        for d in DRAFTS:
+            rs = [r for r in rows if r["draft"] == d]
+            if not rs:
+                continue
+            ex = sum(r["spec"]["examined"] for r in rs)
+            ac = sum(r["spec"]["accepted"] for r in rs)
+            pr = sum(r["spec"]["proposed"] for r in rs)
+            nt = sum(r["spec"]["n_tokens"] for r in rs)
+            alpha = ac / ex if ex else None
+            ids = sorted({r["id"] for r in rs})
+            byp = defaultdict(list)
+            for r in rs:
+                byp[r["id"]].append(r)
+            ratio_p = [statistics.mean(x["latency_ratio_spec_over_ar"] for x in byp[i]) for i in ids]
+            acc_p = [sum(x["spec"]["accepted"] for x in byp[i]) / max(1, sum(x["spec"]["examined"] for x in byp[i])) for i in ids]
+            spec_t = sum(r["spec"]["total_s"] for r in rs)
+            ar_t = sum(r["ar"]["total_s"] for r in rs)
+            S_meas = ar_t / spec_t
+            cm = {}
+            for L, c in costs[d].items():
+                cc, v = c["c"], c["v_gamma"][str(g)]
+                cm[L] = {"c": cc, "v_gamma": v, "S_hat": s_hat(alpha, g, cc, v), "break_even_alpha": break_even(g, cc, v)}
+            comp = {k: sum(r["spec"]["timing"][k] for r in rs) for k in rs[0]["spec"]["timing"]}
+            rec = {"n_runs": len(rs), "accepted_over_examined": alpha, "accepted_over_proposed": ac / pr if pr else None,
+                   "mean_accepted_prefix": statistics.mean(r["spec"]["mean_accepted_prefix"] for r in rs
+                                                           if r["spec"]["mean_accepted_prefix"] is not None),
+                   "target_passes_per_token": sum(r["spec"]["target_passes"] for r in rs) / nt,
+                   "draft_passes_per_token": sum(r["spec"]["draft_passes"] for r in rs) / nt,
+                   "eos": sum(r["spec"]["stop"] == "eos" for r in rs), "cap": sum(r["spec"]["stop"] == "cap" for r in rs),
+                   "latency_ratio_per_prompt": bootstrap_ci(ratio_p, unit="prompt"),
+                   "decode_tps_ratio_mean": statistics.mean(r["decode_tps_ratio"] for r in rs),
+                   "S_measured_total_time": S_meas, "cost_model": cm,
+                   "round_decomposition_s": comp,
+                   "prefill_s": sum(r["spec"]["prefill_s"] for r in rs),
+                   "host_overhead_s": sum(r["spec"]["host_overhead_s"] for r in rs),
+                   "peak_alloc_GB": max(r["spec"]["max_memory_allocated_bytes"] for r in rs) / 1e9,
+                   "expected_acceptance_1mTV_teacher_bank": tv1.get(d),
+                   "_ratio_p": dict(zip(ids, ratio_p)), "_acc_p": dict(zip(ids, acc_p)),
+                   "mean_request_saving_s": (ar_t - spec_t) / len(rs)}
+            wl = {}
+            for w in ("math", "familiar", "shifted"):
+                ws = [i for i in ids if byp[i][0]["workload"] == w]
+                wl[w] = {"latency_ratio": bootstrap_ci([rec["_ratio_p"][i] for i in ws], unit="prompt"),
+                         "accepted_over_examined": sum(x["spec"]["accepted"] for i in ws for x in byp[i])
+                         / max(1, sum(x["spec"]["examined"] for i in ws for x in byp[i]))}
+            rec["by_workload"] = wl
+            lb = {}
+            for lo, hi in LEN_BINS:
+                xs = [r for r in rs if lo <= r["spec"]["n_tokens"] <= hi]
+                if xs:
+                    lb[f"[{lo},{hi}]"] = {"n": len(xs), "latency_ratio_mean": statistics.mean(r["latency_ratio_spec_over_ar"] for r in xs),
+                                          "accepted_over_examined": sum(r["spec"]["accepted"] for r in xs)
+                                          / max(1, sum(r["spec"]["examined"] for r in xs))}
+            rec["by_output_length"] = lb
+            if d != "original":
+                ds = dist[d]
+                up = ds["train_wall_s"] + ds["merge_s"] + (coll_s if d.startswith("off") and coll_s else 0.0)
+                rec["upfront_cost_s"] = {"train_wall": ds["train_wall_s"], "merge": ds["merge_s"],
+                                         "teacher_collection": coll_s if d.startswith("off") else 0.0, "total": up}
+                sv = rec["mean_request_saving_s"]
+                rec["deployment_break_even_requests_vs_target_only"] = up / sv if sv > 0 else "no break-even (slower than target-only)"
+            per[d] = rec
+        for d, rec in per.items():
+            if d == "original":
+                continue
+            o = per["original"]
+            common = sorted(set(rec["_ratio_p"]) & set(o["_ratio_p"]))
+            rec["vs_original"] = {
+                "latency_ratio": paired_bootstrap_diff([rec["_ratio_p"][i] for i in common], [o["_ratio_p"][i] for i in common], unit="prompt"),
+                "acceptance": paired_bootstrap_diff([rec["_acc_p"][i] for i in common], [o["_acc_p"][i] for i in common], unit="prompt")}
+            sv = o["mean_request_saving_s"] - rec["mean_request_saving_s"]
+            rec["deployment_break_even_requests_vs_original_draft"] = rec["upfront_cost_s"]["total"] / -sv if sv < 0 else \
+                "no break-even (not faster than the original draft)"
+        for rec in per.values():
+            rec.pop("_ratio_p")
+            rec.pop("_acc_p")
+        out[f"gamma{g}"] = per
+        dp = R / f"step6_g{g}_diag.jsonl"
+        if dp.exists():
+            _, dg = load_jsonl_result(dp)
+            out[f"gamma{g}_diag"] = {d: {"latency_ratio_mean": statistics.mean(r["latency_ratio_spec_over_ar"] for r in dg if r["draft"] == d),
+                                         "accepted_over_examined": sum(r["spec"]["accepted"] for r in dg if r["draft"] == d)
+                                         / max(1, sum(r["spec"]["examined"] for r in dg if r["draft"] == d)),
+                                         "spec_s_total": sum(r["spec"]["total_s"] for r in dg if r["draft"] == d)}
+                                     for d in sorted({r["draft"] for r in dg})}
+    if (R / "merge_check.json").exists():
+        out["merge_check"] = load_result(R / "merge_check.json")[1]
+    return out
+
+
 def main():
     payload = {"baseline": baseline(), "bank_consistency": bank_consistency(), "distillation": distillation(),
-               "alignment": alignment(), "accuracy": accuracy()}
+               "alignment": alignment(), "accuracy": accuracy(), "step6": step6()}
     save_result(R / "summary.json", payload, collect_meta(seed=6304))
     for k, v in payload.items():
         print(k, "present" if v else "missing")
