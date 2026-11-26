@@ -1,0 +1,75 @@
+{
+ "meta": {
+  "timestamp_utc": "2026-11-26T06:22:50+00:00",
+  "command": "python scripts/task1_zeropoint_check.py",
+  "cwd": "/home/faaiz/Desktop/atml/assignments/assignment-4",
+  "hostname": "focusedkognition",
+  "kaggle": {
+   "kernel_slug": null,
+   "run_type": null
+  },
+  "git": {
+   "commit": "7ac26f22300b38522e0be455e89613f456794d89",
+   "dirty": false,
+   "submodule_path": "external/atml-pa4-datasets",
+   "submodule_commit": "6a0a9ec9da7ef3d313ee3036cfec493886723644"
+  },
+  "versions": {
+   "python": "3.12.3",
+   "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+   "torch": "2.15.0+cpu",
+   "transformers": "4.57.1",
+   "huggingface_hub": "0.36.2",
+   "datasets": "5.0.1",
+   "numpy": "2.5.5",
+   "scipy": "1.18.1",
+   "peft": "0.21.2",
+   "accelerate": "1.16.0"
+  },
+  "cuda": {
+   "available": false,
+   "torch_cuda_build": null
+  },
+  "sdpa": {
+   "flash_sdp_enabled": true,
+   "mem_efficient_sdp_enabled": true,
+   "math_sdp_enabled": true,
+   "cudnn_sdp_enabled": true,
+   "is_flash_attention_available": false
+  },
+  "dtype": null,
+  "seed": 6304,
+  "models": [
+   {
+    "id": "Qwen/Qwen2.5-1.5B",
+    "revision": "8faed761d45a263340a0528343f099c05c9a4323"
+   }
+  ]
+ },
+ "payload": {
+  "q1_unscaled": {
+   "bad": 0,
+   "groups": 10235904
+  },
+  "awq_scaled": {
+   "b8": {
+    "bad": 0,
+    "groups": 22278144
+   },
+   "b4": {
+    "bad": 0,
+    "groups": 22278144
+   },
+   "b3": {
+    "bad": 0,
+    "groups": 22278144
+   },
+   "b2": {
+    "bad": 0,
+    "groups": 22278144
+   }
+  },
+  "per_matrix_nonzero": [],
+  "all_zero": true
+ }
+}
