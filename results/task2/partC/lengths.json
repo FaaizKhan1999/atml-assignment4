@@ -1,0 +1,3504 @@
+{
+ "meta": {
+  "timestamp_utc": "2026-11-26T04:57:17+00:00",
+  "command": "python3 scripts/task2c_validate.py --device cuda:0",
+  "cwd": "/tmp/atml4_repo",
+  "hostname": "2a459a508691",
+  "kaggle": {
+   "kernel_slug": "focusedkognition/atml4-t2c-validate",
+   "run_type": "Batch"
+  },
+  "git": {
+   "commit": "3ee16ce8faae77127ec731baf9b07c37cf0b9321",
+   "dirty": false,
+   "submodule_path": "external/atml-pa4-datasets",
+   "submodule_commit": "6a0a9ec9da7ef3d313ee3036cfec493886723644"
+  },
+  "versions": {
+   "python": "3.13.16",
+   "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+   "torch": "2.11.0+cu130",
+   "transformers": "4.57.1",
+   "huggingface_hub": "0.36.2",
+   "datasets": "4.8.5",
+   "numpy": "2.1.3",
+   "scipy": "1.16.3",
+   "peft": "0.21.2",
+   "accelerate": "1.15.0"
+  },
+  "cuda": {
+   "available": true,
+   "devices": [
+    {
+     "index": 0,
+     "name": "Tesla T4",
+     "capability": "7.5",
+     "total_memory_bytes": 15636037632
+    },
+    {
+     "index": 1,
+     "name": "Tesla T4",
+     "capability": "7.5",
+     "total_memory_bytes": 15636037632
+    }
+   ],
+   "torch_cuda_build": "13.0",
+   "cudnn": 92700,
+   "driver": "580.178.04"
+  },
+  "sdpa": {
+   "flash_sdp_enabled": true,
+   "mem_efficient_sdp_enabled": true,
+   "math_sdp_enabled": true,
+   "cudnn_sdp_enabled": true,
+   "is_flash_attention_available": true
+  },
+  "dtype": "torch.float16",
+  "seed": 6304,
+  "models": [
+   {
+    "id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+   }
+  ],
+  "extra": {
+   "config": {
+    "n_layers": 28,
+    "H": 12,
+    "H_kv": 2,
+    "d_h": 128,
+    "C": 7168
+   },
+   "attn_implementation": "sdpa",
+   "eos_ids": [
+    151643,
+    151645
+   ],
+   "split_rule": "Task 2C retrieval prompts: loading, chat-template rendering, context/question split, evidence mapping, extractor.\n\nSplit rule (docs/decisions.md): every user_text ends with \"\\nQUESTION_BEGIN\\n<question>\", where <question> is\n\"What is the access code for CASE-...? Reply with only five digits.\" (asserted for all 180 prompts). The rendered\nprompt is tokenizer.apply_chat_template([{\"role\": \"user\", \"content\": user_text}], add_generation_prompt=True,\ntokenize=False) (default Qwen system prompt included). CONTEXT = all tokens before the first token of the question\ntext (so \"QUESTION_BEGIN\\n\" belongs to the context); SUFFIX = question tokens + \"<|im_end|>\\n\" + assistant header.\nThe split is defined on token IDs of the full sequence (first token whose start offset >= question start); it is\nasserted that no token straddles the boundary and that tokenizing both halves separately gives the same IDs.\nGold evidence offsets are mapped to token indices for EVALUATION ONLY.\n"
+  }
+ },
+ "payload": {
+  "prompts": [
+   {
+    "id": "KV-2048-start-0-00",
+    "cell": [
+     2048,
+     "start",
+     0
+    ],
+    "L_context": 2636,
+    "suffix": 31,
+    "total": 2667,
+    "evidence_tokens": [
+     240,
+     267
+    ],
+    "M4": 21504000,
+    "M16": 75579392,
+    "n_kept": 749,
+    "hybrid_f": 396
+   },
+   {
+    "id": "KV-2048-start-0-01",
+    "cell": [
+     2048,
+     "start",
+     0
+    ],
+    "L_context": 2644,
+    "suffix": 31,
+    "total": 2675,
+    "evidence_tokens": [
+     242,
+     269
+    ],
+    "M4": 21733376,
+    "M16": 75808768,
+    "n_kept": 757,
+    "hybrid_f": 404
+   },
+   {
+    "id": "KV-2048-start-0-02",
+    "cell": [
+     2048,
+     "start",
+     0
+    ],
+    "L_context": 2644,
+    "suffix": 31,
+    "total": 2675,
+    "evidence_tokens": [
+     240,
+     267
+    ],
+    "M4": 21733376,
+    "M16": 75808768,
+    "n_kept": 757,
+    "hybrid_f": 404
+   },
+   {
+    "id": "KV-2048-start-0-03",
+    "cell": [
+     2048,
+     "start",
+     0
+    ],
+    "L_context": 2647,
+    "suffix": 31,
+    "total": 2678,
+    "evidence_tokens": [
+     241,
+     268
+    ],
+    "M4": 21819392,
+    "M16": 75894784,
+    "n_kept": 760,
+    "hybrid_f": 407
+   },
+   {
+    "id": "KV-2048-start-0-04",
+    "cell": [
+     2048,
+     "start",
+     0
+    ],
+    "L_context": 2646,
+    "suffix": 31,
+    "total": 2677,
+    "evidence_tokens": [
+     242,
+     269
+    ],
+    "M4": 21790720,
+    "M16": 75866112,
+    "n_kept": 759,
+    "hybrid_f": 406
+   },
+   {
+    "id": "KV-2048-start-0-05",
+    "cell": [
+     2048,
+     "start",
+     0
+    ],
+    "L_context": 2647,
+    "suffix": 31,
+    "total": 2678,
+    "evidence_tokens": [
+     242,
+     269
+    ],
+    "M4": 21819392,
+    "M16": 75894784,
+    "n_kept": 760,
+    "hybrid_f": 407
+   },
+   {
+    "id": "KV-2048-start-0-06",
+    "cell": [
+     2048,
+     "start",
+     0
+    ],
+    "L_context": 2642,
+    "suffix": 31,
+    "total": 2673,
+    "evidence_tokens": [
+     242,
+     269
+    ],
+    "M4": 21676032,
+    "M16": 75751424,
+    "n_kept": 755,
+    "hybrid_f": 402
+   },
+   {
+    "id": "KV-2048-start-0-07",
+    "cell": [
+     2048,
+     "start",
+     0
+    ],
+    "L_context": 2642,
+    "suffix": 31,
+    "total": 2673,
+    "evidence_tokens": [
+     242,
+     269
+    ],
+    "M4": 21676032,
+    "M16": 75751424,
+    "n_kept": 755,
+    "hybrid_f": 402
+   },
+   {
+    "id": "KV-2048-start-0-08",
+    "cell": [
+     2048,
+     "start",
+     0
+    ],
+    "L_context": 2644,
+    "suffix": 31,
+    "total": 2675,
+    "evidence_tokens": [
+     242,
+     269
+    ],
+    "M4": 21733376,
+    "M16": 75808768,
+    "n_kept": 757,
+    "hybrid_f": 404
+   },
+   {
+    "id": "KV-2048-start-0-09",
+    "cell": [
+     2048,
+     "start",
+     0
+    ],
+    "L_context": 2652,
+    "suffix": 31,
+    "total": 2683,
+    "evidence_tokens": [
+     240,
+     267
+    ],
+    "M4": 21962752,
+    "M16": 76038144,
+    "n_kept": 765,
+    "hybrid_f": 412
+   },
+   {
+    "id": "KV-2048-start-2-00",
+    "cell": [
+     2048,
+     "start",
+     2
+    ],
+    "L_context": 2642,
+    "suffix": 31,
+    "total": 2673,
+    "evidence_tokens": [
+     241,
+     268
+    ],
+    "M4": 21676032,
+    "M16": 75751424,
+    "n_kept": 755,
+    "hybrid_f": 402
+   },
+   {
+    "id": "KV-2048-start-2-01",
+    "cell": [
+     2048,
+     "start",
+     2
+    ],
+    "L_context": 2638,
+    "suffix": 31,
+    "total": 2669,
+    "evidence_tokens": [
+     244,
+     271
+    ],
+    "M4": 21561344,
+    "M16": 75636736,
+    "n_kept": 751,
+    "hybrid_f": 398
+   },
+   {
+    "id": "KV-2048-start-2-02",
+    "cell": [
+     2048,
+     "start",
+     2
+    ],
+    "L_context": 2628,
+    "suffix": 31,
+    "total": 2659,
+    "evidence_tokens": [
+     241,
+     268
+    ],
+    "M4": 21274624,
+    "M16": 75350016,
+    "n_kept": 741,
+    "hybrid_f": 388
+   },
+   {
+    "id": "KV-2048-start-2-03",
+    "cell": [
+     2048,
+     "start",
+     2
+    ],
+    "L_context": 2632,
+    "suffix": 31,
+    "total": 2663,
+    "evidence_tokens": [
+     242,
+     269
+    ],
+    "M4": 21389312,
+    "M16": 75464704,
+    "n_kept": 745,
+    "hybrid_f": 392
+   },
+   {
+    "id": "KV-2048-start-2-04",
+    "cell": [
+     2048,
+     "start",
+     2
+    ],
+    "L_context": 2637,
+    "suffix": 31,
+    "total": 2668,
+    "evidence_tokens": [
+     241,
+     268
+    ],
+    "M4": 21532672,
+    "M16": 75608064,
+    "n_kept": 750,
+    "hybrid_f": 397
+   },
+   {
+    "id": "KV-2048-start-2-05",
+    "cell": [
+     2048,
+     "start",
+     2
+    ],
+    "L_context": 2634,
+    "suffix": 31,
+    "total": 2665,
+    "evidence_tokens": [
+     241,
+     268
+    ],
+    "M4": 21446656,
+    "M16": 75522048,
+    "n_kept": 747,
+    "hybrid_f": 394
+   },
+   {
+    "id": "KV-2048-start-2-06",
+    "cell": [
+     2048,
+     "start",
+     2
+    ],
+    "L_context": 2636,
+    "suffix": 31,
+    "total": 2667,
+    "evidence_tokens": [
+     243,
+     270
+    ],
+    "M4": 21504000,
+    "M16": 75579392,
+    "n_kept": 749,
+    "hybrid_f": 396
+   },
+   {
+    "id": "KV-2048-start-2-07",
+    "cell": [
+     2048,
+     "start",
+     2
+    ],
+    "L_context": 2634,
+    "suffix": 31,
+    "total": 2665,
+    "evidence_tokens": [
+     241,
+     268
+    ],
+    "M4": 21446656,
+    "M16": 75522048,
+    "n_kept": 747,
+    "hybrid_f": 394
+   },
+   {
+    "id": "KV-2048-start-2-08",
+    "cell": [
+     2048,
+     "start",
+     2
+    ],
+    "L_context": 2637,
+    "suffix": 31,
+    "total": 2668,
+    "evidence_tokens": [
+     241,
+     268
+    ],
+    "M4": 21532672,
+    "M16": 75608064,
+    "n_kept": 750,
+    "hybrid_f": 397
+   },
+   {
+    "id": "KV-2048-start-2-09",
+    "cell": [
+     2048,
+     "start",
+     2
+    ],
+    "L_context": 2629,
+    "suffix": 31,
+    "total": 2660,
+    "evidence_tokens": [
+     240,
+     267
+    ],
+    "M4": 21303296,
+    "M16": 75378688,
+    "n_kept": 742,
+    "hybrid_f": 389
+   },
+   {
+    "id": "KV-2048-start-8-00",
+    "cell": [
+     2048,
+     "start",
+     8
+    ],
+    "L_context": 2610,
+    "suffix": 31,
+    "total": 2641,
+    "evidence_tokens": [
+     241,
+     268
+    ],
+    "M4": 22077440,
+    "M16": 74833920,
+    "n_kept": 769,
+    "hybrid_f": 370
+   },
+   {
+    "id": "KV-2048-start-8-01",
+    "cell": [
+     2048,
+     "start",
+     8
+    ],
+    "L_context": 2616,
+    "suffix": 31,
+    "total": 2647,
+    "evidence_tokens": [
+     241,
+     268
+    ],
+    "M4": 22249472,
+    "M16": 75005952,
+    "n_kept": 775,
+    "hybrid_f": 376
+   },
+   {
+    "id": "KV-2048-start-8-02",
+    "cell": [
+     2048,
+     "start",
+     8
+    ],
+    "L_context": 2612,
+    "suffix": 31,
+    "total": 2643,
+    "evidence_tokens": [
+     242,
+     269
+    ],
+    "M4": 22134784,
+    "M16": 74891264,
+    "n_kept": 771,
+    "hybrid_f": 372
+   },
+   {
+    "id": "KV-2048-start-8-03",
+    "cell": [
+     2048,
+     "start",
+     8
+    ],
+    "L_context": 2620,
+    "suffix": 31,
+    "total": 2651,
+    "evidence_tokens": [
+     243,
+     270
+    ],
+    "M4": 22364160,
+    "M16": 75120640,
+    "n_kept": 779,
+    "hybrid_f": 380
+   },
+   {
+    "id": "KV-2048-start-8-04",
+    "cell": [
+     2048,
+     "start",
+     8
+    ],
+    "L_context": 2611,
+    "suffix": 31,
+    "total": 2642,
+    "evidence_tokens": [
+     242,
+     269
+    ],
+    "M4": 22106112,
+    "M16": 74862592,
+    "n_kept": 770,
+    "hybrid_f": 371
+   },
+   {
+    "id": "KV-2048-start-8-05",
+    "cell": [
+     2048,
+     "start",
+     8
+    ],
+    "L_context": 2611,
+    "suffix": 31,
+    "total": 2642,
+    "evidence_tokens": [
+     241,
+     268
+    ],
+    "M4": 22106112,
+    "M16": 74862592,
+    "n_kept": 770,
+    "hybrid_f": 371
+   },
+   {
+    "id": "KV-2048-start-8-06",
+    "cell": [
+     2048,
+     "start",
+     8
+    ],
+    "L_context": 2616,
+    "suffix": 31,
+    "total": 2647,
+    "evidence_tokens": [
+     243,
+     270
+    ],
+    "M4": 22249472,
+    "M16": 75005952,
+    "n_kept": 775,
+    "hybrid_f": 376
+   },
+   {
+    "id": "KV-2048-start-8-07",
+    "cell": [
+     2048,
+     "start",
+     8
+    ],
+    "L_context": 2614,
+    "suffix": 31,
+    "total": 2645,
+    "evidence_tokens": [
+     244,
+     271
+    ],
+    "M4": 22192128,
+    "M16": 74948608,
+    "n_kept": 773,
+    "hybrid_f": 374
+   },
+   {
+    "id": "KV-2048-start-8-08",
+    "cell": [
+     2048,
+     "start",
+     8
+    ],
+    "L_context": 2614,
+    "suffix": 31,
+    "total": 2645,
+    "evidence_tokens": [
+     241,
+     268
+    ],
+    "M4": 22192128,
+    "M16": 74948608,
+    "n_kept": 773,
+    "hybrid_f": 374
+   },
+   {
+    "id": "KV-2048-start-8-09",
+    "cell": [
+     2048,
+     "start",
+     8
+    ],
+    "L_context": 2617,
+    "suffix": 31,
+    "total": 2648,
+    "evidence_tokens": [
+     242,
+     269
+    ],
+    "M4": 22278144,
+    "M16": 75034624,
+    "n_kept": 776,
+    "hybrid_f": 377
+   },
+   {
+    "id": "KV-2048-middle-0-00",
+    "cell": [
+     2048,
+     "middle",
+     0
+    ],
+    "L_context": 2645,
+    "suffix": 31,
+    "total": 2676,
+    "evidence_tokens": [
+     1279,
+     1306
+    ],
+    "M4": 21762048,
+    "M16": 75837440,
+    "n_kept": 758,
+    "hybrid_f": 405
+   },
+   {
+    "id": "KV-2048-middle-0-01",
+    "cell": [
+     2048,
+     "middle",
+     0
+    ],
+    "L_context": 2636,
+    "suffix": 31,
+    "total": 2667,
+    "evidence_tokens": [
+     1282,
+     1309
+    ],
+    "M4": 21504000,
+    "M16": 75579392,
+    "n_kept": 749,
+    "hybrid_f": 396
+   },
+   {
+    "id": "KV-2048-middle-0-02",
+    "cell": [
+     2048,
+     "middle",
+     0
+    ],
+    "L_context": 2642,
+    "suffix": 31,
+    "total": 2673,
+    "evidence_tokens": [
+     1279,
+     1306
+    ],
+    "M4": 21676032,
+    "M16": 75751424,
+    "n_kept": 755,
+    "hybrid_f": 402
+   },
+   {
+    "id": "KV-2048-middle-0-03",
+    "cell": [
+     2048,
+     "middle",
+     0
+    ],
+    "L_context": 2644,
+    "suffix": 31,
+    "total": 2675,
+    "evidence_tokens": [
+     1286,
+     1313
+    ],
+    "M4": 21733376,
+    "M16": 75808768,
+    "n_kept": 757,
+    "hybrid_f": 404
+   },
+   {
+    "id": "KV-2048-middle-0-04",
+    "cell": [
+     2048,
+     "middle",
+     0
+    ],
+    "L_context": 2648,
+    "suffix": 31,
+    "total": 2679,
+    "evidence_tokens": [
+     1288,
+     1315
+    ],
+    "M4": 21848064,
+    "M16": 75923456,
+    "n_kept": 761,
+    "hybrid_f": 408
+   },
+   {
+    "id": "KV-2048-middle-0-05",
+    "cell": [
+     2048,
+     "middle",
+     0
+    ],
+    "L_context": 2642,
+    "suffix": 31,
+    "total": 2673,
+    "evidence_tokens": [
+     1280,
+     1307
+    ],
+    "M4": 21676032,
+    "M16": 75751424,
+    "n_kept": 755,
+    "hybrid_f": 402
+   },
+   {
+    "id": "KV-2048-middle-0-06",
+    "cell": [
+     2048,
+     "middle",
+     0
+    ],
+    "L_context": 2647,
+    "suffix": 31,
+    "total": 2678,
+    "evidence_tokens": [
+     1287,
+     1314
+    ],
+    "M4": 21819392,
+    "M16": 75894784,
+    "n_kept": 760,
+    "hybrid_f": 407
+   },
+   {
+    "id": "KV-2048-middle-0-07",
+    "cell": [
+     2048,
+     "middle",
+     0
+    ],
+    "L_context": 2646,
+    "suffix": 31,
+    "total": 2677,
+    "evidence_tokens": [
+     1283,
+     1310
+    ],
+    "M4": 21790720,
+    "M16": 75866112,
+    "n_kept": 759,
+    "hybrid_f": 406
+   },
+   {
+    "id": "KV-2048-middle-0-08",
+    "cell": [
+     2048,
+     "middle",
+     0
+    ],
+    "L_context": 2637,
+    "suffix": 31,
+    "total": 2668,
+    "evidence_tokens": [
+     1278,
+     1305
+    ],
+    "M4": 21532672,
+    "M16": 75608064,
+    "n_kept": 750,
+    "hybrid_f": 397
+   },
+   {
+    "id": "KV-2048-middle-0-09",
+    "cell": [
+     2048,
+     "middle",
+     0
+    ],
+    "L_context": 2640,
+    "suffix": 31,
+    "total": 2671,
+    "evidence_tokens": [
+     1278,
+     1305
+    ],
+    "M4": 21618688,
+    "M16": 75694080,
+    "n_kept": 753,
+    "hybrid_f": 400
+   },
+   {
+    "id": "KV-2048-middle-2-00",
+    "cell": [
+     2048,
+     "middle",
+     2
+    ],
+    "L_context": 2638,
+    "suffix": 31,
+    "total": 2669,
+    "evidence_tokens": [
+     1282,
+     1309
+    ],
+    "M4": 21561344,
+    "M16": 75636736,
+    "n_kept": 751,
+    "hybrid_f": 398
+   },
+   {
+    "id": "KV-2048-middle-2-01",
+    "cell": [
+     2048,
+     "middle",
+     2
+    ],
+    "L_context": 2635,
+    "suffix": 31,
+    "total": 2666,
+    "evidence_tokens": [
+     1281,
+     1308
+    ],
+    "M4": 21475328,
+    "M16": 75550720,
+    "n_kept": 748,
+    "hybrid_f": 395
+   },
+   {
+    "id": "KV-2048-middle-2-02",
+    "cell": [
+     2048,
+     "middle",
+     2
+    ],
+    "L_context": 2627,
+    "suffix": 31,
+    "total": 2658,
+    "evidence_tokens": [
+     1273,
+     1300
+    ],
+    "M4": 21245952,
+    "M16": 75321344,
+    "n_kept": 740,
+    "hybrid_f": 387
+   },
+   {
+    "id": "KV-2048-middle-2-03",
+    "cell": [
+     2048,
+     "middle",
+     2
+    ],
+    "L_context": 2632,
+    "suffix": 31,
+    "total": 2663,
+    "evidence_tokens": [
+     1278,
+     1305
+    ],
+    "M4": 21389312,
+    "M16": 75464704,
+    "n_kept": 745,
+    "hybrid_f": 392
+   },
+   {
+    "id": "KV-2048-middle-2-04",
+    "cell": [
+     2048,
+     "middle",
+     2
+    ],
+    "L_context": 2636,
+    "suffix": 31,
+    "total": 2667,
+    "evidence_tokens": [
+     1279,
+     1306
+    ],
+    "M4": 21504000,
+    "M16": 75579392,
+    "n_kept": 749,
+    "hybrid_f": 396
+   },
+   {
+    "id": "KV-2048-middle-2-05",
+    "cell": [
+     2048,
+     "middle",
+     2
+    ],
+    "L_context": 2631,
+    "suffix": 31,
+    "total": 2662,
+    "evidence_tokens": [
+     1275,
+     1302
+    ],
+    "M4": 21360640,
+    "M16": 75436032,
+    "n_kept": 744,
+    "hybrid_f": 391
+   },
+   {
+    "id": "KV-2048-middle-2-06",
+    "cell": [
+     2048,
+     "middle",
+     2
+    ],
+    "L_context": 2637,
+    "suffix": 31,
+    "total": 2668,
+    "evidence_tokens": [
+     1282,
+     1309
+    ],
+    "M4": 21532672,
+    "M16": 75608064,
+    "n_kept": 750,
+    "hybrid_f": 397
+   },
+   {
+    "id": "KV-2048-middle-2-07",
+    "cell": [
+     2048,
+     "middle",
+     2
+    ],
+    "L_context": 2634,
+    "suffix": 31,
+    "total": 2665,
+    "evidence_tokens": [
+     1281,
+     1308
+    ],
+    "M4": 21446656,
+    "M16": 75522048,
+    "n_kept": 747,
+    "hybrid_f": 394
+   },
+   {
+    "id": "KV-2048-middle-2-08",
+    "cell": [
+     2048,
+     "middle",
+     2
+    ],
+    "L_context": 2636,
+    "suffix": 31,
+    "total": 2667,
+    "evidence_tokens": [
+     1283,
+     1310
+    ],
+    "M4": 21504000,
+    "M16": 75579392,
+    "n_kept": 749,
+    "hybrid_f": 396
+   },
+   {
+    "id": "KV-2048-middle-2-09",
+    "cell": [
+     2048,
+     "middle",
+     2
+    ],
+    "L_context": 2639,
+    "suffix": 31,
+    "total": 2670,
+    "evidence_tokens": [
+     1280,
+     1307
+    ],
+    "M4": 21590016,
+    "M16": 75665408,
+    "n_kept": 752,
+    "hybrid_f": 399
+   },
+   {
+    "id": "KV-2048-middle-8-00",
+    "cell": [
+     2048,
+     "middle",
+     8
+    ],
+    "L_context": 2616,
+    "suffix": 31,
+    "total": 2647,
+    "evidence_tokens": [
+     1271,
+     1298
+    ],
+    "M4": 22249472,
+    "M16": 75005952,
+    "n_kept": 775,
+    "hybrid_f": 376
+   },
+   {
+    "id": "KV-2048-middle-8-01",
+    "cell": [
+     2048,
+     "middle",
+     8
+    ],
+    "L_context": 2617,
+    "suffix": 31,
+    "total": 2648,
+    "evidence_tokens": [
+     1267,
+     1294
+    ],
+    "M4": 22278144,
+    "M16": 75034624,
+    "n_kept": 776,
+    "hybrid_f": 377
+   },
+   {
+    "id": "KV-2048-middle-8-02",
+    "cell": [
+     2048,
+     "middle",
+     8
+    ],
+    "L_context": 2613,
+    "suffix": 31,
+    "total": 2644,
+    "evidence_tokens": [
+     1264,
+     1291
+    ],
+    "M4": 22163456,
+    "M16": 74919936,
+    "n_kept": 772,
+    "hybrid_f": 373
+   },
+   {
+    "id": "KV-2048-middle-8-03",
+    "cell": [
+     2048,
+     "middle",
+     8
+    ],
+    "L_context": 2617,
+    "suffix": 31,
+    "total": 2648,
+    "evidence_tokens": [
+     1270,
+     1297
+    ],
+    "M4": 22278144,
+    "M16": 75034624,
+    "n_kept": 776,
+    "hybrid_f": 377
+   },
+   {
+    "id": "KV-2048-middle-8-04",
+    "cell": [
+     2048,
+     "middle",
+     8
+    ],
+    "L_context": 2608,
+    "suffix": 31,
+    "total": 2639,
+    "evidence_tokens": [
+     1262,
+     1289
+    ],
+    "M4": 22020096,
+    "M16": 74776576,
+    "n_kept": 767,
+    "hybrid_f": 368
+   },
+   {
+    "id": "KV-2048-middle-8-05",
+    "cell": [
+     2048,
+     "middle",
+     8
+    ],
+    "L_context": 2616,
+    "suffix": 31,
+    "total": 2647,
+    "evidence_tokens": [
+     1270,
+     1297
+    ],
+    "M4": 22249472,
+    "M16": 75005952,
+    "n_kept": 775,
+    "hybrid_f": 376
+   },
+   {
+    "id": "KV-2048-middle-8-06",
+    "cell": [
+     2048,
+     "middle",
+     8
+    ],
+    "L_context": 2615,
+    "suffix": 31,
+    "total": 2646,
+    "evidence_tokens": [
+     1270,
+     1297
+    ],
+    "M4": 22220800,
+    "M16": 74977280,
+    "n_kept": 774,
+    "hybrid_f": 375
+   },
+   {
+    "id": "KV-2048-middle-8-07",
+    "cell": [
+     2048,
+     "middle",
+     8
+    ],
+    "L_context": 2623,
+    "suffix": 31,
+    "total": 2654,
+    "evidence_tokens": [
+     1269,
+     1296
+    ],
+    "M4": 22450176,
+    "M16": 75206656,
+    "n_kept": 782,
+    "hybrid_f": 383
+   },
+   {
+    "id": "KV-2048-middle-8-08",
+    "cell": [
+     2048,
+     "middle",
+     8
+    ],
+    "L_context": 2613,
+    "suffix": 31,
+    "total": 2644,
+    "evidence_tokens": [
+     1268,
+     1295
+    ],
+    "M4": 22163456,
+    "M16": 74919936,
+    "n_kept": 772,
+    "hybrid_f": 373
+   },
+   {
+    "id": "KV-2048-middle-8-09",
+    "cell": [
+     2048,
+     "middle",
+     8
+    ],
+    "L_context": 2614,
+    "suffix": 31,
+    "total": 2645,
+    "evidence_tokens": [
+     1269,
+     1296
+    ],
+    "M4": 22192128,
+    "M16": 74948608,
+    "n_kept": 773,
+    "hybrid_f": 374
+   },
+   {
+    "id": "KV-2048-end-0-00",
+    "cell": [
+     2048,
+     "end",
+     0
+    ],
+    "L_context": 2641,
+    "suffix": 30,
+    "total": 2671,
+    "evidence_tokens": [
+     2369,
+     2395
+    ],
+    "M4": 21647360,
+    "M16": 75722752,
+    "n_kept": 754,
+    "hybrid_f": 401
+   },
+   {
+    "id": "KV-2048-end-0-01",
+    "cell": [
+     2048,
+     "end",
+     0
+    ],
+    "L_context": 2637,
+    "suffix": 30,
+    "total": 2667,
+    "evidence_tokens": [
+     2367,
+     2393
+    ],
+    "M4": 21532672,
+    "M16": 75608064,
+    "n_kept": 750,
+    "hybrid_f": 397
+   },
+   {
+    "id": "KV-2048-end-0-02",
+    "cell": [
+     2048,
+     "end",
+     0
+    ],
+    "L_context": 2637,
+    "suffix": 30,
+    "total": 2667,
+    "evidence_tokens": [
+     2367,
+     2393
+    ],
+    "M4": 21532672,
+    "M16": 75608064,
+    "n_kept": 750,
+    "hybrid_f": 397
+   },
+   {
+    "id": "KV-2048-end-0-03",
+    "cell": [
+     2048,
+     "end",
+     0
+    ],
+    "L_context": 2644,
+    "suffix": 30,
+    "total": 2674,
+    "evidence_tokens": [
+     2374,
+     2400
+    ],
+    "M4": 21733376,
+    "M16": 75808768,
+    "n_kept": 757,
+    "hybrid_f": 404
+   },
+   {
+    "id": "KV-2048-end-0-04",
+    "cell": [
+     2048,
+     "end",
+     0
+    ],
+    "L_context": 2645,
+    "suffix": 30,
+    "total": 2675,
+    "evidence_tokens": [
+     2375,
+     2401
+    ],
+    "M4": 21762048,
+    "M16": 75837440,
+    "n_kept": 758,
+    "hybrid_f": 405
+   },
+   {
+    "id": "KV-2048-end-0-05",
+    "cell": [
+     2048,
+     "end",
+     0
+    ],
+    "L_context": 2639,
+    "suffix": 30,
+    "total": 2669,
+    "evidence_tokens": [
+     2369,
+     2395
+    ],
+    "M4": 21590016,
+    "M16": 75665408,
+    "n_kept": 752,
+    "hybrid_f": 399
+   },
+   {
+    "id": "KV-2048-end-0-06",
+    "cell": [
+     2048,
+     "end",
+     0
+    ],
+    "L_context": 2644,
+    "suffix": 30,
+    "total": 2674,
+    "evidence_tokens": [
+     2374,
+     2400
+    ],
+    "M4": 21733376,
+    "M16": 75808768,
+    "n_kept": 757,
+    "hybrid_f": 404
+   },
+   {
+    "id": "KV-2048-end-0-07",
+    "cell": [
+     2048,
+     "end",
+     0
+    ],
+    "L_context": 2647,
+    "suffix": 30,
+    "total": 2677,
+    "evidence_tokens": [
+     2375,
+     2401
+    ],
+    "M4": 21819392,
+    "M16": 75894784,
+    "n_kept": 760,
+    "hybrid_f": 407
+   },
+   {
+    "id": "KV-2048-end-0-08",
+    "cell": [
+     2048,
+     "end",
+     0
+    ],
+    "L_context": 2646,
+    "suffix": 30,
+    "total": 2676,
+    "evidence_tokens": [
+     2376,
+     2402
+    ],
+    "M4": 21790720,
+    "M16": 75866112,
+    "n_kept": 759,
+    "hybrid_f": 406
+   },
+   {
+    "id": "KV-2048-end-0-09",
+    "cell": [
+     2048,
+     "end",
+     0
+    ],
+    "L_context": 2644,
+    "suffix": 30,
+    "total": 2674,
+    "evidence_tokens": [
+     2371,
+     2397
+    ],
+    "M4": 21733376,
+    "M16": 75808768,
+    "n_kept": 757,
+    "hybrid_f": 404
+   },
+   {
+    "id": "KV-2048-end-2-00",
+    "cell": [
+     2048,
+     "end",
+     2
+    ],
+    "L_context": 2631,
+    "suffix": 30,
+    "total": 2661,
+    "evidence_tokens": [
+     2360,
+     2386
+    ],
+    "M4": 21360640,
+    "M16": 75436032,
+    "n_kept": 744,
+    "hybrid_f": 391
+   },
+   {
+    "id": "KV-2048-end-2-01",
+    "cell": [
+     2048,
+     "end",
+     2
+    ],
+    "L_context": 2638,
+    "suffix": 30,
+    "total": 2668,
+    "evidence_tokens": [
+     2368,
+     2394
+    ],
+    "M4": 21561344,
+    "M16": 75636736,
+    "n_kept": 751,
+    "hybrid_f": 398
+   },
+   {
+    "id": "KV-2048-end-2-02",
+    "cell": [
+     2048,
+     "end",
+     2
+    ],
+    "L_context": 2631,
+    "suffix": 30,
+    "total": 2661,
+    "evidence_tokens": [
+     2361,
+     2387
+    ],
+    "M4": 21360640,
+    "M16": 75436032,
+    "n_kept": 744,
+    "hybrid_f": 391
+   },
+   {
+    "id": "KV-2048-end-2-03",
+    "cell": [
+     2048,
+     "end",
+     2
+    ],
+    "L_context": 2629,
+    "suffix": 30,
+    "total": 2659,
+    "evidence_tokens": [
+     2357,
+     2383
+    ],
+    "M4": 21303296,
+    "M16": 75378688,
+    "n_kept": 742,
+    "hybrid_f": 389
+   },
+   {
+    "id": "KV-2048-end-2-04",
+    "cell": [
+     2048,
+     "end",
+     2
+    ],
+    "L_context": 2641,
+    "suffix": 30,
+    "total": 2671,
+    "evidence_tokens": [
+     2370,
+     2396
+    ],
+    "M4": 21647360,
+    "M16": 75722752,
+    "n_kept": 754,
+    "hybrid_f": 401
+   },
+   {
+    "id": "KV-2048-end-2-05",
+    "cell": [
+     2048,
+     "end",
+     2
+    ],
+    "L_context": 2636,
+    "suffix": 30,
+    "total": 2666,
+    "evidence_tokens": [
+     2363,
+     2389
+    ],
+    "M4": 21504000,
+    "M16": 75579392,
+    "n_kept": 749,
+    "hybrid_f": 396
+   },
+   {
+    "id": "KV-2048-end-2-06",
+    "cell": [
+     2048,
+     "end",
+     2
+    ],
+    "L_context": 2633,
+    "suffix": 30,
+    "total": 2663,
+    "evidence_tokens": [
+     2364,
+     2390
+    ],
+    "M4": 21417984,
+    "M16": 75493376,
+    "n_kept": 746,
+    "hybrid_f": 393
+   },
+   {
+    "id": "KV-2048-end-2-07",
+    "cell": [
+     2048,
+     "end",
+     2
+    ],
+    "L_context": 2633,
+    "suffix": 30,
+    "total": 2663,
+    "evidence_tokens": [
+     2361,
+     2387
+    ],
+    "M4": 21417984,
+    "M16": 75493376,
+    "n_kept": 746,
+    "hybrid_f": 393
+   },
+   {
+    "id": "KV-2048-end-2-08",
+    "cell": [
+     2048,
+     "end",
+     2
+    ],
+    "L_context": 2630,
+    "suffix": 30,
+    "total": 2660,
+    "evidence_tokens": [
+     2360,
+     2386
+    ],
+    "M4": 21331968,
+    "M16": 75407360,
+    "n_kept": 743,
+    "hybrid_f": 390
+   },
+   {
+    "id": "KV-2048-end-2-09",
+    "cell": [
+     2048,
+     "end",
+     2
+    ],
+    "L_context": 2630,
+    "suffix": 30,
+    "total": 2660,
+    "evidence_tokens": [
+     2360,
+     2386
+    ],
+    "M4": 21331968,
+    "M16": 75407360,
+    "n_kept": 743,
+    "hybrid_f": 390
+   },
+   {
+    "id": "KV-2048-end-8-00",
+    "cell": [
+     2048,
+     "end",
+     8
+    ],
+    "L_context": 2617,
+    "suffix": 30,
+    "total": 2647,
+    "evidence_tokens": [
+     2344,
+     2370
+    ],
+    "M4": 22278144,
+    "M16": 75034624,
+    "n_kept": 776,
+    "hybrid_f": 377
+   },
+   {
+    "id": "KV-2048-end-8-01",
+    "cell": [
+     2048,
+     "end",
+     8
+    ],
+    "L_context": 2617,
+    "suffix": 30,
+    "total": 2647,
+    "evidence_tokens": [
+     2347,
+     2373
+    ],
+    "M4": 22278144,
+    "M16": 75034624,
+    "n_kept": 776,
+    "hybrid_f": 377
+   },
+   {
+    "id": "KV-2048-end-8-02",
+    "cell": [
+     2048,
+     "end",
+     8
+    ],
+    "L_context": 2614,
+    "suffix": 30,
+    "total": 2644,
+    "evidence_tokens": [
+     2345,
+     2371
+    ],
+    "M4": 22192128,
+    "M16": 74948608,
+    "n_kept": 773,
+    "hybrid_f": 374
+   },
+   {
+    "id": "KV-2048-end-8-03",
+    "cell": [
+     2048,
+     "end",
+     8
+    ],
+    "L_context": 2610,
+    "suffix": 30,
+    "total": 2640,
+    "evidence_tokens": [
+     2340,
+     2366
+    ],
+    "M4": 22077440,
+    "M16": 74833920,
+    "n_kept": 769,
+    "hybrid_f": 370
+   },
+   {
+    "id": "KV-2048-end-8-04",
+    "cell": [
+     2048,
+     "end",
+     8
+    ],
+    "L_context": 2610,
+    "suffix": 30,
+    "total": 2640,
+    "evidence_tokens": [
+     2341,
+     2367
+    ],
+    "M4": 22077440,
+    "M16": 74833920,
+    "n_kept": 769,
+    "hybrid_f": 370
+   },
+   {
+    "id": "KV-2048-end-8-05",
+    "cell": [
+     2048,
+     "end",
+     8
+    ],
+    "L_context": 2617,
+    "suffix": 30,
+    "total": 2647,
+    "evidence_tokens": [
+     2347,
+     2373
+    ],
+    "M4": 22278144,
+    "M16": 75034624,
+    "n_kept": 776,
+    "hybrid_f": 377
+   },
+   {
+    "id": "KV-2048-end-8-06",
+    "cell": [
+     2048,
+     "end",
+     8
+    ],
+    "L_context": 2616,
+    "suffix": 30,
+    "total": 2646,
+    "evidence_tokens": [
+     2347,
+     2373
+    ],
+    "M4": 22249472,
+    "M16": 75005952,
+    "n_kept": 775,
+    "hybrid_f": 376
+   },
+   {
+    "id": "KV-2048-end-8-07",
+    "cell": [
+     2048,
+     "end",
+     8
+    ],
+    "L_context": 2623,
+    "suffix": 30,
+    "total": 2653,
+    "evidence_tokens": [
+     2351,
+     2377
+    ],
+    "M4": 22450176,
+    "M16": 75206656,
+    "n_kept": 782,
+    "hybrid_f": 383
+   },
+   {
+    "id": "KV-2048-end-8-08",
+    "cell": [
+     2048,
+     "end",
+     8
+    ],
+    "L_context": 2611,
+    "suffix": 30,
+    "total": 2641,
+    "evidence_tokens": [
+     2341,
+     2367
+    ],
+    "M4": 22106112,
+    "M16": 74862592,
+    "n_kept": 770,
+    "hybrid_f": 371
+   },
+   {
+    "id": "KV-2048-end-8-09",
+    "cell": [
+     2048,
+     "end",
+     8
+    ],
+    "L_context": 2618,
+    "suffix": 30,
+    "total": 2648,
+    "evidence_tokens": [
+     2347,
+     2373
+    ],
+    "M4": 22306816,
+    "M16": 75063296,
+    "n_kept": 777,
+    "hybrid_f": 378
+   },
+   {
+    "id": "KV-4096-start-0-00",
+    "cell": [
+     4096,
+     "start",
+     0
+    ],
+    "L_context": 5220,
+    "suffix": 31,
+    "total": 5251,
+    "evidence_tokens": [
+     435,
+     462
+    ],
+    "M4": 42835968,
+    "M16": 149667840,
+    "n_kept": 1493,
+    "hybrid_f": 740
+   },
+   {
+    "id": "KV-4096-start-0-01",
+    "cell": [
+     4096,
+     "start",
+     0
+    ],
+    "L_context": 5230,
+    "suffix": 31,
+    "total": 5261,
+    "evidence_tokens": [
+     434,
+     461
+    ],
+    "M4": 43122688,
+    "M16": 149954560,
+    "n_kept": 1503,
+    "hybrid_f": 750
+   },
+   {
+    "id": "KV-4096-start-0-02",
+    "cell": [
+     4096,
+     "start",
+     0
+    ],
+    "L_context": 5227,
+    "suffix": 31,
+    "total": 5258,
+    "evidence_tokens": [
+     435,
+     462
+    ],
+    "M4": 43036672,
+    "M16": 149868544,
+    "n_kept": 1500,
+    "hybrid_f": 747
+   },
+   {
+    "id": "KV-4096-start-0-03",
+    "cell": [
+     4096,
+     "start",
+     0
+    ],
+    "L_context": 5225,
+    "suffix": 31,
+    "total": 5256,
+    "evidence_tokens": [
+     433,
+     460
+    ],
+    "M4": 42979328,
+    "M16": 149811200,
+    "n_kept": 1498,
+    "hybrid_f": 745
+   },
+   {
+    "id": "KV-4096-start-0-04",
+    "cell": [
+     4096,
+     "start",
+     0
+    ],
+    "L_context": 5226,
+    "suffix": 31,
+    "total": 5257,
+    "evidence_tokens": [
+     435,
+     462
+    ],
+    "M4": 43008000,
+    "M16": 149839872,
+    "n_kept": 1499,
+    "hybrid_f": 746
+   },
+   {
+    "id": "KV-4096-start-0-05",
+    "cell": [
+     4096,
+     "start",
+     0
+    ],
+    "L_context": 5234,
+    "suffix": 31,
+    "total": 5265,
+    "evidence_tokens": [
+     436,
+     463
+    ],
+    "M4": 43237376,
+    "M16": 150069248,
+    "n_kept": 1507,
+    "hybrid_f": 754
+   },
+   {
+    "id": "KV-4096-start-0-06",
+    "cell": [
+     4096,
+     "start",
+     0
+    ],
+    "L_context": 5232,
+    "suffix": 31,
+    "total": 5263,
+    "evidence_tokens": [
+     437,
+     464
+    ],
+    "M4": 43180032,
+    "M16": 150011904,
+    "n_kept": 1505,
+    "hybrid_f": 752
+   },
+   {
+    "id": "KV-4096-start-0-07",
+    "cell": [
+     4096,
+     "start",
+     0
+    ],
+    "L_context": 5229,
+    "suffix": 31,
+    "total": 5260,
+    "evidence_tokens": [
+     436,
+     463
+    ],
+    "M4": 43094016,
+    "M16": 149925888,
+    "n_kept": 1502,
+    "hybrid_f": 749
+   },
+   {
+    "id": "KV-4096-start-0-08",
+    "cell": [
+     4096,
+     "start",
+     0
+    ],
+    "L_context": 5243,
+    "suffix": 31,
+    "total": 5274,
+    "evidence_tokens": [
+     435,
+     462
+    ],
+    "M4": 43495424,
+    "M16": 150327296,
+    "n_kept": 1516,
+    "hybrid_f": 763
+   },
+   {
+    "id": "KV-4096-start-0-09",
+    "cell": [
+     4096,
+     "start",
+     0
+    ],
+    "L_context": 5222,
+    "suffix": 31,
+    "total": 5253,
+    "evidence_tokens": [
+     433,
+     460
+    ],
+    "M4": 42893312,
+    "M16": 149725184,
+    "n_kept": 1495,
+    "hybrid_f": 742
+   },
+   {
+    "id": "KV-4096-start-2-00",
+    "cell": [
+     4096,
+     "start",
+     2
+    ],
+    "L_context": 5217,
+    "suffix": 31,
+    "total": 5248,
+    "evidence_tokens": [
+     435,
+     462
+    ],
+    "M4": 42749952,
+    "M16": 149581824,
+    "n_kept": 1490,
+    "hybrid_f": 737
+   },
+   {
+    "id": "KV-4096-start-2-01",
+    "cell": [
+     4096,
+     "start",
+     2
+    ],
+    "L_context": 5222,
+    "suffix": 31,
+    "total": 5253,
+    "evidence_tokens": [
+     434,
+     461
+    ],
+    "M4": 42893312,
+    "M16": 149725184,
+    "n_kept": 1495,
+    "hybrid_f": 742
+   },
+   {
+    "id": "KV-4096-start-2-02",
+    "cell": [
+     4096,
+     "start",
+     2
+    ],
+    "L_context": 5229,
+    "suffix": 31,
+    "total": 5260,
+    "evidence_tokens": [
+     436,
+     463
+    ],
+    "M4": 43094016,
+    "M16": 149925888,
+    "n_kept": 1502,
+    "hybrid_f": 749
+   },
+   {
+    "id": "KV-4096-start-2-03",
+    "cell": [
+     4096,
+     "start",
+     2
+    ],
+    "L_context": 5221,
+    "suffix": 31,
+    "total": 5252,
+    "evidence_tokens": [
+     436,
+     463
+    ],
+    "M4": 42864640,
+    "M16": 149696512,
+    "n_kept": 1494,
+    "hybrid_f": 741
+   },
+   {
+    "id": "KV-4096-start-2-04",
+    "cell": [
+     4096,
+     "start",
+     2
+    ],
+    "L_context": 5223,
+    "suffix": 31,
+    "total": 5254,
+    "evidence_tokens": [
+     436,
+     463
+    ],
+    "M4": 42921984,
+    "M16": 149753856,
+    "n_kept": 1496,
+    "hybrid_f": 743
+   },
+   {
+    "id": "KV-4096-start-2-05",
+    "cell": [
+     4096,
+     "start",
+     2
+    ],
+    "L_context": 5222,
+    "suffix": 31,
+    "total": 5253,
+    "evidence_tokens": [
+     436,
+     463
+    ],
+    "M4": 42893312,
+    "M16": 149725184,
+    "n_kept": 1495,
+    "hybrid_f": 742
+   },
+   {
+    "id": "KV-4096-start-2-06",
+    "cell": [
+     4096,
+     "start",
+     2
+    ],
+    "L_context": 5225,
+    "suffix": 31,
+    "total": 5256,
+    "evidence_tokens": [
+     434,
+     461
+    ],
+    "M4": 42979328,
+    "M16": 149811200,
+    "n_kept": 1498,
+    "hybrid_f": 745
+   },
+   {
+    "id": "KV-4096-start-2-07",
+    "cell": [
+     4096,
+     "start",
+     2
+    ],
+    "L_context": 5224,
+    "suffix": 31,
+    "total": 5255,
+    "evidence_tokens": [
+     437,
+     464
+    ],
+    "M4": 42950656,
+    "M16": 149782528,
+    "n_kept": 1497,
+    "hybrid_f": 744
+   },
+   {
+    "id": "KV-4096-start-2-08",
+    "cell": [
+     4096,
+     "start",
+     2
+    ],
+    "L_context": 5217,
+    "suffix": 31,
+    "total": 5248,
+    "evidence_tokens": [
+     435,
+     462
+    ],
+    "M4": 42749952,
+    "M16": 149581824,
+    "n_kept": 1490,
+    "hybrid_f": 737
+   },
+   {
+    "id": "KV-4096-start-2-09",
+    "cell": [
+     4096,
+     "start",
+     2
+    ],
+    "L_context": 5233,
+    "suffix": 31,
+    "total": 5264,
+    "evidence_tokens": [
+     436,
+     463
+    ],
+    "M4": 43208704,
+    "M16": 150040576,
+    "n_kept": 1506,
+    "hybrid_f": 753
+   },
+   {
+    "id": "KV-4096-start-8-00",
+    "cell": [
+     4096,
+     "start",
+     8
+    ],
+    "L_context": 5204,
+    "suffix": 31,
+    "total": 5235,
+    "evidence_tokens": [
+     435,
+     462
+    ],
+    "M4": 42377216,
+    "M16": 149209088,
+    "n_kept": 1477,
+    "hybrid_f": 724
+   },
+   {
+    "id": "KV-4096-start-8-01",
+    "cell": [
+     4096,
+     "start",
+     8
+    ],
+    "L_context": 5207,
+    "suffix": 31,
+    "total": 5238,
+    "evidence_tokens": [
+     434,
+     461
+    ],
+    "M4": 42463232,
+    "M16": 149295104,
+    "n_kept": 1480,
+    "hybrid_f": 727
+   },
+   {
+    "id": "KV-4096-start-8-02",
+    "cell": [
+     4096,
+     "start",
+     8
+    ],
+    "L_context": 5208,
+    "suffix": 31,
+    "total": 5239,
+    "evidence_tokens": [
+     435,
+     462
+    ],
+    "M4": 42491904,
+    "M16": 149323776,
+    "n_kept": 1481,
+    "hybrid_f": 728
+   },
+   {
+    "id": "KV-4096-start-8-03",
+    "cell": [
+     4096,
+     "start",
+     8
+    ],
+    "L_context": 5202,
+    "suffix": 31,
+    "total": 5233,
+    "evidence_tokens": [
+     435,
+     462
+    ],
+    "M4": 42319872,
+    "M16": 149151744,
+    "n_kept": 1475,
+    "hybrid_f": 722
+   },
+   {
+    "id": "KV-4096-start-8-04",
+    "cell": [
+     4096,
+     "start",
+     8
+    ],
+    "L_context": 5204,
+    "suffix": 31,
+    "total": 5235,
+    "evidence_tokens": [
+     433,
+     460
+    ],
+    "M4": 42377216,
+    "M16": 149209088,
+    "n_kept": 1477,
+    "hybrid_f": 724
+   },
+   {
+    "id": "KV-4096-start-8-05",
+    "cell": [
+     4096,
+     "start",
+     8
+    ],
+    "L_context": 5200,
+    "suffix": 31,
+    "total": 5231,
+    "evidence_tokens": [
+     434,
+     461
+    ],
+    "M4": 42262528,
+    "M16": 149094400,
+    "n_kept": 1473,
+    "hybrid_f": 720
+   },
+   {
+    "id": "KV-4096-start-8-06",
+    "cell": [
+     4096,
+     "start",
+     8
+    ],
+    "L_context": 5212,
+    "suffix": 31,
+    "total": 5243,
+    "evidence_tokens": [
+     433,
+     460
+    ],
+    "M4": 42606592,
+    "M16": 149438464,
+    "n_kept": 1485,
+    "hybrid_f": 732
+   },
+   {
+    "id": "KV-4096-start-8-07",
+    "cell": [
+     4096,
+     "start",
+     8
+    ],
+    "L_context": 5205,
+    "suffix": 31,
+    "total": 5236,
+    "evidence_tokens": [
+     434,
+     461
+    ],
+    "M4": 42405888,
+    "M16": 149237760,
+    "n_kept": 1478,
+    "hybrid_f": 725
+   },
+   {
+    "id": "KV-4096-start-8-08",
+    "cell": [
+     4096,
+     "start",
+     8
+    ],
+    "L_context": 5202,
+    "suffix": 31,
+    "total": 5233,
+    "evidence_tokens": [
+     433,
+     460
+    ],
+    "M4": 42319872,
+    "M16": 149151744,
+    "n_kept": 1475,
+    "hybrid_f": 722
+   },
+   {
+    "id": "KV-4096-start-8-09",
+    "cell": [
+     4096,
+     "start",
+     8
+    ],
+    "L_context": 5206,
+    "suffix": 31,
+    "total": 5237,
+    "evidence_tokens": [
+     436,
+     463
+    ],
+    "M4": 42434560,
+    "M16": 149266432,
+    "n_kept": 1479,
+    "hybrid_f": 726
+   },
+   {
+    "id": "KV-4096-middle-0-00",
+    "cell": [
+     4096,
+     "middle",
+     0
+    ],
+    "L_context": 5215,
+    "suffix": 31,
+    "total": 5246,
+    "evidence_tokens": [
+     2506,
+     2533
+    ],
+    "M4": 42692608,
+    "M16": 149524480,
+    "n_kept": 1488,
+    "hybrid_f": 735
+   },
+   {
+    "id": "KV-4096-middle-0-01",
+    "cell": [
+     4096,
+     "middle",
+     0
+    ],
+    "L_context": 5228,
+    "suffix": 31,
+    "total": 5259,
+    "evidence_tokens": [
+     2515,
+     2542
+    ],
+    "M4": 43065344,
+    "M16": 149897216,
+    "n_kept": 1501,
+    "hybrid_f": 748
+   },
+   {
+    "id": "KV-4096-middle-0-02",
+    "cell": [
+     4096,
+     "middle",
+     0
+    ],
+    "L_context": 5229,
+    "suffix": 31,
+    "total": 5260,
+    "evidence_tokens": [
+     2516,
+     2543
+    ],
+    "M4": 43094016,
+    "M16": 149925888,
+    "n_kept": 1502,
+    "hybrid_f": 749
+   },
+   {
+    "id": "KV-4096-middle-0-03",
+    "cell": [
+     4096,
+     "middle",
+     0
+    ],
+    "L_context": 5246,
+    "suffix": 31,
+    "total": 5277,
+    "evidence_tokens": [
+     2520,
+     2547
+    ],
+    "M4": 43581440,
+    "M16": 150413312,
+    "n_kept": 1519,
+    "hybrid_f": 766
+   },
+   {
+    "id": "KV-4096-middle-0-04",
+    "cell": [
+     4096,
+     "middle",
+     0
+    ],
+    "L_context": 5236,
+    "suffix": 31,
+    "total": 5267,
+    "evidence_tokens": [
+     2518,
+     2545
+    ],
+    "M4": 43294720,
+    "M16": 150126592,
+    "n_kept": 1509,
+    "hybrid_f": 756
+   },
+   {
+    "id": "KV-4096-middle-0-05",
+    "cell": [
+     4096,
+     "middle",
+     0
+    ],
+    "L_context": 5223,
+    "suffix": 31,
+    "total": 5254,
+    "evidence_tokens": [
+     2514,
+     2541
+    ],
+    "M4": 42921984,
+    "M16": 149753856,
+    "n_kept": 1496,
+    "hybrid_f": 743
+   },
+   {
+    "id": "KV-4096-middle-0-06",
+    "cell": [
+     4096,
+     "middle",
+     0
+    ],
+    "L_context": 5236,
+    "suffix": 31,
+    "total": 5267,
+    "evidence_tokens": [
+     2513,
+     2540
+    ],
+    "M4": 43294720,
+    "M16": 150126592,
+    "n_kept": 1509,
+    "hybrid_f": 756
+   },
+   {
+    "id": "KV-4096-middle-0-07",
+    "cell": [
+     4096,
+     "middle",
+     0
+    ],
+    "L_context": 5233,
+    "suffix": 31,
+    "total": 5264,
+    "evidence_tokens": [
+     2514,
+     2541
+    ],
+    "M4": 43208704,
+    "M16": 150040576,
+    "n_kept": 1506,
+    "hybrid_f": 753
+   },
+   {
+    "id": "KV-4096-middle-0-08",
+    "cell": [
+     4096,
+     "middle",
+     0
+    ],
+    "L_context": 5227,
+    "suffix": 31,
+    "total": 5258,
+    "evidence_tokens": [
+     2510,
+     2537
+    ],
+    "M4": 43036672,
+    "M16": 149868544,
+    "n_kept": 1500,
+    "hybrid_f": 747
+   },
+   {
+    "id": "KV-4096-middle-0-09",
+    "cell": [
+     4096,
+     "middle",
+     0
+    ],
+    "L_context": 5234,
+    "suffix": 31,
+    "total": 5265,
+    "evidence_tokens": [
+     2520,
+     2547
+    ],
+    "M4": 43237376,
+    "M16": 150069248,
+    "n_kept": 1507,
+    "hybrid_f": 754
+   },
+   {
+    "id": "KV-4096-middle-2-00",
+    "cell": [
+     4096,
+     "middle",
+     2
+    ],
+    "L_context": 5237,
+    "suffix": 31,
+    "total": 5268,
+    "evidence_tokens": [
+     2520,
+     2547
+    ],
+    "M4": 43323392,
+    "M16": 150155264,
+    "n_kept": 1510,
+    "hybrid_f": 757
+   },
+   {
+    "id": "KV-4096-middle-2-01",
+    "cell": [
+     4096,
+     "middle",
+     2
+    ],
+    "L_context": 5223,
+    "suffix": 31,
+    "total": 5254,
+    "evidence_tokens": [
+     2512,
+     2539
+    ],
+    "M4": 42921984,
+    "M16": 149753856,
+    "n_kept": 1496,
+    "hybrid_f": 743
+   },
+   {
+    "id": "KV-4096-middle-2-02",
+    "cell": [
+     4096,
+     "middle",
+     2
+    ],
+    "L_context": 5220,
+    "suffix": 31,
+    "total": 5251,
+    "evidence_tokens": [
+     2512,
+     2539
+    ],
+    "M4": 42835968,
+    "M16": 149667840,
+    "n_kept": 1493,
+    "hybrid_f": 740
+   },
+   {
+    "id": "KV-4096-middle-2-03",
+    "cell": [
+     4096,
+     "middle",
+     2
+    ],
+    "L_context": 5227,
+    "suffix": 31,
+    "total": 5258,
+    "evidence_tokens": [
+     2510,
+     2537
+    ],
+    "M4": 43036672,
+    "M16": 149868544,
+    "n_kept": 1500,
+    "hybrid_f": 747
+   },
+   {
+    "id": "KV-4096-middle-2-04",
+    "cell": [
+     4096,
+     "middle",
+     2
+    ],
+    "L_context": 5221,
+    "suffix": 31,
+    "total": 5252,
+    "evidence_tokens": [
+     2508,
+     2535
+    ],
+    "M4": 42864640,
+    "M16": 149696512,
+    "n_kept": 1494,
+    "hybrid_f": 741
+   },
+   {
+    "id": "KV-4096-middle-2-05",
+    "cell": [
+     4096,
+     "middle",
+     2
+    ],
+    "L_context": 5220,
+    "suffix": 31,
+    "total": 5251,
+    "evidence_tokens": [
+     2508,
+     2535
+    ],
+    "M4": 42835968,
+    "M16": 149667840,
+    "n_kept": 1493,
+    "hybrid_f": 740
+   },
+   {
+    "id": "KV-4096-middle-2-06",
+    "cell": [
+     4096,
+     "middle",
+     2
+    ],
+    "L_context": 5223,
+    "suffix": 31,
+    "total": 5254,
+    "evidence_tokens": [
+     2516,
+     2543
+    ],
+    "M4": 42921984,
+    "M16": 149753856,
+    "n_kept": 1496,
+    "hybrid_f": 743
+   },
+   {
+    "id": "KV-4096-middle-2-07",
+    "cell": [
+     4096,
+     "middle",
+     2
+    ],
+    "L_context": 5227,
+    "suffix": 31,
+    "total": 5258,
+    "evidence_tokens": [
+     2513,
+     2540
+    ],
+    "M4": 43036672,
+    "M16": 149868544,
+    "n_kept": 1500,
+    "hybrid_f": 747
+   },
+   {
+    "id": "KV-4096-middle-2-08",
+    "cell": [
+     4096,
+     "middle",
+     2
+    ],
+    "L_context": 5219,
+    "suffix": 31,
+    "total": 5250,
+    "evidence_tokens": [
+     2503,
+     2530
+    ],
+    "M4": 42807296,
+    "M16": 149639168,
+    "n_kept": 1492,
+    "hybrid_f": 739
+   },
+   {
+    "id": "KV-4096-middle-2-09",
+    "cell": [
+     4096,
+     "middle",
+     2
+    ],
+    "L_context": 5223,
+    "suffix": 31,
+    "total": 5254,
+    "evidence_tokens": [
+     2516,
+     2543
+    ],
+    "M4": 42921984,
+    "M16": 149753856,
+    "n_kept": 1496,
+    "hybrid_f": 743
+   },
+   {
+    "id": "KV-4096-middle-8-00",
+    "cell": [
+     4096,
+     "middle",
+     8
+    ],
+    "L_context": 5212,
+    "suffix": 31,
+    "total": 5243,
+    "evidence_tokens": [
+     2506,
+     2533
+    ],
+    "M4": 42606592,
+    "M16": 149438464,
+    "n_kept": 1485,
+    "hybrid_f": 732
+   },
+   {
+    "id": "KV-4096-middle-8-01",
+    "cell": [
+     4096,
+     "middle",
+     8
+    ],
+    "L_context": 5201,
+    "suffix": 31,
+    "total": 5232,
+    "evidence_tokens": [
+     2499,
+     2526
+    ],
+    "M4": 42291200,
+    "M16": 149123072,
+    "n_kept": 1474,
+    "hybrid_f": 721
+   },
+   {
+    "id": "KV-4096-middle-8-02",
+    "cell": [
+     4096,
+     "middle",
+     8
+    ],
+    "L_context": 5201,
+    "suffix": 31,
+    "total": 5232,
+    "evidence_tokens": [
+     2502,
+     2529
+    ],
+    "M4": 42291200,
+    "M16": 149123072,
+    "n_kept": 1474,
+    "hybrid_f": 721
+   },
+   {
+    "id": "KV-4096-middle-8-03",
+    "cell": [
+     4096,
+     "middle",
+     8
+    ],
+    "L_context": 5207,
+    "suffix": 31,
+    "total": 5238,
+    "evidence_tokens": [
+     2509,
+     2536
+    ],
+    "M4": 42463232,
+    "M16": 149295104,
+    "n_kept": 1480,
+    "hybrid_f": 727
+   },
+   {
+    "id": "KV-4096-middle-8-04",
+    "cell": [
+     4096,
+     "middle",
+     8
+    ],
+    "L_context": 5204,
+    "suffix": 31,
+    "total": 5235,
+    "evidence_tokens": [
+     2500,
+     2527
+    ],
+    "M4": 42377216,
+    "M16": 149209088,
+    "n_kept": 1477,
+    "hybrid_f": 724
+   },
+   {
+    "id": "KV-4096-middle-8-05",
+    "cell": [
+     4096,
+     "middle",
+     8
+    ],
+    "L_context": 5212,
+    "suffix": 31,
+    "total": 5243,
+    "evidence_tokens": [
+     2505,
+     2532
+    ],
+    "M4": 42606592,
+    "M16": 149438464,
+    "n_kept": 1485,
+    "hybrid_f": 732
+   },
+   {
+    "id": "KV-4096-middle-8-06",
+    "cell": [
+     4096,
+     "middle",
+     8
+    ],
+    "L_context": 5204,
+    "suffix": 31,
+    "total": 5235,
+    "evidence_tokens": [
+     2499,
+     2526
+    ],
+    "M4": 42377216,
+    "M16": 149209088,
+    "n_kept": 1477,
+    "hybrid_f": 724
+   },
+   {
+    "id": "KV-4096-middle-8-07",
+    "cell": [
+     4096,
+     "middle",
+     8
+    ],
+    "L_context": 5200,
+    "suffix": 31,
+    "total": 5231,
+    "evidence_tokens": [
+     2499,
+     2526
+    ],
+    "M4": 42262528,
+    "M16": 149094400,
+    "n_kept": 1473,
+    "hybrid_f": 720
+   },
+   {
+    "id": "KV-4096-middle-8-08",
+    "cell": [
+     4096,
+     "middle",
+     8
+    ],
+    "L_context": 5221,
+    "suffix": 31,
+    "total": 5252,
+    "evidence_tokens": [
+     2507,
+     2534
+    ],
+    "M4": 42864640,
+    "M16": 149696512,
+    "n_kept": 1494,
+    "hybrid_f": 741
+   },
+   {
+    "id": "KV-4096-middle-8-09",
+    "cell": [
+     4096,
+     "middle",
+     8
+    ],
+    "L_context": 5198,
+    "suffix": 31,
+    "total": 5229,
+    "evidence_tokens": [
+     2498,
+     2525
+    ],
+    "M4": 42205184,
+    "M16": 149037056,
+    "n_kept": 1471,
+    "hybrid_f": 718
+   },
+   {
+    "id": "KV-4096-end-0-00",
+    "cell": [
+     4096,
+     "end",
+     0
+    ],
+    "L_context": 5236,
+    "suffix": 30,
+    "total": 5266,
+    "evidence_tokens": [
+     4722,
+     4748
+    ],
+    "M4": 43294720,
+    "M16": 150126592,
+    "n_kept": 1509,
+    "hybrid_f": 756
+   },
+   {
+    "id": "KV-4096-end-0-01",
+    "cell": [
+     4096,
+     "end",
+     0
+    ],
+    "L_context": 5224,
+    "suffix": 30,
+    "total": 5254,
+    "evidence_tokens": [
+     4714,
+     4740
+    ],
+    "M4": 42950656,
+    "M16": 149782528,
+    "n_kept": 1497,
+    "hybrid_f": 744
+   },
+   {
+    "id": "KV-4096-end-0-02",
+    "cell": [
+     4096,
+     "end",
+     0
+    ],
+    "L_context": 5226,
+    "suffix": 30,
+    "total": 5256,
+    "evidence_tokens": [
+     4714,
+     4740
+    ],
+    "M4": 43008000,
+    "M16": 149839872,
+    "n_kept": 1499,
+    "hybrid_f": 746
+   },
+   {
+    "id": "KV-4096-end-0-03",
+    "cell": [
+     4096,
+     "end",
+     0
+    ],
+    "L_context": 5234,
+    "suffix": 30,
+    "total": 5264,
+    "evidence_tokens": [
+     4721,
+     4747
+    ],
+    "M4": 43237376,
+    "M16": 150069248,
+    "n_kept": 1507,
+    "hybrid_f": 754
+   },
+   {
+    "id": "KV-4096-end-0-04",
+    "cell": [
+     4096,
+     "end",
+     0
+    ],
+    "L_context": 5229,
+    "suffix": 30,
+    "total": 5259,
+    "evidence_tokens": [
+     4715,
+     4741
+    ],
+    "M4": 43094016,
+    "M16": 149925888,
+    "n_kept": 1502,
+    "hybrid_f": 749
+   },
+   {
+    "id": "KV-4096-end-0-05",
+    "cell": [
+     4096,
+     "end",
+     0
+    ],
+    "L_context": 5237,
+    "suffix": 30,
+    "total": 5267,
+    "evidence_tokens": [
+     4723,
+     4749
+    ],
+    "M4": 43323392,
+    "M16": 150155264,
+    "n_kept": 1510,
+    "hybrid_f": 757
+   },
+   {
+    "id": "KV-4096-end-0-06",
+    "cell": [
+     4096,
+     "end",
+     0
+    ],
+    "L_context": 5222,
+    "suffix": 30,
+    "total": 5252,
+    "evidence_tokens": [
+     4711,
+     4737
+    ],
+    "M4": 42893312,
+    "M16": 149725184,
+    "n_kept": 1495,
+    "hybrid_f": 742
+   },
+   {
+    "id": "KV-4096-end-0-07",
+    "cell": [
+     4096,
+     "end",
+     0
+    ],
+    "L_context": 5233,
+    "suffix": 30,
+    "total": 5263,
+    "evidence_tokens": [
+     4718,
+     4744
+    ],
+    "M4": 43208704,
+    "M16": 150040576,
+    "n_kept": 1506,
+    "hybrid_f": 753
+   },
+   {
+    "id": "KV-4096-end-0-08",
+    "cell": [
+     4096,
+     "end",
+     0
+    ],
+    "L_context": 5224,
+    "suffix": 30,
+    "total": 5254,
+    "evidence_tokens": [
+     4711,
+     4737
+    ],
+    "M4": 42950656,
+    "M16": 149782528,
+    "n_kept": 1497,
+    "hybrid_f": 744
+   },
+   {
+    "id": "KV-4096-end-0-09",
+    "cell": [
+     4096,
+     "end",
+     0
+    ],
+    "L_context": 5227,
+    "suffix": 30,
+    "total": 5257,
+    "evidence_tokens": [
+     4714,
+     4740
+    ],
+    "M4": 43036672,
+    "M16": 149868544,
+    "n_kept": 1500,
+    "hybrid_f": 747
+   },
+   {
+    "id": "KV-4096-end-2-00",
+    "cell": [
+     4096,
+     "end",
+     2
+    ],
+    "L_context": 5220,
+    "suffix": 30,
+    "total": 5250,
+    "evidence_tokens": [
+     4707,
+     4733
+    ],
+    "M4": 42835968,
+    "M16": 149667840,
+    "n_kept": 1493,
+    "hybrid_f": 740
+   },
+   {
+    "id": "KV-4096-end-2-01",
+    "cell": [
+     4096,
+     "end",
+     2
+    ],
+    "L_context": 5220,
+    "suffix": 30,
+    "total": 5250,
+    "evidence_tokens": [
+     4707,
+     4733
+    ],
+    "M4": 42835968,
+    "M16": 149667840,
+    "n_kept": 1493,
+    "hybrid_f": 740
+   },
+   {
+    "id": "KV-4096-end-2-02",
+    "cell": [
+     4096,
+     "end",
+     2
+    ],
+    "L_context": 5222,
+    "suffix": 30,
+    "total": 5252,
+    "evidence_tokens": [
+     4708,
+     4734
+    ],
+    "M4": 42893312,
+    "M16": 149725184,
+    "n_kept": 1495,
+    "hybrid_f": 742
+   },
+   {
+    "id": "KV-4096-end-2-03",
+    "cell": [
+     4096,
+     "end",
+     2
+    ],
+    "L_context": 5219,
+    "suffix": 30,
+    "total": 5249,
+    "evidence_tokens": [
+     4707,
+     4733
+    ],
+    "M4": 42807296,
+    "M16": 149639168,
+    "n_kept": 1492,
+    "hybrid_f": 739
+   },
+   {
+    "id": "KV-4096-end-2-04",
+    "cell": [
+     4096,
+     "end",
+     2
+    ],
+    "L_context": 5228,
+    "suffix": 30,
+    "total": 5258,
+    "evidence_tokens": [
+     4714,
+     4740
+    ],
+    "M4": 43065344,
+    "M16": 149897216,
+    "n_kept": 1501,
+    "hybrid_f": 748
+   },
+   {
+    "id": "KV-4096-end-2-05",
+    "cell": [
+     4096,
+     "end",
+     2
+    ],
+    "L_context": 5229,
+    "suffix": 30,
+    "total": 5259,
+    "evidence_tokens": [
+     4715,
+     4741
+    ],
+    "M4": 43094016,
+    "M16": 149925888,
+    "n_kept": 1502,
+    "hybrid_f": 749
+   },
+   {
+    "id": "KV-4096-end-2-06",
+    "cell": [
+     4096,
+     "end",
+     2
+    ],
+    "L_context": 5241,
+    "suffix": 30,
+    "total": 5271,
+    "evidence_tokens": [
+     4724,
+     4750
+    ],
+    "M4": 43438080,
+    "M16": 150269952,
+    "n_kept": 1514,
+    "hybrid_f": 761
+   },
+   {
+    "id": "KV-4096-end-2-07",
+    "cell": [
+     4096,
+     "end",
+     2
+    ],
+    "L_context": 5226,
+    "suffix": 30,
+    "total": 5256,
+    "evidence_tokens": [
+     4714,
+     4740
+    ],
+    "M4": 43008000,
+    "M16": 149839872,
+    "n_kept": 1499,
+    "hybrid_f": 746
+   },
+   {
+    "id": "KV-4096-end-2-08",
+    "cell": [
+     4096,
+     "end",
+     2
+    ],
+    "L_context": 5222,
+    "suffix": 30,
+    "total": 5252,
+    "evidence_tokens": [
+     4706,
+     4732
+    ],
+    "M4": 42893312,
+    "M16": 149725184,
+    "n_kept": 1495,
+    "hybrid_f": 742
+   },
+   {
+    "id": "KV-4096-end-2-09",
+    "cell": [
+     4096,
+     "end",
+     2
+    ],
+    "L_context": 5219,
+    "suffix": 30,
+    "total": 5249,
+    "evidence_tokens": [
+     4706,
+     4732
+    ],
+    "M4": 42807296,
+    "M16": 149639168,
+    "n_kept": 1492,
+    "hybrid_f": 739
+   },
+   {
+    "id": "KV-4096-end-8-00",
+    "cell": [
+     4096,
+     "end",
+     8
+    ],
+    "L_context": 5204,
+    "suffix": 30,
+    "total": 5234,
+    "evidence_tokens": [
+     4694,
+     4720
+    ],
+    "M4": 42377216,
+    "M16": 149209088,
+    "n_kept": 1477,
+    "hybrid_f": 724
+   },
+   {
+    "id": "KV-4096-end-8-01",
+    "cell": [
+     4096,
+     "end",
+     8
+    ],
+    "L_context": 5211,
+    "suffix": 30,
+    "total": 5241,
+    "evidence_tokens": [
+     4699,
+     4725
+    ],
+    "M4": 42577920,
+    "M16": 149409792,
+    "n_kept": 1484,
+    "hybrid_f": 731
+   },
+   {
+    "id": "KV-4096-end-8-02",
+    "cell": [
+     4096,
+     "end",
+     8
+    ],
+    "L_context": 5196,
+    "suffix": 30,
+    "total": 5226,
+    "evidence_tokens": [
+     4685,
+     4711
+    ],
+    "M4": 42147840,
+    "M16": 148979712,
+    "n_kept": 1469,
+    "hybrid_f": 716
+   },
+   {
+    "id": "KV-4096-end-8-03",
+    "cell": [
+     4096,
+     "end",
+     8
+    ],
+    "L_context": 5209,
+    "suffix": 30,
+    "total": 5239,
+    "evidence_tokens": [
+     4695,
+     4721
+    ],
+    "M4": 42520576,
+    "M16": 149352448,
+    "n_kept": 1482,
+    "hybrid_f": 729
+   },
+   {
+    "id": "KV-4096-end-8-04",
+    "cell": [
+     4096,
+     "end",
+     8
+    ],
+    "L_context": 5202,
+    "suffix": 30,
+    "total": 5232,
+    "evidence_tokens": [
+     4688,
+     4714
+    ],
+    "M4": 42319872,
+    "M16": 149151744,
+    "n_kept": 1475,
+    "hybrid_f": 722
+   },
+   {
+    "id": "KV-4096-end-8-05",
+    "cell": [
+     4096,
+     "end",
+     8
+    ],
+    "L_context": 5216,
+    "suffix": 30,
+    "total": 5246,
+    "evidence_tokens": [
+     4704,
+     4730
+    ],
+    "M4": 42721280,
+    "M16": 149553152,
+    "n_kept": 1489,
+    "hybrid_f": 736
+   },
+   {
+    "id": "KV-4096-end-8-06",
+    "cell": [
+     4096,
+     "end",
+     8
+    ],
+    "L_context": 5213,
+    "suffix": 30,
+    "total": 5243,
+    "evidence_tokens": [
+     4697,
+     4723
+    ],
+    "M4": 42635264,
+    "M16": 149467136,
+    "n_kept": 1486,
+    "hybrid_f": 733
+   },
+   {
+    "id": "KV-4096-end-8-07",
+    "cell": [
+     4096,
+     "end",
+     8
+    ],
+    "L_context": 5213,
+    "suffix": 30,
+    "total": 5243,
+    "evidence_tokens": [
+     4701,
+     4727
+    ],
+    "M4": 42635264,
+    "M16": 149467136,
+    "n_kept": 1486,
+    "hybrid_f": 733
+   },
+   {
+    "id": "KV-4096-end-8-08",
+    "cell": [
+     4096,
+     "end",
+     8
+    ],
+    "L_context": 5204,
+    "suffix": 30,
+    "total": 5234,
+    "evidence_tokens": [
+     4693,
+     4719
+    ],
+    "M4": 42377216,
+    "M16": 149209088,
+    "n_kept": 1477,
+    "hybrid_f": 724
+   },
+   {
+    "id": "KV-4096-end-8-09",
+    "cell": [
+     4096,
+     "end",
+     8
+    ],
+    "L_context": 5203,
+    "suffix": 30,
+    "total": 5233,
+    "evidence_tokens": [
+     4692,
+     4718
+    ],
+    "M4": 42348544,
+    "M16": 149180416,
+    "n_kept": 1476,
+    "hybrid_f": 723
+   }
+  ]
+ }
+}
