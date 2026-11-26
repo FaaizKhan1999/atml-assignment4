@@ -175,3 +175,25 @@ def test_batched_sample_rows_match_single_row_runs():
         assert single["tokens"] == b["tokens"] and len(b["tokens"]) <= c
         ar = autoregressive_generate(HFLM(m, dev), p, c, torch.Generator().manual_seed(s), eos_ids=[63])
         assert ar["tokens"] == b["tokens"]  # same per-row seed -> same draws as the batch-1 reference sampler
+
+
+def test_align_metrics_and_grouping():
+    from atml4.task3.align import evaluate, group_bank, metrics
+
+    p = torch.log(torch.tensor([[0.5, 0.3, 0.2]]))
+    q = torch.log(torch.tensor([[0.2, 0.3, 0.5]]))
+    m = metrics(p, q)
+    assert abs(float(m["tv"]) - 0.3) < 1e-6 and abs(float(m["acc1"]) - 0.7) < 1e-6
+    assert float(m["greedy_agree"]) == 0
+    tm, dm = _tiny(0), _tiny(1)
+    seq = [5, 6, 7, 8, 9, 10]
+    recs = [{"bank": "b", "prompt_id": "x", "domain": "math", "prompt": "p", "position": pos,
+             "response_prefix_token_ids": seq[:pos - 1]} for pos in (1, 3, 6)]
+    g = group_bank(recs)
+    rows = evaluate(tm, {"self": tm, "other": dm}, g, lambda s: [1, 2, 3], {"x": "math"}, torch.device("cpu"))
+    assert all(abs(r["tv"]) < 1e-5 and r["greedy_agree"] == 1 for r in rows if r["draft"] == "self")
+    # position p uses exactly the first p-1 saved tokens: compare with a direct forward
+    r6 = next(r for r in rows if r["draft"] == "other" and r["position"] == 6)
+    pl = tm(torch.tensor([[1, 2, 3] + seq[:5]])).logits[0, -1].float()
+    ql = dm(torch.tensor([[1, 2, 3] + seq[:5]])).logits[0, -1].float()
+    assert abs(float(metrics(pl[None], ql[None])["tv"]) - r6["tv"]) < 1e-5
