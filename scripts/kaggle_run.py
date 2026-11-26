@@ -186,7 +186,7 @@ def _ledger_append(row: dict) -> float:
     return total
 
 
-def _download(kernel_id: str, dl: Path, pattern: str | None, attempts: int = 10) -> str:
+def _download(kernel_id: str, dl: Path, pattern: str | None, attempts: int = 60) -> str:
     """Download kernel outputs with retries. No -o: files already complete locally are skipped, so a retry resumes
     after a network failure instead of restarting. pattern = --file-pattern regex (e.g. to skip large checkpoints)."""
     cmd = ["kaggle", "kernels", "output", kernel_id, "-p", str(dl)] + (["--file-pattern", pattern] if pattern else [])
