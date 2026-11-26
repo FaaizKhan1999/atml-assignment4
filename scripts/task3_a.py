@@ -15,7 +15,6 @@ Seeds: generation seed for (prompt j, rep r) = 6304 + 10007 j + 7919 (r + 1), sh
 target-only reference (paired); bank (iii) uses the course seed 6304 + 10007 j.
 """
 import argparse
-import gzip
 import json
 import statistics
 import sys
