@@ -1,0 +1,21 @@
+task1/tab1_contrasts.tex	5.48 in
+task1/tab1_qualitative.tex	3.33 in
+task1/tab1_resources.tex	4.52 in
+task1/tab1_summary.tex	5.17 in
+task1/tabA_t1_full.tex	6.49 in	WIDER THAN 5.5 in
+task1/tabA_t1_p3grid.tex	3.39 in
+task1/tabA_t1_pruning_diag.tex	4.06 in
+task1/tabA_t1_qualitative_all.tex	3.33 in
+task1/tabA_t1_retiming.tex	4.52 in
+task2/tab2_backends.tex	2.94 in
+task2/tab2_kv.tex	5.43 in
+task2/tab2_kv_contrasts.tex	4.39 in
+task2/tab2_mqar_resources.tex	5.09 in
+task2/tabA_t2_dilated.tex	3.62 in
+task2/tabA_t2_kquant.tex	6.49 in	WIDER THAN 5.5 in
+task2/tabA_t2_kv_breakdown.tex	5.17 in
+task2/tabA_t2_kv_generations.tex	4.72 in
+task2/tabA_t2_mqar_bins.tex	3.58 in
+task2/tabA_t2_mqar_full.tex	8.31 in	WIDER THAN 5.5 in
+task2/tabA_t2_packed.tex	5.43 in
+task2/tabA_t2_partA_full.tex	4.63 in
