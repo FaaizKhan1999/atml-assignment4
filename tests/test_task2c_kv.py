@@ -141,14 +141,43 @@ def test_pack_roundtrip(bits):
     assert torch.equal(KQ.unpack(p, bits, 4096), c)
 
 
-def test_kv_quantizer_equals_task1_form():
-    from atml4.task1.quant import quantize
+def test_kv_quantizer_groups_not_containing_zero():
+    """Regression (deviations.md 2026-11-26): an all-positive / all-negative group must not collapse."""
+    for lo, hi in ((100.0, 110.0), (-410.0, -400.0), (-3.0, 5.0), (0.0, 0.0), (7.25, 7.25)):
+        x = torch.linspace(lo, hi, 64).half().float()[None]
+        for bits in (2, 4):
+            c, s, o, xh = KQ.quantize_groups(x, bits)
+            step = float(s)
+            assert float((xh - x).abs().max()) <= step / 2 + 1e-6, (lo, hi, bits)
+            assert float(o) <= lo and float(o) + (2 ** bits - 1) * step >= hi  # stored grid covers the range
 
-    X = torch.randn(6, 256) * 3
+
+def test_kv_codes_use_stored_fp16_metadata():
+    g = torch.Generator().manual_seed(2)
+    X = (torch.randn(50, 64, generator=g) * 2.0 + 300.0).half().float()  # tight range at large magnitude (FP16 spacing 0.25)
     for bits in (2, 4):
-        t1 = quantize(X, bits, group=64).w_hat.float()
-        _, _, _, xh = KQ.quantize_groups(X.view(6, 4, 64), bits)
-        assert torch.equal(xh.view(6, 256).half().float(), t1)  # Task 1 stores w_hat in FP16
+        c, s, o, xh = KQ.quantize_groups(X, bits)
+        assert s.dtype == torch.float16 and o.dtype == torch.float16
+        assert torch.equal(xh, KQ.dequant_groups(c, s, o))  # dequantization uses exactly the stored values
+        rel = float((xh - X).norm() / (X - X.mean(1, keepdim=True)).norm())
+        assert rel < (0.6 if bits == 2 else 0.12)
+
+
+def test_synthetic_channel_offset_axis():
+    """Per-channel constant offsets (bias-like) + small noise: channel-wise grouping must be near-lossless and
+    beat token-wise; the cache layout is [H_kv, L, d_h] and a channel group is 64 consecutive tokens of one dim."""
+    g = torch.Generator().manual_seed(0)
+    off = torch.empty(128).uniform_(100, 400, generator=g) * torch.where(torch.rand(128, generator=g) < .5, -1, 1)
+    K = (off[None, None, :] + torch.randn(2, 256, 128, generator=g)).half()
+    err = {}
+    for lay in ("channel", "token"):
+        q = KQ.quantize_tensor(K, lay, 4)
+        err[lay] = float((q["x_hat"].float() - K.float()).norm() / K.float().norm())
+    assert err["channel"] < 3e-3 < err["token"], err
+    q = KQ.quantize_tensor(K, "channel", 4)
+    assert q["scale"].shape == (2, 4, 128)
+    _, s, o, _ = KQ.quantize_groups(K[1, 64:128, 77].float()[None], 4)
+    assert torch.equal(s[0], q["scale"][1, 1, 77]) and torch.equal(o[0], q["offset"][1, 1, 77])
 
 
 def test_channel_and_token_layout_groups():
