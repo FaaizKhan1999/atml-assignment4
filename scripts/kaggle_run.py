@@ -125,18 +125,46 @@ def wait(name: str, poll: int = 30) -> str:
         time.sleep(poll)
 
 
-def _sync_results(dl: Path) -> list[str]:
-    copied = []
+def _git_blob_sha(data: bytes) -> str:
+    import hashlib
+
+    return hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
+
+
+def _tree_blobs(commit: str, prefix: str = "results") -> dict[str, str]:
+    """{repo-relative path: blob sha} of every file under prefix at the kernel's checkout commit."""
+    out = run(["git", "ls-tree", "-r", commit, "--", prefix], check=False)
+    blobs = {}
+    for line in out.splitlines():
+        meta, path = line.split("\t", 1)
+        blobs[path] = meta.split()[2]
+    return blobs
+
+
+def _sync_results(dl: Path, commit: str, root: Path = ROOT, blobs: dict | None = None) -> dict:
+    """Copy ONLY result files the kernel created or changed relative to its checkout commit. A file whose bytes
+    equal the committed blob at `commit` is a checked-out input, not an output, and is never copied (it could
+    overwrite newer local files)."""
+    copied, unchanged, too_big = [], [], []
     src = dl / "results"
     if not src.exists():
-        return copied
-    for f in src.rglob("*"):
-        if f.is_file() and f.suffix in SYNC_EXT and f.stat().st_size <= SYNC_MAX_BYTES:
-            dst = ROOT / "results" / f.relative_to(src)
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(f, dst)
-            copied.append(str(dst.relative_to(ROOT)))
-    return copied
+        return {"copied": copied, "skipped_unchanged_from_checkout": unchanged, "skipped_size": too_big}
+    blobs = _tree_blobs(commit) if blobs is None else blobs
+    for f in sorted(src.rglob("*")):
+        if not (f.is_file() and f.suffix in SYNC_EXT):
+            continue
+        rel = str(Path("results") / f.relative_to(src))
+        if f.stat().st_size > SYNC_MAX_BYTES:
+            too_big.append(rel)
+            continue
+        if blobs.get(rel) == _git_blob_sha(f.read_bytes()):
+            unchanged.append(rel)
+            continue
+        dst = root / rel
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(f, dst)
+        copied.append(rel)
+    return {"copied": copied, "skipped_unchanged_from_checkout": unchanged, "skipped_size": too_big}
 
 
 def _ledger_append(row: dict) -> float:
@@ -171,15 +199,20 @@ def fetch(name: str) -> None:
     wall_h = rm.get("wall_seconds", 0) / 3600
     ok = rm.get("exit_code") == 0 and not rm.get("error")
     state = ("ok" if ok else f"FAILED(rc={rm.get('exit_code')},err={rm.get('error')})") if rm else f"no run_meta: {st}"
-    copied = _sync_results(dl)
+    sync = _sync_results(dl, info["commit"])
+    copied = sync["copied"]
     total = _ledger_append({"date": rm.get("start_utc", info["pushed_utc"]), "kernel": info["kernel_id"],
                             "acc": acc, "wall_h": wall_h, "gpu_h": wall_h if gpus else 0.0, "status": state,
                             "commit": info["commit"], "purpose": info.get("purpose") or ""})
     info.update({"fetched_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "final_status": st,
-                 "accelerator_observed": acc, "wall_seconds": rm.get("wall_seconds"), "synced": copied})
+                 "accelerator_observed": acc, "wall_seconds": rm.get("wall_seconds"), "synced": copied,
+                 "skipped_unchanged_from_checkout": len(sync["skipped_unchanged_from_checkout"]),
+                 "skipped_size": sync["skipped_size"]})
     (RUNS / name / "launch.json").write_text(json.dumps(info, indent=1))
     print(json.dumps({"kernel": info["kernel_id"], "status": st, "state": state, "accelerator": acc,
-                      "wall_s": rm.get("wall_seconds"), "synced": copied, "ledger_total_gpu_h": round(total, 3)},
+                      "wall_s": rm.get("wall_seconds"), "synced": copied,
+                      "skipped_unchanged_from_checkout": len(sync["skipped_unchanged_from_checkout"]),
+                      "skipped_size": sync["skipped_size"], "ledger_total_gpu_h": round(total, 3)},
                      indent=1))
 
 
