@@ -22,13 +22,16 @@ import numpy as np  # noqa: E402
 from atml4.common.io import load_jsonl_result, load_result, save_result  # noqa: E402
 from atml4.common.meta import collect_meta  # noqa: E402
 from atml4.common.stats import paired_bootstrap_diff, pooled_nll_bootstrap  # noqa: E402
-from atml4.task1.conditions import FIXED_CONDITIONS, NEW_CONDITIONS  # noqa: E402
+from atml4.task1.conditions import FIXED_CONDITIONS, NEW_CONDITIONS, Q3PROJ_CONDITIONS  # noqa: E402
 
 R = ROOT / "results/task1"
 SUITES = ("wikitext2", "c4")
 CONTRASTS = [("p2_wanda_s50", "p1_mag_s50"), ("q2_awq_int4", "q1_int4"), ("q2_awq_int3", "q1_int3"),
              ("p3_owl_s50", "p2_wanda_s50"), ("p3_owl_s75", "p2_wanda_s75"),
-             ("q3_mixed_b4", "q2_awq_int4"), ("q3_mixed_b3", "q2_awq_int3")]
+             ("q3_mixed_b4", "q2_awq_int4"), ("q3_mixed_b3", "q2_awq_int3"),
+             ("q3proj_b4", "q2_awq_int4"), ("q3proj_b3", "q2_awq_int3"),
+             ("q3proj_b4", "q3_mixed_b4"), ("q3proj_b3", "q3_mixed_b3")]
+Q3_PRIMARY = {"B4": ("q3_mixed_b4", "q3proj_b4", "q2_awq_int4"), "B3": ("q3_mixed_b3", "q3proj_b3", "q2_awq_int3")}
 OUT = "summary_all"
 
 
@@ -75,8 +78,13 @@ def ci_str(c, scale=1.0, fmt="{:+.4f}"):
 
 
 def main():
-    conds = ["baseline"] + [c for c in FIXED_CONDITIONS + NEW_CONDITIONS if (R / c / "summary.json").exists()]
+    conds = ["baseline"] + [c for c in FIXED_CONDITIONS + NEW_CONDITIONS + Q3PROJ_CONDITIONS if (R / c / "summary.json").exists()]
     rt = load_result(R / "retiming.json")[1]["per_condition"] if (R / "retiming.json").exists() else {}
+    rt_src = {c: "results/task1/retiming.json" for c in rt}
+    if (R / "retiming_q3proj.json").exists():  # short exclusive pass for the Q3-proj conditions
+        for c, v in load_result(R / "retiming_q3proj.json")[1]["per_condition"].items():
+            if c != "baseline":
+                rt[c], rt_src[c] = v, "results/task1/retiming_q3proj.json"
     base_w = {s: windows("baseline", s) for s in SUITES}
     base_h = hs("baseline")
     out, csv_rows = {}, []
@@ -115,7 +123,7 @@ def main():
             rec["latency_ms_median"] = {k: rt[c][k]["median_all_reps_ms"] for k in keys}
             rec["latency_drift_adjusted_ratio"] = {k: rt[c][k]["drift_adjusted_ratio"] for k in keys}
             rec["peak_alloc_bytes"] = {k: rt[c][k]["peak_alloc_bytes"] for k in keys}
-            rec["latency_source"] = "results/task1/retiming.json"
+            rec["latency_source"] = rt_src[c]
         else:
             lm = s.get("latency_memory", {})
             rec["latency_ms_median"] = {k: lm[k]["median"] for k in keys if k in lm}
@@ -159,7 +167,17 @@ def main():
             contrasts[f"{a}-{b}"] = {
                 **{suite: ppl_contrast(windows(a, suite), windows(b, suite)) for suite in SUITES},
                 **{f"hs_{m}@{n}": hs_contrast(ha, hb, n, m) for n in (2000, 512) for m in ("acc", "acc_norm")}}
-    payload = {"conditions": out, "contrasts": contrasts,
+    primary = {}
+    if (R / "q3proj_allocation.json").exists():
+        al = load_result(R / "q3proj_allocation.json")[1]["allocations"]
+        for bname, (blk, prj, q2c) in Q3_PRIMARY.items():
+            chosen = prj if al[bname]["primary"] == "projection" else blk
+            primary[bname] = {"primary_design": al[bname]["primary"], "condition": chosen,
+                              "rule": al[bname]["primary_rule"],
+                              "dev_nll": {"block": al[bname]["block_level_remeasured"]["dev_nll"],
+                                          "projection": al[bname]["realised_dev_nll"]},
+                              "contrast_vs_q2": contrasts.get(f"{chosen}-{q2c}")}
+    payload = {"conditions": out, "contrasts": contrasts, "q3_primary": primary,
                "bootstrap": {"resamples": 2000, "seed": 6304, "ppl_unit": "window (pooled NLL then exp)",
                              "hellaswag_unit": "example"}}
     meta = collect_meta(seed=6304)

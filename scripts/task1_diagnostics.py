@@ -84,6 +84,23 @@ def main():
     q3d["alpha_rederivation_match"] = qa["alpha_rederivation_match"]
     out["q3"] = q3d
 
+    # ---- Q3-proj (second design): sensitivity vs bits, per-type counts, predicted vs realised, primary
+    if (R / "q3proj_allocation.json").exists():
+        qp = load_result(R / "q3proj_allocation.json")[1]
+        sens = qp["sensitivity_dnll"]
+        j4 = qp["bits_options"].index(4)
+        qpd = {"units": qp["units"], "bits_options": qp["bits_options"], "sensitivity_dnll": sens, "allocations": {}}
+        for name, a in qp["allocations"].items():
+            bits = [x["bits"] for x in a["bits_map"]]
+            qpd["allocations"][name] = {
+                "bits": bits, "counts_proj_type_x_bits": a["counts_proj_type_x_bits"],
+                "per_block_param_weighted_mean_bits": [b["param_weighted_mean_bits"] for b in a["per_block"]],
+                "spearman_probe_dnll_at_4bit_vs_bits": sp([r[j4] for r in sens], bits),
+                "predicted_dev_dnll": a["predicted_dev_dnll"], "realised_dev_dnll": a["realised_dev_dnll"],
+                "total_bytes": a["total_bytes"], "budget_bytes": a["budget_bytes"], "slack_bytes": a["slack_bytes"],
+                "block_level_remeasured": a["block_level_remeasured"], "primary": a["primary"]}
+        out["q3proj"] = qpd
+
     # ---- dev vs test carry-over
     def test_nll(c):
         s = summ(c)
@@ -102,10 +119,18 @@ def main():
         a = qa["allocations"][name]
         carry.append({"pair": f"{q3c} vs {q2c}", "dev_dnll": a["realised_dev_dnll"] - qa["q2_uniform_dev"][b]["dev_dnll"],
                       "test_dnll_wikitext2": t3["wikitext2"] - t2["wikitext2"], "test_dnll_c4": t3["c4"] - t2["c4"]})
+    if (R / "q3proj_allocation.json").exists() and (R / "q3proj_b4/summary.json").exists():
+        qp = load_result(R / "q3proj_allocation.json")[1]["allocations"]
+        for name, q2c, q3c, b in (("B4", "q2_awq_int4", "q3proj_b4", "int4"), ("B3", "q2_awq_int3", "q3proj_b3", "int3")):
+            t2, t3 = test_nll(q2c), test_nll(q3c)
+            carry.append({"pair": f"{q3c} vs {q2c}",
+                          "dev_dnll": qp[name]["realised_dev_nll"] - qp[name]["block_level_remeasured"]["dev_nll"],
+                          "dev_note": "vs block-level (= Q2 uniform) re-measured in the same process",
+                          "test_dnll_wikitext2": t3["wikitext2"] - t2["wikitext2"], "test_dnll_c4": t3["c4"] - t2["c4"]})
     out["dev_vs_test"] = {"pairs": carry,
                           "same_sign_wikitext2": [math.copysign(1, x["dev_dnll"]) == math.copysign(1, x["test_dnll_wikitext2"])
                                                   for x in carry],
-                          "note": "4 method pairs only; a cross-pair correlation is not meaningful at n=4"}
+                          "note": "few method pairs only; a cross-pair correlation is not meaningful"}
     grid = sel["grid"]
     out["p3_dev_grid_compact"] = {S: {f"M{g['M']}_l{g['lambda']}": round(g["dev_ppl"], 4) for g in grid
                                       if str(g["S"]) == S} for S in ("0.5", "0.75")}
@@ -116,7 +141,10 @@ def main():
     out["selection_effort_gpu_seconds"] = {
         "p3_dev_grid": sel["gpu_seconds"], "q3": qa["gpu_seconds"],
         "q2_awq_capture_and_search_3bits": {k: v for k, v in cs("q2_awq_int4").items() if "shared" in k},
-        "compression_apply": {c: cs(c) for c in ("p2_wanda_s50", "p3_owl_s50", "q2_awq_int4", "q3_mixed_b4")},
+        "compression_apply": {c: cs(c) for c in ("p2_wanda_s50", "p3_owl_s50", "q2_awq_int4", "q3_mixed_b4", "q3proj_b4")
+                              if (R / c / "summary.json").exists()},
+        "q3proj": load_result(R / "q3proj_allocation.json")[1]["gpu_seconds"]
+        if (R / "q3proj_allocation.json").exists() else None,
         "calibration_stats_baseline_s": base.get("phase_seconds", {}).get("calib_stats")}
 
     save_result(R / "diagnostics.json", out, collect_meta(seed=6304))
